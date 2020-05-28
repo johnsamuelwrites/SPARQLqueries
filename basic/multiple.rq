@@ -1,0 +1,9 @@
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT DISTINCT ?programminglanguage ?paradigm
+WHERE {
+        ?programminglanguage wdt:P31 wd:Q9143.
+        ?programminglanguage wdt:P3966 ?paradigm.
+}
+LIMIT 100
