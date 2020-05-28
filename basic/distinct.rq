@@ -1,0 +1,4 @@
+SELECT DISTINCT ?programminglanguage 
+WHERE {
+	?programminglanguage wdt:P31 wd:Q9143
+}

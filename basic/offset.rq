@@ -1,0 +1,6 @@
+SELECT DISTINCT ?programminglanguage 
+WHERE {
+	?programminglanguage wdt:P31 wd:Q9143
+}
+LIMIT 100
+OFFSET 100

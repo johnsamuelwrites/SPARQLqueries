@@ -1,0 +1,7 @@
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?programminglanguage 
+WHERE {
+	?programminglanguage wdt:P31 wd:Q9143
+}
