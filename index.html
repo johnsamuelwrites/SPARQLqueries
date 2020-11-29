@@ -30,13 +30,190 @@
   </div>
   <div id="content">
     <div class="section">
-     <h2>Examples</h2>
+      <h2>SPARQLqueries</h2>
+      <p>The goal of <code>SPARQLqueries</code> is to present different possibilities of SPARQL queries using Wikidata and other open data sources.
+         <a href="http://www.w3.org/TR/sparql11-query/">SPARQL</a> is a query language that can be used to query semantic web data in RDF format. 
+	 RDF data consists of statements in the form of triples <i>subject-predicate-object</i>.
+	 SPARQL queries also make use of these triple patterns. 
+      </p>
+      <p>Take for example, we have got three programming languages, C, Python and C++, that are stored in our database, with the following identifiers.</p>
+      <code>
+        <pre>
+	  https://example.com/C</br>
+	  https://example.com/C++</br>
+	  https://example.com/Python</br>
+        </pre>
+      </code>
+      <p>Let's also assume that we have another entity called Programming language, represented in the following manner.</p>
+      <code>
+        <pre>
+	  https://example.com/ProgrammingLanguage</br>
+        </pre>
+      </code>
+      <p>We need to represent the relationship between our example programming languages and the entity called <code>ProgrammingLanguage</code>. For this purpose, we may need to introduce a relationship called <code>IsA</code>, which is identified in the following manner:</p>
+      <code>
+        <pre>
+	  https://example.com/IsA
+        </pre>
+      </code>
+      <p>Now our goal is to state the following statements:</p>
+      <code>
+        <pre>
+	  C is a Programming language.</br>
+	  C++ is a Programming language.</br>
+	  Python is a Programming language.</br>
+        </pre>
+      </code>
+      <p>This may be done in the following manner:</p>
+      <code>
+        <pre>
+	  https://example.com/C https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  https://example.com/C++ https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  https://example.com/Python https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+        </pre>
+      </code>
+      <p>The difference between the above statements using identifiers and the ones written in natural language (English) is that the former can be easily understood by the machines and can be queried.</p>
+      <p>And this brings us to SPARQL queries. What if I want to ask the following queries?</p>
+      <ul>
+	 <li>Give me all the programming languages?</li>
+	 <li>How many programming languages are there in my database?</li>
+	 <li>What is C? or Python?</li>
+      </ul>
+      <p>These questions can be asked using SPARQL queries on our database.</p>
+      <p><b>Give me all the programming languages?</b></p>
+      <code>
+        <pre>
+	  SELECT ?proglang {</br>
+	    ?proglang https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  }</br>
+        </pre>
+      </code>
+      <p><b>How many programming languages are there in my database?</b></p>
+      <code>
+        <pre>
+	  SELECT (count(?proglang) as ?count) {</br>
+	    ?proglang https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  }</br>
+        </pre>
+      </code>
+      <p><b>What is C?</b></p>
+      <code>
+        <pre>
+	  SELECT ?type {</br>
+	     https://example.com/C++ https://example.com/IsA ?type 
+	  }</br>
+        </pre>
+      </code>
+      <p>The goal of this work is to be able to use SPARQL queries on real-world data. 
+         In real-life, we may have a lot of information on programming languages like the date of first release, the names of creators and designers etc.
+	 And our databases are not just limited to programming languages.
+	 They may have information on human beings, natural languages, rivers, mountains etc.
+	 Some of these information may not be present in our database and we may need to query external databases.
+         These use cases are discussed in detail in this work. 
+      </p>
     </div>
     <div class="section">
-     <h2>Search</h2>
+      <h2>Wikidata</h2>
     </div>
     <div class="section">
-     <h2>Compare</h2>
+      <h2>Basic SPARQL queries</h2>
+      <p><b>Give me a list of the programming languages?</b></p>
+      <code>
+        <pre>
+	  SELECT ?proglang {</br>
+            ?proglang wdt:P31 wd:Q9143</br>
+          }</br>
+        </pre>
+      </code>
+      <p><b>Give me a list of the programming languages along with the dates of their inception?</b></p>
+      <code>
+        <pre>
+	  SELECT ?proglang ?year {</br>
+            ?proglang wdt:P31 wd:Q9143.</br>
+            ?proglang wdt:P571 ?year.</br>
+          }</br>
+        </pre>
+      </code>
+      <code>
+        <pre>
+	SELECT ?proglang ?year {</br>
+          ?proglang wdt:P31 wd:Q9143;</br>
+                    wdt:P571 ?year</br>
+        }</br>
+        </pre>
+      </code>
+    </div>
+    <div class="section">
+      <h2>SPARQL queries using expressions</h2>
+      <p><b>Give me a list of the programming languages released after the year 2000 along with the dates of their inception?</b></p>
+      <code>
+        <pre>
+	  SELECT ?proglang ?year {</br>
+            ?proglang wdt:P31 wd:Q9143;</br>
+                      wdt:P571 ?year.</br>
+            FILTER (year(?year) > 2000).</br>
+          }</br>
+        </pre>
+      </code>
+    </div>
+    <div class="section">
+      <h2>Aggregate SPARQL queries</h2>
+      <p><b>Give me the count of available programming languages?</b></p>
+      <code>
+        <pre>
+	SELECT (count(?proglang) as ?count) {</br>
+          ?proglang wdt:P31 wd:Q9143.</br>
+        }</br>
+        </pre>
+      </code>
+      <p><b>Give me the count of programming languages released after the year 2000 along with the dates of their inception?</b></p>
+      <code>
+        <pre>
+	  SELECT (count(?proglang) as ?count) {</br>
+            ?proglang wdt:P31 wd:Q9143;</br>
+                      wdt:P571 ?year.</br>
+            FILTER (year(?year) > 2000).</br>
+          }</br>
+        </pre>
+      </code>
+    </div>
+    <div class="section">
+      <h2>Advanced SPARQL queries</h2>
+      <p><b>Are there any programming language?</b></p>
+      <code>
+        <pre>
+	  ASK {</br>
+            ?proglang wdt:P31 wd:Q9143.</br>
+          }</br>
+        </pre>
+      </code>
+      <p><b>Is there information about programming languages and their inception?</b></p>
+      <code>
+        <pre>
+	  ASK {</br>
+            ?proglang wdt:P31 wd:Q9143;</br>
+                      wdt:P571 ?year.</br>
+          }</br>
+        </pre>
+      </code>
+    </div>
+    <div class="section">
+      <h2>SPARQL queries using Federation</h2>
+      <p><b>Is there some additional information about programming languages on DBPedia?</b></p>
+      <code>
+        <pre>
+	  SELECT ?proglang ?resource ?val{</br>
+            ?proglang wdt:P31 wd:Q9143.</br>
+            </br>
+	    SERVICE &lt;http://dbpedia.org/sparql&gt; {</br>
+              ?resource rdf:type wd:Q9143;</br>
+                        owl:sameAs ?proglang;</br>
+                        foaf:homepage ?homepage.</br>
+              }</br>
+          }</br>
+          LIMIT 10</br>
+        </pre>
+      </code>
     </div>
     <div class="section">
     <h2>About</h2>
