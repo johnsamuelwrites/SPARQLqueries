@@ -36,7 +36,7 @@
 	 RDF data consists of statements in the form of triples <i>subject-predicate-object</i>.
 	 SPARQL queries also make use of these triple patterns. 
       </p>
-      <p>Take for example, we have got three programming languages, C, Python and C++, that are stored in our database, with the following identifiers.</p>
+      <p>Take, for example, we have got three programming languages, C, Python, and C++, that are stored in our database, with the following identifiers.</p>
       <code>
         <pre>
 	  <span class="uri">&lt;https://example.com/C&gt;</span></br>
@@ -89,7 +89,7 @@
 	  }</br>
         </pre>
       </code>
-      <p>Here, we use the triple pattern seen above, but replacing the first value by a variable <span class="variable">proglang</span>. So our SPARQL query engine must find all the possible values for this variable that can match this pattern. </p>
+      <p>Here, we use the triple pattern seen above but replacing the first value with a variable <span class="variable">proglang</span>. So our SPARQL query engine must find all the possible values for this variable that can match this pattern. </p>
       <p><b>How many programming languages are there in my database?</b></p>
       <code>
         <pre>
@@ -98,7 +98,7 @@
 	  }</br>
         </pre>
       </code>
-      <p>As you can see, though we reuse the query seen above, we also make use of a special aggregate function <code>count</code> that counts the number of possible values that matches our pattern with different values for variable <span class="variable">proglang</span>. </p>
+      <p>As you can see, though we reuse the query seen above, we also make use of a special aggregate function <code>count</code> that counts the number of possible values that match our pattern with different values for variable <span class="variable">proglang</span>. </p>
       <p><b>What is C?</b></p>
       <code>
         <pre>
@@ -121,10 +121,10 @@
       </code>
       <p>But SPARQL can handle many more complex queries.
          The goal of this work is to be able to use SPARQL queries on real-world data. 
-         In real-life, we may have a lot of information on programming languages like the date of first release, the names of creators and designers etc.
+         In real-life, we may have a lot of information on programming languages like the date of the first release, the names of creators and designers, etc.
 	 And our databases are not just limited to programming languages.
-	 They may have information on human beings, natural languages, rivers, mountains etc.
-	 Some of these information may not be present in our database and we may need to query external databases.
+	 They may have information on human beings, natural languages, rivers, mountains, etc.
+	 Some of this information may not be present in our database and we may need to query external databases.
          These use cases are discussed in detail in this work. 
       </p>
     </div>
@@ -152,7 +152,7 @@
       </p>
       <p>So far, we have been using only one triple pattern in the query.
          What if, there are more than two triple patterns in the query. 
-	 Take for example, <span class="entity">wdt:P571</span> can give the date when a programming language was first released. 
+	 Take, for example, <span class="entity">wdt:P571</span> can give the date when a programming language was first released. 
 	 So now our query engine will need to match both the patterns in our data store as demonstrated by the next query.
       </p>
       <p><b>Give me a list of the programming languages along with the dates of their inception?</b></p>
@@ -164,7 +164,7 @@
           }</br>
         </pre>
       </code>
-      <p>We however we need not repeat the <span class="variable">?proglang</span> everytime.
+      <p>We however we need not repeat the <span class="variable">?proglang</span> every time.
       We can just simply remove the subsequent appearances, using the <code>;</code>.
       </p>
       <code>
@@ -193,7 +193,7 @@
           }</br>
         </pre>
       </code>
-      <p>Now our SPARQL query engine will not only try to match the two triple patterns, but also verify whether the inception year is greater than 2000.
+      <p>Now our SPARQL query engine will not only try to match the two triple patterns but also verify whether the inception year is greater than in 2000.
          In the above example, we make use of the keyword <span class="keyword">FILTER</span> for filtering the results. 
 	 A function <code>year</code> will extract the year from the inception date.
       </p>
@@ -201,7 +201,7 @@
     <div class="section">
       <h2>Aggregate SPARQL queries</h2>
       <p>What if, we are not interested in listing the example programming languages, but want to explore the count of available information.
-         The languages provides a number of aggregate functions like <code>count</code> etc. for this purpose, which are used in the following two examples.
+         The languages provide several aggregate functions like <code>count</code> etc. for this purpose, which are used in the following two examples.
       </p>
       <p><b>Give me the count of available programming languages?</b></p>
       <code>
@@ -231,7 +231,7 @@
       <h2>Advanced SPARQL queries</h2>
       <p> But with SPARQL, we can also try some advanced queries, like asking Wikidata if there are some programming languages stored in the datastore.
       </p>
-      <p><b>Are there any programming language?</b></p>
+      <p><b>Is there any programming language?</b></p>
       <code>
         <pre>
 	  <span class="keyword">ASK</span> {</br>
@@ -278,7 +278,7 @@
 	 Such queries are called federated queries.
       </p>
       <p>This is an introduction to several major aspects of the SPARQL query language.
-         But there are several advanced concepts that are discussed in detail in this work.
+         But several advanced concepts are discussed in detail in this work.
       </p>
     </div>
     <div class="section">
