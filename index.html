@@ -31,7 +31,7 @@
   <div id="content">
     <div class="section">
       <h2>SPARQLqueries</h2>
-      <p>The goal of <code>SPARQLqueries</code> is to present different possibilities of SPARQL queries using Wikidata and other open data sources.
+      <p>The goal of <code>SPARQLqueries</code> is to show how to query Wikidata and other open data sources using SPARQL.
          <a href="http://www.w3.org/TR/sparql11-query/">SPARQL</a> is a query language that can be used to query semantic web data in RDF format. 
 	 RDF data consists of statements in the form of triples <i>subject-predicate-object</i>.
 	 SPARQL queries also make use of these triple patterns. 
@@ -39,21 +39,22 @@
       <p>Take for example, we have got three programming languages, C, Python and C++, that are stored in our database, with the following identifiers.</p>
       <code>
         <pre>
-	  https://example.com/C</br>
-	  https://example.com/C++</br>
-	  https://example.com/Python</br>
+	  <span class="uri">&lt;https://example.com/C&gt;</span></br>
+	  <span class="uri">&lt;https://example.com/C++&gt;</span></br>
+	  <span class="uri">&lt;https://example.com/Python&gt;</span></br>
         </pre>
       </code>
+      <p> We use &lt;, &gt; to embed the identifiers for these languages and make use of the example domain <code>https://example.com/</code>, which can be replaced by any other user-specified domain.</p>
       <p>Let's also assume that we have another entity called Programming language, represented in the following manner.</p>
       <code>
         <pre>
-	  https://example.com/ProgrammingLanguage</br>
+	  <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
         </pre>
       </code>
       <p>We need to represent the relationship between our example programming languages and the entity called <code>ProgrammingLanguage</code>. For this purpose, we may need to introduce a relationship called <code>IsA</code>, which is identified in the following manner:</p>
       <code>
         <pre>
-	  https://example.com/IsA
+	  <span class="uri">&lt;https://example.com/IsA&gt;</span>
         </pre>
       </code>
       <p>Now our goal is to state the following statements:</p>
@@ -67,44 +68,59 @@
       <p>This may be done in the following manner:</p>
       <code>
         <pre>
-	  https://example.com/C https://example.com/IsA https://example.com/ProgrammingLanguage</br>
-	  https://example.com/C++ https://example.com/IsA https://example.com/ProgrammingLanguage</br>
-	  https://example.com/Python https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  <span class="uri">&lt;https://example.com/C&gt;</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
+	  <span class="uri">&lt;https://example.com/C++&gt;</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
+	  <span class="uri">&lt;https://example.com/Python&gt;</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
         </pre>
       </code>
       <p>The difference between the above statements using identifiers and the ones written in natural language (English) is that the former can be easily understood by the machines and can be queried.</p>
       <p>And this brings us to SPARQL queries. What if I want to ask the following queries?</p>
       <ul>
-	 <li>Give me all the programming languages?</li>
+	 <li>Give me all the programming languages.</li>
 	 <li>How many programming languages are there in my database?</li>
 	 <li>What is C? or Python?</li>
       </ul>
       <p>These questions can be asked using SPARQL queries on our database.</p>
-      <p><b>Give me all the programming languages?</b></p>
+      <p><b>Give me all the programming languages.</b></p>
       <code>
         <pre>
-	  SELECT ?proglang {</br>
-	    ?proglang https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  <span class="keyword">SELECT</span> <span class="variable">?proglang</span> {</br>
+	    <span class="variable">?proglang</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
 	  }</br>
         </pre>
       </code>
+      <p>Here, we use the triple pattern seen above, but replacing the first value by a variable <span class="variable">proglang</span>. So our SPARQL query engine must find all the possible values for this variable that can match this pattern. </p>
       <p><b>How many programming languages are there in my database?</b></p>
       <code>
         <pre>
-	  SELECT (count(?proglang) as ?count) {</br>
-	    ?proglang https://example.com/IsA https://example.com/ProgrammingLanguage</br>
+	  <span class="keyword">SELECT</span> (count(<span class="variable">?proglang</span>) as <span class="variable">?count</span>) {</br>
+	    <span class="variable">?proglang</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="uri">&lt;https://example.com/ProgrammingLanguage&gt;</span></br>
 	  }</br>
         </pre>
       </code>
+      <p>As you can see, though we reuse the query seen above, we also make use of a special aggregate function <code>count</code> that counts the number of possible values that matches our pattern with different values for variable <span class="variable">proglang</span>. </p>
       <p><b>What is C?</b></p>
       <code>
         <pre>
-	  SELECT ?type {</br>
-	     https://example.com/C++ https://example.com/IsA ?type 
+	  <span class="keyword">SELECT</span> <span class="variable">?type</span> {</br>
+	     <span class="uri">&lt;https://example.com/C++&gt;</span> <span class="uri">&lt;https://example.com/IsA&gt;</span> <span class="variable">?type</span> 
 	  }</br>
         </pre>
       </code>
-      <p>The goal of this work is to be able to use SPARQL queries on real-world data. 
+       <p>We change the position of our variable and use a new variable name <span class="variable">type</span> to obtain the type of C.</p>
+       <p>However, instead of repeating the example domain <code>https://example.com/</code>, it is possible to give a namespace to it using the keyword <span class="keyword">PREFIX</span>.
+          The above query now becomes:
+       </p>
+      <code>
+        <pre>
+	  <span class="keyword">PREFIX</span> <span class="entity">example:</span> <span class="uri">&lt;https://example.com/&gt;</span></br>
+	  <span class="keyword">SELECT</span> <span class="variable">?type</span> {</br>
+	     <span class="entity">example:C++</span> <span class="entity">example:IsA</span> <span class="variable">?type</span> 
+	  }</br>
+        </pre>
+      </code>
+      <p>But SPARQL can handle many more complex queries.
+         The goal of this work is to be able to use SPARQL queries on real-world data. 
          In real-life, we may have a lot of information on programming languages like the date of first release, the names of creators and designers etc.
 	 And our databases are not just limited to programming languages.
 	 They may have information on human beings, natural languages, rivers, mountains etc.
@@ -114,106 +130,156 @@
     </div>
     <div class="section">
       <h2>Wikidata</h2>
+      <p>To demonstrate SPARQL with real-life data, we now use <a href="https://www.wikidata.org/">Wikidata</a>, which is an open-data store for information related to a large number of domains and not just programming languages. 
+      It also has a dedicated <a href="https://query.wikidata.org/">SPARQL endpoint</a> where you can run the queries given below and see the responses.</p>
     </div>
     <div class="section">
       <h2>Basic SPARQL queries</h2>
-      <p><b>Give me a list of the programming languages?</b></p>
+      <p>Let's reuse some of the above examples.</p>
+      <p><b>Give me a list of the programming languages</b></p>
       <code>
         <pre>
-	  SELECT ?proglang {</br>
-            ?proglang wdt:P31 wd:Q9143</br>
+	  <span class="keyword">PREFIX</span> <span class="entity">wdt:</span> <span class="uri">&lt;http://www.wikidata.org/prop/direct/&gt;</span><br/>
+	  <span class="keyword">PREFIX</span> <span class="entity">wd:</span> <span class="uri">&lt;http://www.wikidata.org/entity/&gt;</span><br/>
+
+	  <span class="keyword">SELECT</span> <span class="variable">?proglang</span> {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span></br>
           }</br>
         </pre>
       </code>
+      <p>Take a look at the two prefixes that we used in the above query. <span class="entity">wdt:</span> is used to specify the relationships and <span class="entity">wd:</span> for the entities. 
+         In this case, <span class="entity">wdt:P31</span> can be used to specify the relationship <span class="entity">IsA</span> seen above or <span class="entity">type</span>.
+      </p>
+      <p>So far, we have been using only one triple pattern in the query.
+         What if, there are more than two triple patterns in the query. 
+	 Take for example, <span class="entity">wdt:P571</span> can give the date when a programming language was first released. 
+	 So now our query engine will need to match both the patterns in our data store as demonstrated by the next query.
+      </p>
       <p><b>Give me a list of the programming languages along with the dates of their inception?</b></p>
       <code>
         <pre>
-	  SELECT ?proglang ?year {</br>
-            ?proglang wdt:P31 wd:Q9143.</br>
-            ?proglang wdt:P571 ?year.</br>
+	  <span class="keyword">SELECT</span> <span class="variable">?proglang</span> <span class="variable">?year</span> {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>.</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P571</span> <span class="variable">?year</span>.</br>
           }</br>
         </pre>
       </code>
+      <p>We however we need not repeat the <span class="variable">?proglang</span> everytime.
+      We can just simply remove the subsequent appearances, using the <code>;</code>.
+      </p>
       <code>
         <pre>
-	SELECT ?proglang ?year {</br>
-          ?proglang wdt:P31 wd:Q9143;</br>
-                    wdt:P571 ?year</br>
+	<span class="keyword">SELECT</span> <span class="variable">?proglang</span> <span class="variable">?year</span> {</br>
+          <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>;</br>
+                    <span class="entity">wdt:P571</span> <span class="variable">?year</span>.</br>
         }</br>
         </pre>
       </code>
     </div>
     <div class="section">
       <h2>SPARQL queries using expressions</h2>
+      <p>In real-life situations, we may not be interested in listing all the programming languages.
+         We may wish to filter our results.
+	 SPARQL query language supports expressions that can be used to specify conditions and filter relevant results.
+	 Let's take an example query.
+      </p>
       <p><b>Give me a list of the programming languages released after the year 2000 along with the dates of their inception?</b></p>
       <code>
         <pre>
-	  SELECT ?proglang ?year {</br>
-            ?proglang wdt:P31 wd:Q9143;</br>
-                      wdt:P571 ?year.</br>
-            FILTER (year(?year) > 2000).</br>
+	  <span class="keyword">SELECT</span> <span class="variable">?proglang</span> <span class="variable">?year</span> {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>;</br>
+                      <span class="entity">wdt:P571</span> <span class="variable">?year</span>.</br>
+            <span class="keyword">FILTER</span> (year(<span class="variable">?year</span>) > 2000).</br>
           }</br>
         </pre>
       </code>
+      <p>Now our SPARQL query engine will not only try to match the two triple patterns, but also verify whether the inception year is greater than 2000.
+         In the above example, we make use of the keyword <span class="keyword">FILTER</span> for filtering the results. 
+	 A function <code>year</code> will extract the year from the inception date.
+      </p>
     </div>
     <div class="section">
       <h2>Aggregate SPARQL queries</h2>
+      <p>What if, we are not interested in listing the example programming languages, but want to explore the count of available information.
+         The languages provides a number of aggregate functions like <code>count</code> etc. for this purpose, which are used in the following two examples.
+      </p>
       <p><b>Give me the count of available programming languages?</b></p>
       <code>
         <pre>
-	SELECT (count(?proglang) as ?count) {</br>
-          ?proglang wdt:P31 wd:Q9143.</br>
+	<span class="keyword">SELECT</span> (count(<span class="variable">?proglang</span>) as <span class="variable">?count</span>) {</br>
+          <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>.</br>
         }</br>
         </pre>
       </code>
+      <p>The above code will give the number of programming languages stored in Wikidata.
+         But it is also possible to make use of expressions and get the count of filtered results that is demonstrated below.
+      </p>
       <p><b>Give me the count of programming languages released after the year 2000 along with the dates of their inception?</b></p>
       <code>
         <pre>
-	  SELECT (count(?proglang) as ?count) {</br>
-            ?proglang wdt:P31 wd:Q9143;</br>
-                      wdt:P571 ?year.</br>
-            FILTER (year(?year) > 2000).</br>
+	  <span class="keyword">SELECT</span> (count(<span class="variable">?proglang</span>) as <span class="variable">?count</span>) {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>;</br>
+                      <span class="entity">wdt:P571</span> <span class="variable">?year</span>.</br>
+            <span class="keyword">FILTER</span> (year(<span class="variable">?year</span>) > 2000).</br>
           }</br>
         </pre>
       </code>
+      <p>The above code will give the number of programming languages stored in Wikidata, whose inception is after 2000.
+      </p>
     </div>
     <div class="section">
       <h2>Advanced SPARQL queries</h2>
+      <p> But with SPARQL, we can also try some advanced queries, like asking Wikidata if there are some programming languages stored in the datastore.
+      </p>
       <p><b>Are there any programming language?</b></p>
       <code>
         <pre>
-	  ASK {</br>
-            ?proglang wdt:P31 wd:Q9143.</br>
+	  <span class="keyword">ASK</span> {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>.</br>
           }</br>
         </pre>
       </code>
+      <p>In the example below, we ask Wikidata whether it has any information about the programming languages and their inceptions.</p>
       <p><b>Is there information about programming languages and their inception?</b></p>
       <code>
         <pre>
-	  ASK {</br>
-            ?proglang wdt:P31 wd:Q9143;</br>
-                      wdt:P571 ?year.</br>
+	  <span class="keyword">ASK</span> {</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>;</br>
+                      <span class="entity">wdt:P571</span> <span class="variable">?year</span>.</br>
           }</br>
         </pre>
       </code>
+      <p>The answers to these queries may be <code>true</code> or <code>false</code>, depending on the availability of the data.</p>
     </div>
     <div class="section">
       <h2>SPARQL queries using Federation</h2>
+      <p>In real-life, not one datastore can store all the information.
+         We may need to make use of multiple datastores to get a (probably) complete view of the different entities.
+	 In our final example, we query another data store called <a href="https://wiki.dbpedia.org/">DBPedia</a> to see if we can obtain additional information.
+	 For example, the <a href="http://dbpedia.org/page/C_(programming_language)">C programming language</a> has a lot of information on DBPedia, which may not be present on Wikidata.
+      </p>
       <p><b>Is there some additional information about programming languages on DBPedia?</b></p>
       <code>
         <pre>
-	  SELECT ?proglang ?resource ?val{</br>
-            ?proglang wdt:P31 wd:Q9143.</br>
+	  <span class="keyword">SELECT</span> <span class="variable">?proglang</span> <span class="variable">?resource</span> <span class="variable">?val</span>{</br>
+            <span class="variable">?proglang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span>.</br>
             </br>
-	    SERVICE &lt;http://dbpedia.org/sparql&gt; {</br>
-              ?resource rdf:type wd:Q9143;</br>
-                        owl:sameAs ?proglang;</br>
-                        foaf:homepage ?homepage.</br>
+	    <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {</br>
+              <span class="variable">?resource</span> <span class="entity">rdf:type</span> <span class="entity">wd:Q9143</span>;</br>
+                        <span class="entity">owl:sameAs</span> <span class="variable">?proglang</span>;</br>
+                        <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span>.</br>
               }</br>
           }</br>
-          LIMIT 10</br>
+          <span class="keyword">LIMIT</span> 10</br>
         </pre>
       </code>
+      <p>See the use of the keyword <span class="keyword">SERVICE</span> that specifies the SPARQL endpoint of DBPedia for obtaining the relevant information.
+         The interesting part of such queries is that they can be run on the Wikidata SPARQL endpoint and the query engine will call other services like DBPedia for obtaining the data.
+	 Such queries are called federated queries.
+      </p>
+      <p>This is an introduction to several major aspects of the SPARQL query language.
+         But there are several advanced concepts that are discussed in detail in this work.
+      </p>
     </div>
     <div class="section">
     <h2>About</h2>
