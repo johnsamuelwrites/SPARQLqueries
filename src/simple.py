@@ -9,7 +9,7 @@ from rdflib import Graph, URIRef
 # Creation of graph
 g = Graph()
 
-# Identifiers (URI) for different programming languages 
+# Identifiers (URI) for different programming languages
 C = URIRef("https://example.com/C")
 Cpp = URIRef("https://example.com/C++")
 Python = URIRef("https://example.com/Python")
@@ -20,7 +20,7 @@ ProgrammingLanguage = URIRef("https://example.com/ProgrammingLanguage")
 # Identifier (URI) for specifying the relationship
 IsA = URIRef("https://example.com/IsA")
 
-# Add triples to the graph 
+# Add triples to the graph
 g.add((C, IsA, ProgrammingLanguage))
 g.add((Cpp, IsA, ProgrammingLanguage))
 g.add((Python, IsA, ProgrammingLanguage))
@@ -43,10 +43,9 @@ for row in qres:
 
 # Give me all the programming languages
 qres = g.query(
-    """	  SELECT ?proglang {
-	    ?proglang <https://example.com/IsA> <https://example.com/ProgrammingLanguage>
-	  }
-      """)
+    """ SELECT ?proglang {
+        ?proglang <https://example.com/IsA> <https://example.com/ProgrammingLanguage>
+    }""")
 
 print("Query Results (Give me all the programming languages): ")
 for row in qres:
@@ -55,20 +54,18 @@ for row in qres:
 # How many programming languages are there in my database?
 qres = g.query(
     """SELECT (count(?proglang) as ?count) {
-	    ?proglang <https://example.com/IsA> <https://example.com/ProgrammingLanguage>
-        }
-      """)
+        ?proglang <https://example.com/IsA> <https://example.com/ProgrammingLanguage>
+    }""")
 
 print("Query Results (How many programming languages are there in my database?): ")
 for row in qres:
     print(row)
 
-# What is C? 
+# What is C?
 qres = g.query(
     """SELECT ?type {
-	     <https://example.com/C++> <https://example.com/IsA> ?type 
-        }
-      """)
+        <https://example.com/C++> <https://example.com/IsA> ?type 
+    }""")
 
 print("Query Results (What is C?): ")
 for row in qres:
