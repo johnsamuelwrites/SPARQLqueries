@@ -1,0 +1,11 @@
+#defaultView:BubbleChart
+#title: Programming languages with the count of programming paradigm
+
+SELECT ?progLabel (count(?paradigm) as ?count){  
+  ?prog wdt:P31 wd:Q9143;                                                       
+        wdt:P3966 ?paradigm.  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+GROUP by ?progLabel
+HAVING (?count>5)
+ORDER by DESC(?count)
