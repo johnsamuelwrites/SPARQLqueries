@@ -1,0 +1,15 @@
+#title: Software with gender information of developer, designer and the person named after
+SELECT ?gender ?genderLabel (count(DISTINCT ?developer) as ?count) 
+WITH {
+  SELECT DISTINCT ?developer WHERE {
+    ?software  wdt:P31/wdt:P279* wd:Q7397; #software
+              (wdt:P178 | wdt:P287 | wdt:P138) ?developer. #developer, designer and the person named after         
+  }
+} AS %result
+WHERE {
+  INCLUDE %result
+  VALUES ?gender { wd:Q6581097 wd:Q6581072  wd:Q1052281 wd:Q48270 wd:Q1052281 wd:Q52261234 wd:Q44148 wd:Q2449503 wd:Q12964198 wd:Q505371}.
+  ?developer wdt:P21 ?gender.  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+} 
+GROUP by ?gender ?genderLabel
