@@ -1,0 +1,14 @@
+# Distinct artistic themes and associated images (if available)
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?item ?itemLabel (SAMPLE(?image) AS ?sample_image) WHERE {
+  ?item wdt:P31 wd:Q1406161;
+        rdfs:label ?itemLabel.
+  
+  OPTIONAL { ?item wdt:P18 ?image. }
+  FILTER((LANG(?itemLabel)) = "en")
+}
+GROUP BY ?item ?itemLabel
