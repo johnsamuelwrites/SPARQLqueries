@@ -1,0 +1,16 @@
+# Sculptures and paintings with some well-known artistic themes and
+# the associated images
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?item ?itemLabel ?depicted_image {
+  ?item wdt:P31 wd:Q1406161.
+  ?depicted wdt:P180 ?item;
+             wdt:P18 ?depicted_image.
+  
+  ?item rdfs:label ?itemLabel. 
+  FILTER(lang(?itemLabel) = "en")
+}
+
