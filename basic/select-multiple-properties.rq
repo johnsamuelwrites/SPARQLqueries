@@ -1,0 +1,14 @@
+# Prefixes indicating a multiple of a physical unit
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?item ?label ?value ?formula WHERE {
+  ?item wdt:P31 wd:Q131299;
+    wdt:P1181 ?value;
+    wdt:P2534 ?formula;
+    rdfs:label ?label.
+  FILTER((LANG(?label)) = "en")
+}
+ORDER BY (?value)
