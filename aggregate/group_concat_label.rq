@@ -1,0 +1,11 @@
+#title: Programming paradigms of programming languages
+
+SELECT DISTINCT ?proglangLabel (GROUP_CONCAT(DISTINCT ?paradigmLabel; SEPARATOR = ", ") AS ?paradigms) 
+WHERE {
+  ?proglang wdt:P3966 ?paradigm;
+    rdfs:label ?proglangLabel.
+  FILTER((LANG(?proglangLabel)) = "en")
+  ?paradigm rdfs:label ?paradigmLabel.
+  FILTER((LANG(?paradigmLabel)) = "en")
+}
+GROUP BY ?proglangLabel

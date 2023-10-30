@@ -1,3 +1,5 @@
+#title: Programming paradigm identifiers of programming languages
+
 SELECT DISTINCT ?proglang (GROUP_CONCAT(DISTINCT ?paradigm_id; SEPARATOR = ", ") AS ?paradigms) 
 WHERE 
 { 
