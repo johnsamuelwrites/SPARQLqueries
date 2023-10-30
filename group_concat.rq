@@ -1,0 +1,7 @@
+SELECT DISTINCT ?proglang (GROUP_CONCAT(DISTINCT ?paradigm_id; SEPARATOR = ", ") AS ?paradigms) 
+WHERE 
+{ 
+  ?proglang wdt:P3966 ?paradigm.
+  BIND(REPLACE(STR(?paradigm), "http://www.wikidata.org/entity/", "") as ?paradigm_id)
+}
+GROUP BY ?proglang
