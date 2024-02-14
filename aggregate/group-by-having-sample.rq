@@ -1,0 +1,11 @@
+# Big cities with multiple images (more than one) and one associated sample image
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?bigcity (SAMPLE(?image) AS ?img) WHERE {
+  ?bigcity wdt:P31 wd:Q1549591;
+    wdt:P18 ?image.
+}
+GROUP BY ?bigcity
+HAVING ((COUNT(?image)) > 1 )
