@@ -24,7 +24,8 @@ SELECT ?lexeme_en ?lemma_en ?lexeme_fr WHERE {
     SELECT ?lexeme_en ?lemma_en WHERE {
       # Select English lexemes
       ?lexeme_en rdf:type ontolex:LexicalEntry; # The lexeme must be of type LexicalEntry in the OntoLex vocabulary
-        wikibase:lemma ?lemma_en;                # Get the lemma for the English lexeme
+        wikibase:lemma ?lemma_en;               # Get the lemma for the English lexeme
+		ontolex:sense [] ;                      # has a sense
         wikibase:lexicalCategory wd:Q34698;     # Ensure the lexeme is categorized as an adjective (Q34698)
         dct:language wd:Q1860.                  # The lexeme must be in the English language (Q1860)
     }
