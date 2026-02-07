@@ -1,59 +1,426 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn to use LIMIT in SPARQL to control result set size with practical Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>LIMIT - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Basic</a></li>
+        <li aria-current="page">LIMIT</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="index.html" class="active">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Basic Topics</div>
+        <ul>
+          <li><a href="prefix.html">PREFIX</a></li>
+          <li><a href="select.html">SELECT</a></li>
+          <li><a href="distinct.html">DISTINCT</a></li>
+          <li><a href="label.html">Labels</a></li>
+          <li><a href="limit.html" class="active">LIMIT</a></li>
+          <li><a href="offset.html">OFFSET</a></li>
+          <li><a href="filter.html">FILTER</a></li>
+          <li><a href="optional.html">OPTIONAL</a></li>
+          <li><a href="bind.html">BIND</a></li>
+          <li><a href="values.html">VALUES</a></li>
+          <li><a href="negation.html">Negation</a></li>
+          <li><a href="paths.html">Property Paths</a></li>
+          <li><a href="subqueries.html">Subqueries</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Basic</span>
+          <h1>LIMIT</h1>
+          <p class="hero-subtitle">
+            Control the size of your result sets. LIMIT restricts the number of rows
+            returned, essential for large datasets and quick previews.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Understanding LIMIT</h2>
+        <p>
+          The LIMIT clause restricts the maximum number of results returned by a query.
+          This is essential when working with large datasets like Wikidata, where queries
+          can potentially return millions of rows.
+        </p>
+        <p>
+          <strong>Key entities used in examples:</strong>
+          <code>wdt:P31</code> (instance of) links an item to its type, while
+          <code>wd:Q515</code> (city) and <code>wd:Q6256</code> (country) are common type values.
+          Other properties include <code>wdt:P1082</code> (population), <code>wdt:P2046</code> (area),
+          <code>wdt:P2044</code> (elevation), <code>wdt:P571</code> (inception), and
+          <code>wdt:P106</code> (occupation). Example values include <code>wd:Q5</code> (human) and
+          <code>wd:Q82955</code> (mathematician).
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Syntax</th>
+              <th>Description</th>
+              <th>Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>LIMIT n</code></td>
+              <td>Return at most n results</td>
+              <td>Quick previews, testing</td>
+            </tr>
+            <tr>
+              <td><code>ORDER BY ... LIMIT n</code></td>
+              <td>Get top n sorted results</td>
+              <td>Leaderboards, rankings</td>
+            </tr>
+            <tr>
+              <td><code>LIMIT n OFFSET m</code></td>
+              <td>Skip m, return n</td>
+              <td>Pagination</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Basic LIMIT Examples</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">First 10 Countries</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Quick preview of countries in Wikidata</span>
+          </div>
+        </div>
+        <p>
+          Returns only 10 country entities, giving a quick preview without loading the full dataset.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">5 Random Cities</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcity%20%3FcityLabel%20%3Fpopulation%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%205"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Quick sample of city data</span>
+          </div>
+        </div>
+        <p>
+          Restricts output to five cities to keep results small while inspecting structure and fields.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>LIMIT with ORDER BY</h2>
+        <p>
+          When combined with ORDER BY, LIMIT becomes a powerful tool for finding
+          top/bottom N results - creating rankings, leaderboards, and extremes.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Top 10 Most Populous Countries</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Fpopulation%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fpopulation%29%0ALIMIT%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+          <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Ranking: ORDER BY DESC + LIMIT</span>
+          </div>
+        </div>
+        <p>
+          Sorts countries by population (descending) and keeps only the top 10.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">5 Smallest Countries by Area</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Farea%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP2046%20%3Farea%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3Farea%0ALIMIT%205"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?area</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+          <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?area</span>
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Bottom N: ORDER BY ASC + LIMIT</span>
+          </div>
+        </div>
+        <p>
+          Orders by area ascending to surface the smallest countries, then limits to five.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Top 10 Tallest Mountains</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fmountain%20%3FmountainLabel%20%3Felevation%0AWHERE%20%7B%0A%20%20%3Fmountain%20wdt%3AP31%20wd%3AQ8502%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2044%20%3Felevation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Felevation%29%0ALIMIT%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?mountain</span> <span class="variable">?mountainLabel</span> <span class="variable">?elevation</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?mountain</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> ;
+            <span class="entity">wdt:P2044</span> <span class="variable">?elevation</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?elevation</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Top 10 leaderboard pattern</span>
+          </div>
+        </div>
+        <p>
+          Ranks mountains by elevation (descending) and returns the highest 10.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Practical LIMIT Patterns</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Oldest 10 Universities</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Funi%20%3FuniLabel%20%3Ffounded%0AWHERE%20%7B%0A%20%20%3Funi%20wdt%3AP31%20wd%3AQ3918%20%3B%0A%20%20%20%20%20%20%20wdt%3AP571%20%3Ffounded%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3Ffounded%0ALIMIT%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?uni</span> <span class="variable">?uniLabel</span> <span class="variable">?founded</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?uni</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3918</span> ;
+       <span class="entity">wdt:P571</span> <span class="variable">?founded</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?founded</span>
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Historical ranking by date</span>
+          </div>
+        </div>
+        <p>
+          Uses ascending founding date to surface the earliest universities, limited to 10.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">One Example Per Category</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Ftype%20%3FtypeLabel%20%3Fexample%20%3FexampleLabel%0AWHERE%20%7B%0A%20%20VALUES%20%3Ftype%20%7B%20wd%3AQ6256%20wd%3AQ515%20wd%3AQ3918%20%7D%0A%0A%20%20%7B%0A%20%20%20%20SELECT%20%3Ftype%20%28SAMPLE%28%3Fitem%29%20AS%20%3Fexample%29%20WHERE%20%7B%0A%20%20%20%20%20%20%3Fitem%20wdt%3AP31%20%3Ftype%20.%0A%20%20%20%20%7D%0A%20%20%20%20GROUP%20BY%20%3Ftype%0A%20%20%7D%0A%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span> <span class="variable">?example</span> <span class="variable">?exampleLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?type</span> { <span class="entity">wd:Q6256</span> <span class="entity">wd:Q515</span> <span class="entity">wd:Q3918</span> }
+  {
+    <span class="keyword">SELECT</span> <span class="variable">?type</span> (<span class="function">SAMPLE</span>(<span class="variable">?item</span>) <span class="keyword">AS</span> <span class="variable">?example</span>) <span class="keyword">WHERE</span> {
+      <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> .
+    }
+    <span class="keyword">GROUP BY</span> <span class="variable">?type</span>
+  }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Combined with aggregation</span>
+          </div>
+        </div>
+        <p>
+          Samples one example item per type, then limits the output to the four categories listed.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Best Practices</h2>
+        <p>
+          Always use LIMIT when exploring new queries to avoid timeouts and excessive
+          data transfer. Start with small limits, then increase once you know the
+          query works correctly.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Safe Query Development Pattern</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#%23%20Start%20with%20LIMIT%205%20to%20test%2C%20then%20increase%0ASELECT%20%3Fitem%20%3FitemLabel%20%3Fvalue%0AWHERE%20%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ82955%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fvalue%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%205%20%23%20Change%20to%20100%20or%20more%20once%20verified"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Start with LIMIT 5 to test, then increase</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span> <span class="variable">?value</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+        <span class="entity">wdt:P106</span> <span class="entity">wd:Q82955</span> ;
+        <span class="entity">wdt:P569</span> <span class="variable">?value</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span> <span class="comment"># Change to 100 or more once verified</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Development workflow: test with small LIMIT first</span>
+          </div>
+        </div>
+        <p>
+          Starts with <code>LIMIT 5</code> to validate the query quickly before increasing the cap.
+        </p>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="label.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Labels</span>
+        </a>
+        <a href="offset.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">OFFSET</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

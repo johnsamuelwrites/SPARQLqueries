@@ -1,59 +1,451 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn to use OFFSET in SPARQL for pagination and result skipping with practical Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>OFFSET - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Basic</a></li>
+        <li aria-current="page">OFFSET</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="index.html" class="active">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Basic Topics</div>
+        <ul>
+          <li><a href="prefix.html">PREFIX</a></li>
+          <li><a href="select.html">SELECT</a></li>
+          <li><a href="distinct.html">DISTINCT</a></li>
+          <li><a href="label.html">Labels</a></li>
+          <li><a href="limit.html">LIMIT</a></li>
+          <li><a href="offset.html" class="active">OFFSET</a></li>
+          <li><a href="filter.html">FILTER</a></li>
+          <li><a href="optional.html">OPTIONAL</a></li>
+          <li><a href="bind.html">BIND</a></li>
+          <li><a href="values.html">VALUES</a></li>
+          <li><a href="negation.html">Negation</a></li>
+          <li><a href="paths.html">Property Paths</a></li>
+          <li><a href="subqueries.html">Subqueries</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Basic</span>
+          <h1>OFFSET</h1>
+          <p class="hero-subtitle">
+            Skip results for pagination. OFFSET works with LIMIT to implement
+            page-based navigation through large result sets.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Understanding OFFSET</h2>
+        <p>
+          The OFFSET clause skips a specified number of results before returning data.
+          Combined with LIMIT, it enables pagination - retrieving results in manageable
+          chunks or "pages."
+        </p>
+        <p>
+          <strong>Key entities used in examples:</strong>
+          <code>wdt:P31</code> (instance of) links an item to its type, while
+          <code>wd:Q515</code> (city) and <code>wd:Q6256</code> (country) are common type values.
+          Other properties include <code>wdt:P1082</code> (population), <code>wdt:P2044</code> (elevation),
+          <code>wdt:P571</code> (inception), and <code>wdt:P106</code> (occupation). Example values include
+          <code>wd:Q5</code> (human) and <code>wd:Q36180</code> (writer).
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Syntax</th>
+              <th>Description</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>LIMIT 10 OFFSET 0</code></td>
+              <td>Page 1 (first 10)</td>
+              <td>Results 1-10</td>
+            </tr>
+            <tr>
+              <td><code>LIMIT 10 OFFSET 10</code></td>
+              <td>Page 2</td>
+              <td>Results 11-20</td>
+            </tr>
+            <tr>
+              <td><code>LIMIT 10 OFFSET 20</code></td>
+              <td>Page 3</td>
+              <td>Results 21-30</td>
+            </tr>
+            <tr>
+              <td><code>LIMIT n OFFSET (p-1)*n</code></td>
+              <td>Page p with n items</td>
+              <td>General formula</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Pagination Examples</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Countries - Page 1 (First 10)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3FcountryLabel%0ALIMIT%2010%0AOFFSET%200"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span>
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">0</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Page 1: Afghanistan to Australia</span>
+          </div>
+        </div>
+        <p>
+          The pattern <code>?country wdt:P31 wd:Q6256</code> selects entities that are countries. Page 1 shows the
+          first 10 countries alphabetically because <code>LIMIT 10</code> is combined with <code>OFFSET 0</code>.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Countries - Page 2 (Next 10)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3FcountryLabel%0ALIMIT%2010%0AOFFSET%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span>
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Page 2: Austria to Bhutan</span>
+          </div>
+        </div>
+        <p>
+          Page 2 skips the first 10 results with <code>OFFSET 10</code> and returns the next 10.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Countries - Page 5</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3FcountryLabel%0ALIMIT%2010%0AOFFSET%2040"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span>
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">40</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Page 5: OFFSET = (5-1) × 10 = 40</span>
+          </div>
+        </div>
+        <p>
+          Page 5 uses <code>OFFSET 40</code> to skip 40 rows, then <code>LIMIT 10</code> to show rows 41-50.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Pagination with Rankings</h2>
+        <p>
+          OFFSET is especially useful when combined with ORDER BY to create paginated
+          rankings - showing the 11th-20th most populous cities, for example.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities Ranked 11-20 by Population</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcity%20%3FcityLabel%20%3Fpopulation%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fpopulation%29%0ALIMIT%2010%0AOFFSET%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">10</span></code></pre>
+          </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Skip top 10, show next 10 largest cities</span>
+        </div>
+      </div>
+      <p>
+        This query orders cities by population (descending) and uses <code>OFFSET 10</code> with <code>LIMIT 10</code>
+        to return ranks 11-20.
+      </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Mountains Ranked 21-30 by Height</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fmountain%20%3FmountainLabel%20%3Felevation%0AWHERE%20%7B%0A%20%20%3Fmountain%20wdt%3AP31%20wd%3AQ8502%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2044%20%3Felevation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Felevation%29%0ALIMIT%2010%0AOFFSET%2020"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?mountain</span> <span class="variable">?mountainLabel</span> <span class="variable">?elevation</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?mountain</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> ;
+            <span class="entity">wdt:P2044</span> <span class="variable">?elevation</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?elevation</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">20</span></code></pre>
+          </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Page 3 of mountain rankings</span>
+        </div>
+      </div>
+      <p>
+        Mountains are sorted by elevation (descending). <code>OFFSET 20</code> skips the top 20 to show ranks 21-30.
+      </p>
+      </section>
+
+      <section class="section">
+        <h2>Skip-Then-Sample Pattern</h2>
+        <p>
+          OFFSET can be used creatively to skip common results and find
+          less-obvious examples in the data.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Skip Famous Authors, Find Lesser Known</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fauthor%20%3FauthorLabel%20%3Fworks%0AWHERE%20%7B%0A%20%20%3Fauthor%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ36180%20.%0A%20%20%7B%0A%20%20%20%20SELECT%20%3Fauthor%20%28COUNT%28%3Fwork%29%20AS%20%3Fworks%29%0A%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%3Fwork%20wdt%3AP50%20%3Fauthor%20.%0A%20%20%20%20%7D%0A%20%20%20%20GROUP%20BY%20%3Fauthor%0A%20%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fworks%29%0ALIMIT%2010%0AOFFSET%20100"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> <span class="variable">?works</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?author</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> .
+  {
+    <span class="keyword">SELECT</span> <span class="variable">?author</span> (<span class="function">COUNT</span>(<span class="variable">?work</span>) <span class="keyword">AS</span> <span class="variable">?works</span>)
+    <span class="keyword">WHERE</span> {
+      <span class="variable">?work</span> <span class="entity">wdt:P50</span> <span class="variable">?author</span> .
+    }
+    <span class="keyword">GROUP BY</span> <span class="variable">?author</span>
+  }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?works</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">100</span></code></pre>
+          </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Skip top 100 most prolific, find interesting mid-tier</span>
+        </div>
+      </div>
+      <p>
+        The subquery counts works per author, then <code>ORDER BY DESC(?works)</code> ranks them. <code>OFFSET 100</code>
+        skips the most prolific authors to sample the next 10.
+      </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Universities: Not Top 50, Not Bottom</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Funi%20%3FuniLabel%20%3Ffounded%0AWHERE%20%7B%0A%20%20%3Funi%20wdt%3AP31%20wd%3AQ3918%20%3B%0A%20%20%20%20%20%20%20wdt%3AP571%20%3Ffounded%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3Ffounded%0ALIMIT%2020%0AOFFSET%2050"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?uni</span> <span class="variable">?uniLabel</span> <span class="variable">?founded</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?uni</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3918</span> ;
+       <span class="entity">wdt:P571</span> <span class="variable">?founded</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?founded</span>
+<span class="keyword">LIMIT</span> <span class="number">20</span>
+<span class="keyword">OFFSET</span> <span class="number">50</span></code></pre>
+          </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Skip the most ancient universities</span>
+        </div>
+      </div>
+      <p>
+        Universities are ordered by founding date, so <code>OFFSET 50</code> skips the oldest 50 before returning 20.
+      </p>
+      </section>
+
+      <section class="section">
+        <h2>Important Considerations</h2>
+        <p>
+          OFFSET requires ORDER BY for consistent results. Without ordering, the same
+          OFFSET may return different results each time. Also note that high OFFSET
+          values can be slow - the database still processes all skipped rows.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Stable Pagination with ORDER BY</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#%23%20Always%20use%20ORDER%20BY%20with%20OFFSET%20for%20consistent%20results%0ASELECT%20%3Fitem%20%3FitemLabel%0AWHERE%20%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20%3Fitem%20%20%23%20Order%20by%20URI%20for%20stable%20results%0ALIMIT%2010%0AOFFSET%2030"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Always use ORDER BY with OFFSET for consistent results</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?item</span>  <span class="comment"># Order by URI for stable results</span>
+<span class="keyword">LIMIT</span> <span class="number">10</span>
+<span class="keyword">OFFSET</span> <span class="number">30</span></code></pre>
+          </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Best practice: always include ORDER BY</span>
+        </div>
+      </div>
+      <p>
+        <code>ORDER BY ?item</code> gives a stable, repeatable order so the same <code>OFFSET</code> returns
+        consistent pages.
+      </p>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="limit.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">LIMIT</span>
+        </a>
+        <a href="filter.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">FILTER</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>
