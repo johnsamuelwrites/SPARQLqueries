@@ -1,95 +1,351 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>PREFIX</h2>
-    </div>
-    <div class="section">
-     <h2>SELECT</h2>
-    </div>
-    <div class="section">
-     <h2>DISTINCT</h2>
-    </div>
-    <div class="section">
-     <h2>Labels</h2>
-    </div>
-    <div class="section">
-     <h2>LIMIT</h2>
-    </div>
-    <div class="section">
-     <h2>OFFSET</h2>
-    </div>
-    <div class="section">
-     <h2>FILTER</h2>
-    </div>
-    <div class="section">
-     <h2>OPTIONAL</h2>
-    </div>
-    <div class="section">
-     <h2>OMISSION</h2>
-    </div>
-    <div class="section">
-     <h2>BIND</h2>
-    </div>
-    <div class="section">
-     <h2>NEGATION</h2>
-    </div>
-    <div class="section">
-     <h2>MINUS</h2>
-    </div>
-    <div class="section">
-     <h2>Paths</h2>
-    </div>
-    <div class="section">
-     <h2>Subqueries</h2>
-    </div>
-    <div class="section">
-     <h2>Values</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn basic SPARQL query concepts: SELECT, PREFIX, DISTINCT, FILTER, OPTIONAL, and property paths with real-world Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>Basic SPARQL Queries - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="index.html" class="active">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Basic Topics</div>
+        <ul>
+          <li><a href="prefix.html">PREFIX</a></li>
+          <li><a href="select.html">SELECT</a></li>
+          <li><a href="distinct.html">DISTINCT</a></li>
+          <li><a href="label.html">Labels</a></li>
+          <li><a href="limit.html">LIMIT</a></li>
+          <li><a href="offset.html">OFFSET</a></li>
+          <li><a href="filter.html">FILTER</a></li>
+          <li><a href="optional.html">OPTIONAL</a></li>
+          <li><a href="bind.html">BIND</a></li>
+          <li><a href="values.html">VALUES</a></li>
+          <li><a href="negation.html">Negation</a></li>
+          <li><a href="minus.html">MINUS</a></li>
+          <li><a href="paths.html">Property Paths</a></li>
+          <li><a href="subqueries.html">Subqueries</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Chapter 1</span>
+          <h1>Basic SPARQL Queries</h1>
+          <p class="hero-subtitle">
+            Master the foundational building blocks of SPARQL. Learn to select, filter, and shape your queries to
+            extract meaningful data from knowledge graphs.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">15+</div>
+              <div class="hero-stat-label">Topics</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">20+</div>
+              <div class="hero-stat-label">Examples</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Beginner</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>Getting Started</h2>
+        <p>
+          This chapter covers the essential SPARQL concepts you need to start querying knowledge graphs effectively.
+          Each topic builds on the previous one, taking you from simple selections to complex pattern matching.
+        </p>
+        <p>
+          All examples use <a href="https://www.wikidata.org/">Wikidata</a> as the data source, so you can run them
+          directly
+          on the <a href="https://query.wikidata.org/">Wikidata Query Service</a> to see real results.
+        </p>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Topics</h2>
+
+        <div class="topic-grid">
+          <!-- PREFIX -->
+          <a href="prefix.html" class="topic-card">
+            <h4>PREFIX</h4>
+            <p>Define namespace shortcuts to simplify your queries and improve readability.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- SELECT -->
+          <a href="select.html" class="topic-card">
+            <h4>SELECT</h4>
+            <p>Retrieve specific variables from matched triple patterns in the knowledge graph.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- DISTINCT -->
+          <a href="distinct.html" class="topic-card">
+            <h4>DISTINCT</h4>
+            <p>Remove duplicate results from your query output for cleaner data.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- Labels -->
+          <a href="label.html" class="topic-card">
+            <h4>Labels</h4>
+            <p>Retrieve human-readable labels for entities in different languages.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- LIMIT -->
+          <a href="limit.html" class="topic-card">
+            <h4>LIMIT</h4>
+            <p>Restrict the number of results returned by your query.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- OFFSET -->
+          <a href="offset.html" class="topic-card">
+            <h4>OFFSET</h4>
+            <p>Skip a specified number of results for pagination.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- FILTER -->
+          <a href="filter.html" class="topic-card">
+            <h4>FILTER</h4>
+            <p>Apply conditions to narrow down results based on specific criteria.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- OPTIONAL -->
+          <a href="optional.html" class="topic-card">
+            <h4>OPTIONAL</h4>
+            <p>Include results even when optional patterns don't match.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- Omission -->
+          <a href="omission.html" class="topic-card">
+            <h4>Omission Syntax</h4>
+            <p>Use shorthand syntax with semicolons and commas for cleaner queries.</p>
+            <span class="difficulty difficulty-beginner">Beginner</span>
+          </a>
+
+          <!-- BIND -->
+          <a href="bind.html" class="topic-card">
+            <h4>BIND</h4>
+            <p>Assign computed values to new variables within your query.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- VALUES -->
+          <a href="values.html" class="topic-card">
+            <h4>VALUES</h4>
+            <p>Provide inline data as input to constrain query results.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- Negation -->
+          <a href="negation.html" class="topic-card">
+            <h4>Negation</h4>
+            <p>Use NOT EXISTS and FILTER NOT EXISTS to exclude patterns.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- MINUS -->
+          <a href="minus.html" class="topic-card">
+            <h4>MINUS</h4>
+            <p>Subtract matching patterns from your results.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- Property Paths -->
+          <a href="paths.html" class="topic-card">
+            <h4>Property Paths</h4>
+            <p>Navigate complex relationships with path expressions like *, +, and |.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+
+          <!-- Subqueries -->
+          <a href="subqueries.html" class="topic-card">
+            <h4>Subqueries</h4>
+            <p>Nest queries within queries for complex data retrieval.</p>
+            <span class="difficulty difficulty-intermediate">Intermediate</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Quick Reference -->
+      <section class="section">
+        <h2>Quick Reference</h2>
+        <p>Here's a simple query demonstrating several basic concepts together:</p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Complete Basic Query Example</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                on Wikidata ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Find programming languages created after 2000</span>
+<span class="keyword">PREFIX</span> <span class="entity">wdt:</span> <span class="uri">&lt;http://www.wikidata.org/prop/direct/&gt;</span>
+<span class="keyword">PREFIX</span> <span class="entity">wd:</span> <span class="uri">&lt;http://www.wikidata.org/entity/&gt;</span>
+
+<span class="keyword">SELECT DISTINCT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .        <span class="comment"># instance of programming language</span>
+  <span class="variable">?lang</span> <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .      <span class="comment"># has inception date</span>
+
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?inception</span>) > 2000)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?inception</span>)
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Features: PREFIX, SELECT, DISTINCT, FILTER, ORDER BY, LIMIT, SERVICE</span>
+          </div>
+        </div>
+        <p>
+          This query selects entities where <code>wdt:P31</code> (instance of) equals <code>wd:Q9143</code>
+          (programming language), and their inception dates (<code>wdt:P571</code>), filters to dates after 2000,
+          and returns unique results with English labels via <code>wikibase:label</code>, sorted by newest first and
+          capped at 10 rows.
+        </p>
+
+        <h3>Key Concepts Demonstrated</h3>
+        <ul>
+          <li><strong>PREFIX</strong> — Defines shortcuts for Wikidata namespaces</li>
+          <li><strong>SELECT DISTINCT</strong> — Retrieves unique combinations of variables</li>
+          <li><strong>Triple patterns</strong> — Matches entities by type and properties</li>
+          <li><strong>FILTER</strong> — Restricts results to languages created after 2000</li>
+          <li><strong>SERVICE</strong> — Fetches human-readable labels from Wikidata</li>
+          <li><strong>ORDER BY DESC</strong> — Sorts results by inception date, newest first</li>
+          <li><strong>LIMIT</strong> — Returns only the top 10 results</li>
+        </ul>
+      </section>
+
+      <!-- Next Steps -->
+      <section class="section">
+        <h2>What's Next?</h2>
+        <p>
+          After mastering basic queries, continue your journey with these chapters:
+        </p>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="expressions">
+            <div class="chapter-card-icon">🔢</div>
+            <h3>Expressions</h3>
+            <p>Learn string manipulation, date functions, and mathematical operations.</p>
+            <a href="../expressions/index.html" class="chapter-card-link">Continue</a>
+          </article>
+
+          <article class="chapter-card" data-domain="aggregate">
+            <div class="chapter-card-icon">📊</div>
+            <h3>Aggregate Queries</h3>
+            <p>Analyze data with COUNT, SUM, AVG, and GROUP BY.</p>
+            <a href="../aggregate/index.html" class="chapter-card-link">Continue</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      const themeToggle = document.getElementById('themeToggle');
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        setTheme(currentTheme === 'light' ? 'dark' : 'light');
+      });
+    </script>
+  </body>
+
 </html>
