@@ -148,7 +148,9 @@
    2. CSS RESET & BASE STYLES
    ============================================================ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -191,7 +193,12 @@ body::before {
    3. TYPOGRAPHY
    ============================================================ */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   font-weight: 600;
   line-height: var(--leading-tight);
@@ -237,7 +244,8 @@ a:hover {
   opacity: 0.8;
 }
 
-ul, ol {
+ul,
+ol {
   padding-left: var(--space-6);
   margin-bottom: var(--space-4);
 }
@@ -486,11 +494,25 @@ pre code {
 }
 
 /* Domain-specific colors for nav items */
-#sidebarlinks a[href*="basic"]::before { background: var(--color-domain-basic); }
-#sidebarlinks a[href*="expressions"]::before { background: var(--color-domain-expressions); }
-#sidebarlinks a[href*="aggregate"]::before { background: var(--color-domain-aggregate); }
-#sidebarlinks a[href*="advanced"]::before { background: var(--color-domain-advanced); }
-#sidebarlinks a[href*="federation"]::before { background: var(--color-domain-federation); }
+#sidebarlinks a[href*="basic"]::before {
+  background: var(--color-domain-basic);
+}
+
+#sidebarlinks a[href*="expressions"]::before {
+  background: var(--color-domain-expressions);
+}
+
+#sidebarlinks a[href*="aggregate"]::before {
+  background: var(--color-domain-aggregate);
+}
+
+#sidebarlinks a[href*="advanced"]::before {
+  background: var(--color-domain-advanced);
+}
+
+#sidebarlinks a[href*="federation"]::before {
+  background: var(--color-domain-federation);
+}
 
 /* Sidebar Section Headers */
 .sidebar-section {
@@ -576,8 +598,15 @@ pre code {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .hero-content {
@@ -609,8 +638,17 @@ pre code {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.2); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
 }
 
 .hero h1 {
@@ -749,17 +787,49 @@ pre code {
 }
 
 /* Domain-specific card accents */
-.chapter-card[data-domain="basic"] { --card-accent: var(--color-domain-basic); }
-.chapter-card[data-domain="expressions"] { --card-accent: var(--color-domain-expressions); }
-.chapter-card[data-domain="aggregate"] { --card-accent: var(--color-domain-aggregate); }
-.chapter-card[data-domain="advanced"] { --card-accent: var(--color-domain-advanced); }
-.chapter-card[data-domain="federation"] { --card-accent: var(--color-domain-federation); }
-.chapter-card[data-domain="heritage"] { --card-accent: var(--color-domain-heritage); }
-.chapter-card[data-domain="urban"] { --card-accent: var(--color-domain-urban); }
-.chapter-card[data-domain="temporal"] { --card-accent: var(--color-domain-temporal); }
-.chapter-card[data-domain="geospatial"] { --card-accent: var(--color-domain-geospatial); }
-.chapter-card[data-domain="multilingual"] { --card-accent: var(--color-domain-multilingual); }
-.chapter-card[data-domain="patterns"] { --card-accent: var(--color-domain-patterns); }
+.chapter-card[data-domain="basic"] {
+  --card-accent: var(--color-domain-basic);
+}
+
+.chapter-card[data-domain="expressions"] {
+  --card-accent: var(--color-domain-expressions);
+}
+
+.chapter-card[data-domain="aggregate"] {
+  --card-accent: var(--color-domain-aggregate);
+}
+
+.chapter-card[data-domain="advanced"] {
+  --card-accent: var(--color-domain-advanced);
+}
+
+.chapter-card[data-domain="federation"] {
+  --card-accent: var(--color-domain-federation);
+}
+
+.chapter-card[data-domain="heritage"] {
+  --card-accent: var(--color-domain-heritage);
+}
+
+.chapter-card[data-domain="urban"] {
+  --card-accent: var(--color-domain-urban);
+}
+
+.chapter-card[data-domain="temporal"] {
+  --card-accent: var(--color-domain-temporal);
+}
+
+.chapter-card[data-domain="geospatial"] {
+  --card-accent: var(--color-domain-geospatial);
+}
+
+.chapter-card[data-domain="multilingual"] {
+  --card-accent: var(--color-domain-multilingual);
+}
+
+.chapter-card[data-domain="patterns"] {
+  --card-accent: var(--color-domain-patterns);
+}
 
 /* ============================================================
    10. TOPIC CARDS (Chapter Index Pages)
@@ -1026,7 +1096,9 @@ pre code {
    14. PROPERTY TAGS
    ============================================================ */
 
-.property, .language, .datatype {
+.property,
+.language,
+.datatype {
   display: inline-flex;
   align-items: center;
   background: var(--color-bg-tertiary);
@@ -1039,12 +1111,16 @@ pre code {
   transition: all var(--transition-fast);
 }
 
-.property:hover, .language:hover, .datatype:hover {
+.property:hover,
+.language:hover,
+.datatype:hover {
   border-color: var(--color-accent-primary);
   color: var(--color-accent-primary);
 }
 
-.property a, .language a, .datatype a {
+.property a,
+.language a,
+.datatype a {
   color: inherit;
 }
 
@@ -1117,24 +1193,66 @@ img {
    18. UTILITY CLASSES
    ============================================================ */
 
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
 
-.mt-4 { margin-top: var(--space-4); }
-.mt-8 { margin-top: var(--space-8); }
-.mb-4 { margin-bottom: var(--space-4); }
-.mb-8 { margin-bottom: var(--space-8); }
+.text-left {
+  text-align: left;
+}
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: var(--space-2); }
-.gap-4 { gap: var(--space-4); }
+.text-right {
+  text-align: right;
+}
 
-.hidden { display: none; }
+.mt-4 {
+  margin-top: var(--space-4);
+}
+
+.mt-8 {
+  margin-top: var(--space-8);
+}
+
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: var(--space-2);
+}
+
+.gap-4 {
+  gap: var(--space-4);
+}
+
+.hidden {
+  display: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1152,18 +1270,39 @@ img {
    ============================================================ */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px var(--color-accent-primary-glow); }
-  50% { box-shadow: 0 0 20px var(--color-accent-primary-glow); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--color-accent-primary-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 20px var(--color-accent-primary-glow);
+  }
 }
 
 .animate-fade-in {
@@ -1175,15 +1314,32 @@ img {
 }
 
 /* Staggered animation delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.stagger-5 {
+  animation-delay: 0.5s;
+}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -1331,7 +1487,9 @@ img {
     color: black;
   }
 
-  #header, #sidebar, .query-block-actions {
+  #header,
+  #sidebar,
+  .query-block-actions {
     display: none;
   }
 
