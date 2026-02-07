@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Complete sitemap of SPARQLqueries - all chapters and topics for learning SPARQL with Wikidata." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <title>Sitemap - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="./index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="./search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="./index.html">Home</a></li>
+        <li aria-current="page">Sitemap</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="basic/index.html">Basic</a></li>
+          <li><a href="expressions/index.html">Expressions</a></li>
+          <li><a href="aggregate/index.html">Aggregate</a></li>
+          <li><a href="advanced/index.html">Advanced</a></li>
+          <li><a href="federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="temporal/index.html">Temporal</a></li>
+          <li><a href="geospatial/index.html">Geospatial</a></li>
+          <li><a href="multilingual/index.html">Multilingual</a></li>
+          <li><a href="patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="sitemap.html" class="active">Sitemap</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Navigation</span>
+          <h1>Sitemap</h1>
+          <p class="hero-subtitle">
+            Complete index of all chapters, topics, and resources in SPARQLqueries.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Core Chapters</h2>
+        <p>Foundational SPARQL concepts from basic queries to advanced federation.</p>
+
+        <div class="sitemap-grid">
+          <div class="sitemap-chapter">
+            <h3><a href="basic/index.html">Basic Queries</a></h3>
+            <ul>
+              <li><a href="basic/prefix.html">PREFIX Declarations</a></li>
+              <li><a href="basic/select.html">SELECT Queries</a></li>
+              <li><a href="basic/distinct.html">DISTINCT</a></li>
+              <li><a href="basic/label.html">Labels & Language</a></li>
+              <li><a href="basic/limit.html">LIMIT</a></li>
+              <li><a href="basic/offset.html">OFFSET</a></li>
+              <li><a href="basic/filter.html">FILTER</a></li>
+              <li><a href="basic/optional.html">OPTIONAL</a></li>
+              <li><a href="basic/bind.html">BIND</a></li>
+              <li><a href="basic/values.html">VALUES</a></li>
+              <li><a href="basic/negation.html">Negation</a></li>
+              <li><a href="basic/paths.html">Property Paths</a></li>
+              <li><a href="basic/subqueries.html">Subqueries</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="expressions/index.html">Expressions</a></h3>
+            <ul>
+              <li><a href="expressions/string.html">String Functions</a></li>
+              <li><a href="expressions/date.html">Date Functions</a></li>
+              <li><a href="expressions/math.html">Math Functions</a></li>
+              <li><a href="expressions/hash.html">Hash Functions</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="aggregate/index.html">Aggregate Queries</a></h3>
+            <ul>
+              <li><a href="aggregate/count.html">COUNT</a></li>
+              <li><a href="aggregate/sum.html">SUM</a></li>
+              <li><a href="aggregate/avg.html">AVG</a></li>
+              <li><a href="aggregate/min-max.html">MIN & MAX</a></li>
+              <li><a href="aggregate/group-by.html">GROUP BY</a></li>
+              <li><a href="aggregate/having.html">HAVING</a></li>
+              <li><a href="aggregate/group-concat.html">GROUP_CONCAT</a></li>
+              <li><a href="aggregate/sample.html">SAMPLE</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="advanced/index.html">Advanced Forms</a></h3>
+            <ul>
+              <li><a href="advanced/ask.html">ASK Queries</a></li>
+              <li><a href="advanced/construct.html">CONSTRUCT</a></li>
+              <li><a href="advanced/describe.html">DESCRIBE</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="federation/index.html">Federation</a></h3>
+            <ul>
+              <li><a href="federation/service.html">SERVICE Keyword</a></li>
+              <li><a href="federation/endpoints.html">SPARQL Endpoints</a></li>
+              <li><a href="federation/combining.html">Combining Sources</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Domain Chapters</h2>
+        <p>Specialized topics for real-world applications.</p>
+
+        <div class="sitemap-grid">
+          <div class="sitemap-chapter">
+            <h3><a href="temporal/index.html">Temporal Queries</a></h3>
+            <ul>
+              <li><a href="temporal/dates.html">Working with Dates</a></li>
+              <li><a href="temporal/timelines.html">Timelines & Periods</a></li>
+              <li><a href="temporal/historical.html">Historical Queries</a></li>
+              <li><a href="temporal/precision.html">Time Precision</a></li>
+              <li><a href="temporal/calendars.html">Calendar Systems</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="geospatial/index.html">Geospatial Queries</a></h3>
+            <ul>
+              <li><a href="geospatial/coordinates.html">Coordinates</a></li>
+              <li><a href="geospatial/distance.html">Distance Queries</a></li>
+              <li><a href="geospatial/bounding.html">Bounding Boxes</a></li>
+              <li><a href="geospatial/regions.html">Regions & Areas</a></li>
+              <li><a href="geospatial/maps.html">Map Visualizations</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="multilingual/index.html">Multilingual Queries</a></h3>
+            <ul>
+              <li><a href="multilingual/labels.html">Label Service</a></li>
+              <li><a href="multilingual/languages.html">Language Tags</a></li>
+              <li><a href="multilingual/scripts.html">Scripts & Writing</a></li>
+              <li><a href="multilingual/translations.html">Translations</a></li>
+              <li><a href="multilingual/lexemes.html">Lexicographical Data</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3><a href="patterns/index.html">Query Patterns</a></h3>
+            <ul>
+              <li><a href="patterns/hierarchy.html">Hierarchy Traversal</a></li>
+              <li><a href="patterns/linking.html">Entity Linking</a></li>
+              <li><a href="patterns/ranking.html">Ranking & Scoring</a></li>
+              <li><a href="patterns/dedup.html">Deduplication</a></li>
+              <li><a href="patterns/optimization.html">Query Optimization</a></li>
+              <li><a href="patterns/debugging.html">Debugging Queries</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Resources</h2>
+
+        <div class="sitemap-grid">
+          <div class="sitemap-chapter">
+            <h3>About & Meta</h3>
+            <ul>
+              <li><a href="about.html">About SPARQLqueries</a></li>
+              <li><a href="search.html">Search</a></li>
+              <li><a href="https://github.com/johnsamuelwrites/SPARQLqueries" target="_blank" rel="noopener">GitHub
+                  Repository ↗</a></li>
+            </ul>
+          </div>
+
+          <div class="sitemap-chapter">
+            <h3>External Resources</h3>
+            <ul>
+              <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+              <li><a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata ↗</a></li>
+              <li><a href="https://www.w3.org/TR/sparql11-query/" target="_blank" rel="noopener">SPARQL 1.1
+                  Specification ↗</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="js/main.js"></script>
+  </body>
+
+</html>

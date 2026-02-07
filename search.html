@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Search SPARQLqueries for SPARQL examples, patterns, and tutorials." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <title>Search - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="./index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="./search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="./index.html">Home</a></li>
+        <li aria-current="page">Search</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="basic/index.html">Basic</a></li>
+          <li><a href="expressions/index.html">Expressions</a></li>
+          <li><a href="aggregate/index.html">Aggregate</a></li>
+          <li><a href="advanced/index.html">Advanced</a></li>
+          <li><a href="federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="temporal/index.html">Temporal</a></li>
+          <li><a href="geospatial/index.html">Geospatial</a></li>
+          <li><a href="multilingual/index.html">Multilingual</a></li>
+          <li><a href="patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="sitemap.html">Sitemap</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Find Queries</span>
+          <h1>Search</h1>
+          <p class="hero-subtitle">
+            Search across all chapters, topics, and query examples.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input type="text" id="searchInput" class="search-input"
+              placeholder="Search for queries, topics, or keywords..." autofocus />
+          </div>
+
+          <div class="search-filters">
+            <select id="chapterFilter" class="search-filter" title="Filter by chapter">
+              <option value="">All Chapters</option>
+              <option value="basic">Basic</option>
+              <option value="expressions">Expressions</option>
+              <option value="aggregate">Aggregate</option>
+              <option value="advanced">Advanced</option>
+              <option value="federation">Federation</option>
+              <option value="temporal">Temporal</option>
+              <option value="geospatial">Geospatial</option>
+              <option value="multilingual">Multilingual</option>
+              <option value="patterns">Patterns</option>
+            </select>
+
+            <select id="difficultyFilter" class="search-filter" title="Filter by difficulty"">
+              <option value="">All Levels</option>
+              <option value=" beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+
+          <div id="searchStats" class="search-stats"></div>
+        </div>
+
+        <div id="searchResults" class="search-results">
+          <!-- Results will be rendered here by JavaScript -->
+        </div>
+      </section>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/search-index.js"></script>
+    <script src="js/search.js"></script>
+  </body>
+
+</html>
