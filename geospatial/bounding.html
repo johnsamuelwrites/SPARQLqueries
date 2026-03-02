@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="geospatial">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Query entities within rectangular regions using bounding boxes in SPARQL." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Bounding Boxes - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Geospatial</a></li>
+        <li aria-current="page">Bounding Boxes</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="index.html" class="active">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Geospatial Topics</div>
+        <ul>
+          <li><a href="coordinates.html">Coordinates</a></li>
+          <li><a href="distance.html">Distance Queries</a></li>
+          <li><a href="bounding.html" class="active">Bounding Boxes</a></li>
+          <li><a href="regions.html">Regions & Areas</a></li>
+          <li><a href="maps.html">Map Visualizations</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Geospatial</span>
+          <h1>Bounding Boxes</h1>
+          <p class="hero-subtitle">
+            Query entities within rectangular regions using bounding boxes.
+            Define areas using corner coordinates for efficient spatial queries.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>The wikibase:box Service</h2>
+        <p>
+          Use <code>wikibase:box</code> to find entities within a rectangular region
+          defined by southwest and northeast corner coordinates.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wikibase:cornerSouthWest</code></td>
+              <td>Southwest corner point (min lat, min long)</td>
+            </tr>
+            <tr>
+              <td><code>wikibase:cornerNorthEast</code></td>
+              <td>Northeast corner point (max lat, max long)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Basic Bounding Box Query</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">All Places in a Region</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?place</span> <span class="variable">?placeLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Define bounding box for Île-de-France region</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:box</span> {
+    <span class="variable">?place</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerSouthWest</span>
+      <span class="string">"Point(1.4 48.1)"</span>^^<span class="entity">geo:wktLiteral</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerNorthEast</span>
+      <span class="string">"Point(3.6 49.3)"</span>^^<span class="entity">geo:wktLiteral</span> .
+  }
+
+  <span class="comment"># Filter to museums</span>
+  <span class="variable">?place</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .  <span class="comment"># museum</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Service: wikibase:box</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cultural Heritage: Heritage Sites in a Country</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">UNESCO Sites in Mediterranean Region</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?site</span> <span class="variable">?siteLabel</span> <span class="variable">?coord</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Mediterranean bounding box</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:box</span> {
+    <span class="variable">?site</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerSouthWest</span>
+      <span class="string">"Point(-6 30)"</span>^^<span class="entity">geo:wktLiteral</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerNorthEast</span>
+      <span class="string">"Point(36 46)"</span>^^<span class="entity">geo:wktLiteral</span> .
+  }
+
+  <span class="variable">?site</span> <span class="entity">wdt:P1435</span> <span class="entity">wd:Q9259</span> ;  <span class="comment"># UNESCO site</span>
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Cultural Heritage | Mediterranean region</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Urban: City Infrastructure</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Train Stations in Manhattan</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?station</span> <span class="variable">?stationLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Manhattan bounding box</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:box</span> {
+    <span class="variable">?station</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerSouthWest</span>
+      <span class="string">"Point(-74.02 40.70)"</span>^^<span class="entity">geo:wktLiteral</span> .
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:cornerNorthEast</span>
+      <span class="string">"Point(-73.90 40.88)"</span>^^<span class="entity">geo:wktLiteral</span> .
+  }
+
+  <span class="comment"># Railway or metro stations</span>
+  { <span class="variable">?station</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q55488</span> . }  <span class="comment"># railway station</span>
+  <span class="keyword">UNION</span>
+  { <span class="variable">?station</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q928830</span> . } <span class="comment"># metro station</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Urban | Transit in Manhattan</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Manual Bounding Box with FILTER</h2>
+        <p>
+          You can also create bounding boxes manually using FILTER on extracted coordinates.
+          This is more flexible but less performant than the service.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Manual Lat/Long Filtering</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?coord</span> <span class="variable">?lat</span> <span class="variable">?long</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">BIND</span>(<span class="function">geof:latitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?lat</span>)
+  <span class="keyword">BIND</span>(<span class="function">geof:longitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?long</span>)
+
+  <span class="comment"># Manual bounding box for Europe</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?lat</span> >= 35 && <span class="variable">?lat</span> <= 70)
+  <span class="keyword">FILTER</span>(<span class="variable">?long</span> >= -10 && <span class="variable">?long</span> <= 40)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 500</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Alternative: Manual FILTER approach</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="distance.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Distance Queries</span>
+        </a>
+        <a href="regions.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Regions & Areas</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

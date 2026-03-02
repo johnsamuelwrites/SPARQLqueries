@@ -1,59 +1,314 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn negation patterns in SPARQL using FILTER NOT EXISTS and MINUS with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>Negation - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">Negation</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html" class="active">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>Negation</h1>
+        <p class="hero-subtitle">
+          Find entities that lack certain properties or relationships. SPARQL provides
+          FILTER NOT EXISTS and MINUS to exclude results matching specific patterns.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding Negation</h2>
+      <p>
+        Negation in SPARQL lets you find things that DON'T have a property or relationship.
+        FILTER NOT EXISTS checks if a pattern doesn't match, while MINUS subtracts matching
+        solutions. Both achieve similar results but work differently with variable bindings.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>FILTER NOT EXISTS</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">People Without Death Date (Living)</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%3Fbirth%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ82955%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fbirth%20.%0A%20%20FILTER%20NOT%20EXISTS%20%7B%20%3Fperson%20wdt%3AP570%20%3Fdeath%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birth</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q82955</span> ;
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?person</span> <span class="entity">wdt:P570</span> <span class="variable">?death</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Living politicians (no death date)</span>
+        </div>
+      </div>
+
+      <p>
+        FILTER NOT EXISTS checks if the inner pattern does NOT match for each result.
+        Politicians without a death date (P570) are returned. This is the most common
+        way to find entities missing a property.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Countries Without a Monarch</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20FILTER%20NOT%20EXISTS%20%7B%20%3Fcountry%20wdt%3AP35%20%3Fmonarch%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AORDER%20BY%20%3FcountryLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?country</span> <span class="entity">wdt:P35</span> <span class="variable">?monarch</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Republics and other non-monarchies</span>
+        </div>
+      </div>
+
+      <p>
+        This finds countries that don't have a head of state who is a monarch.
+        The inner pattern checks for the "head of state" property (P35), and
+        countries without it are returned.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Using MINUS</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Scientists Without Nobel Prize</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ901%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP27%20wd%3AQ30%20.%0A%20%20MINUS%20%7B%0A%20%20%20%20%3Fperson%20wdt%3AP166%20%3Faward%20.%0A%20%20%20%20%3Faward%20wdt%3AP31%20wd%3AQ7191%20.%0A%20%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q901</span> ;
+          <span class="entity">wdt:P27</span> <span class="entity">wd:Q30</span> .
+  <span class="keyword">MINUS</span> {
+    <span class="variable">?person</span> <span class="entity">wdt:P166</span> <span class="variable">?award</span> .
+    <span class="variable">?award</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q7191</span> .
+  }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>American scientists without a Nobel Prize</span>
+        </div>
+      </div>
+
+      <p>
+        MINUS subtracts solutions that match the inner pattern. This finds American
+        scientists, then removes those who have received a Nobel Prize (award of
+        instance Q7191). The result is scientists who haven't won a Nobel.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Negating Specific Values</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Cities Not in USA</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcity%20%3FcityLabel%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpop%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20%3Fcountry%20.%0A%20%20FILTER%28%3Fpop%20%3E%205000000%29%0A%20%20FILTER%20NOT%20EXISTS%20%7B%20%3Fcity%20wdt%3AP17%20wd%3AQ30%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fpop%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> <span class="operator">&gt;</span> <span class="number">5000000</span>)
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q30</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?pop</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Large cities outside the United States</span>
+        </div>
+      </div>
+
+      <p>
+        This combines a population filter with negation to find large cities not
+        in the USA. The NOT EXISTS checks specifically for country = Q30 (USA),
+        excluding only American cities while keeping cities from other countries.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>human</td>
+            <td>wd:Q5</td>
+            <td>Any human being</td>
+          </tr>
+          <tr>
+            <td>politician</td>
+            <td>wd:Q82955</td>
+            <td>Person in politics</td>
+          </tr>
+          <tr>
+            <td>scientist</td>
+            <td>wd:Q901</td>
+            <td>Person who conducts research</td>
+          </tr>
+          <tr>
+            <td>country</td>
+            <td>wd:Q6256</td>
+            <td>Sovereign state</td>
+          </tr>
+          <tr>
+            <td>city</td>
+            <td>wd:Q515</td>
+            <td>Large human settlement</td>
+          </tr>
+          <tr>
+            <td>United States</td>
+            <td>wd:Q30</td>
+            <td>Country in North America</td>
+          </tr>
+          <tr>
+            <td>Nobel Prize</td>
+            <td>wd:Q7191</td>
+            <td>Annual international awards</td>
+          </tr>
+          <tr>
+            <td>date of death</td>
+            <td>wdt:P570</td>
+            <td>Date when person died</td>
+          </tr>
+          <tr>
+            <td>head of state</td>
+            <td>wdt:P35</td>
+            <td>Official head of country</td>
+          </tr>
+          <tr>
+            <td>award received</td>
+            <td>wdt:P166</td>
+            <td>Award or honor received</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="values.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">VALUES</span>
+      </a>
+      <a href="paths.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">Property Paths</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

@@ -1,59 +1,275 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use PREFIX in SPARQL to define namespace shortcuts with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>PREFIX - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">PREFIX</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="prefix.html" class="active">PREFIX</a></li>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>PREFIX</h1>
+        <p class="hero-subtitle">
+          Define namespace shortcuts for cleaner queries. PREFIX declarations make URIs
+          more readable by creating short aliases for common namespaces.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding PREFIX</h2>
+      <p>
+        In RDF, everything is identified by URIs. PREFIX creates shortcuts so you can write
+        <code>wd:Q42</code> instead of <code>&lt;http://www.wikidata.org/entity/Q42&gt;</code>.
+      </p>
+      <p>
+        Wikidata Query Service has several prefixes pre-defined, so most queries don't need
+        explicit PREFIX declarations. However, understanding them helps when working with
+        other SPARQL endpoints.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Common Wikidata Prefixes</h2>
+
+      <table>
+        <thead>
+          <tr><th>Prefix</th><th>Namespace</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:</code></td><td>http://www.wikidata.org/entity/</td><td>Wikidata items (Q numbers)</td></tr>
+          <tr><td><code>wdt:</code></td><td>http://www.wikidata.org/prop/direct/</td><td>Direct property values (P numbers)</td></tr>
+          <tr><td><code>p:</code></td><td>http://www.wikidata.org/prop/</td><td>Property statements</td></tr>
+          <tr><td><code>ps:</code></td><td>http://www.wikidata.org/prop/statement/</td><td>Statement values</td></tr>
+          <tr><td><code>pq:</code></td><td>http://www.wikidata.org/prop/qualifier/</td><td>Qualifier values</td></tr>
+          <tr><td><code>rdfs:</code></td><td>http://www.w3.org/2000/01/rdf-schema#</td><td>RDF Schema (labels, comments)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Using Predefined Prefixes</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Standard Wikidata Query</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ937857%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q937857</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Uses predefined wd: and wdt: prefixes</span>
+        </div>
+      </div>
+      <p>
+        On the Wikidata Query Service, prefixes like <code>wd:</code>, <code>wdt:</code>,
+        <code>wikibase:</code>, and <code>bd:</code> are already defined. This query finds
+        humans (Q5) with occupation (P106) of footballer (Q937857).
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Explicit PREFIX Declarations</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Query with Explicit Prefixes</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#PREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0APREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0A%0ASELECT%20%3Fcountry%20%3Fcapital%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP36%20%3Fcapital%20.%0A%7D%0ALIMIT%205" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">PREFIX</span> <span class="entity">wd:</span> <span class="string">&lt;http://www.wikidata.org/entity/&gt;</span>
+<span class="keyword">PREFIX</span> <span class="entity">wdt:</span> <span class="string">&lt;http://www.wikidata.org/prop/direct/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?capital</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P36</span> <span class="variable">?capital</span> .
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Defines prefixes explicitly at query start</span>
+        </div>
+      </div>
+      <p>
+        When running queries on other SPARQL endpoints, you may need to declare prefixes
+        explicitly. PREFIX declarations go at the beginning of the query, before SELECT.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Custom Prefixes</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Define Your Own Prefixes</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#PREFIX%20schema%3A%20%3Chttp%3A%2F%2Fschema.org%2F%3E%0A%0ASELECT%20%3Farticle%20%3Ftitle%0AWHERE%20%7B%0A%20%20%3Farticle%20schema%3Aabout%20wd%3AQ42%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20schema%3Aname%20%3Ftitle%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20schema%3AisPartOf%20%3Chttps%3A%2F%2Fen.wikipedia.org%2F%3E%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">PREFIX</span> <span class="entity">schema:</span> <span class="string">&lt;http://schema.org/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?article</span> <span class="variable">?title</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?article</span> <span class="entity">schema:about</span> <span class="entity">wd:Q42</span> ;
+           <span class="entity">schema:name</span> <span class="variable">?title</span> ;
+           <span class="entity">schema:isPartOf</span> <span class="string">&lt;https://en.wikipedia.org/&gt;</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Uses schema.org vocabulary to find Wikipedia articles</span>
+        </div>
+      </div>
+      <p>
+        You can define any prefix you need. This query uses the schema.org namespace to
+        find the English Wikipedia article about Douglas Adams (Q42).
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Full URIs Without Prefixes</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Using Full URIs</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%0AWHERE%20%7B%0A%20%20%3Fcountry%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2FP31%3E%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2FQ6256%3E%20.%0A%7D%0ALIMIT%205" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="string">&lt;http://www.wikidata.org/prop/direct/P31&gt;</span> <span class="string">&lt;http://www.wikidata.org/entity/Q6256&gt;</span> .
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Same query without using prefixes</span>
+        </div>
+      </div>
+      <p>
+        You can always use full URIs in angle brackets instead of prefixed names. This is
+        verbose but sometimes necessary for URIs that don't fit a common prefix.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q5</code></td><td>Human</td></tr>
+          <tr><td><code>wd:Q42</code></td><td>Douglas Adams</td></tr>
+          <tr><td><code>wd:Q6256</code></td><td>Country</td></tr>
+          <tr><td><code>wd:Q937857</code></td><td>Footballer</td></tr>
+          <tr><td><code>wdt:P31</code></td><td>Instance of</td></tr>
+          <tr><td><code>wdt:P36</code></td><td>Capital</td></tr>
+          <tr><td><code>wdt:P106</code></td><td>Occupation</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="index.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">Basic Overview</span>
+      </a>
+      <a href="select.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">SELECT</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

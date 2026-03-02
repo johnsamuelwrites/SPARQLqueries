@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Connect Wikidata entities using external identifiers, sameAs links, and cross-dataset references." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Entity Linking - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Entity Linking</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html" class="active">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Entity Linking</h1>
+          <p class="hero-subtitle">
+            Connect Wikidata entities to external databases using identifiers.
+            Link to VIAF, GND, ORCID, GitHub, and thousands of other sources.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>External Identifiers in Wikidata</h2>
+        <p>
+          Wikidata stores thousands of external identifier properties that link entities
+          to other databases. These enable cross-dataset queries and data enrichment.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Database</th>
+              <th>Domain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wdt:P214</code></td>
+              <td>VIAF ID</td>
+              <td>Authority control</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P227</code></td>
+              <td>GND ID</td>
+              <td>German National Library</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P496</code></td>
+              <td>ORCID</td>
+              <td>Researchers</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P2037</code></td>
+              <td>GitHub username</td>
+              <td>Developers</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P2013</code></td>
+              <td>Facebook ID</td>
+              <td>Social media</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P646</code></td>
+              <td>Freebase ID</td>
+              <td>Knowledge graph</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Finding External IDs</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">All External IDs for a Programming Language</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?prop</span> <span class="variable">?propLabel</span> <span class="variable">?value</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Python programming language</span>
+  <span class="entity">wd:Q28865</span> <span class="variable">?prop</span> <span class="variable">?value</span> .
+
+  <span class="comment"># Filter to external-id properties only</span>
+  <span class="variable">?property</span> <span class="entity">wikibase:directClaim</span> <span class="variable">?prop</span> ;
+             <span class="entity">wikibase:propertyType</span> <span class="entity">wikibase:ExternalId</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>wikibase:ExternalId — Filter to identifier properties</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museums with VIAF Authority Records</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?viaf</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wdt:P214</span> <span class="variable">?viaf</span> .  <span class="comment"># has VIAF ID</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Building External URLs</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Generate GitHub Profile URLs</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?github</span>
+       (<span class="function">CONCAT</span>(<span class="string">"https://github.com/"</span>, <span class="variable">?github</span>) <span class="keyword">AS</span> <span class="variable">?githubUrl</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q5482740</span> ;  <span class="comment"># programmer</span>
+          <span class="entity">wdt:P2037</span> <span class="variable">?github</span> .    <span class="comment"># GitHub username</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>CONCAT to build URLs from IDs</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Using Formatter URLs</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?geonames</span> <span class="variable">?url</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;  <span class="comment"># city</span>
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;     <span class="comment"># France</span>
+        <span class="entity">wdt:P1566</span> <span class="variable">?geonames</span> . <span class="comment"># GeoNames ID</span>
+
+  <span class="comment"># Get the formatter URL pattern</span>
+  <span class="entity">wd:P1566</span> <span class="entity">wdt:P1630</span> <span class="variable">?formatter</span> .
+  <span class="keyword">BIND</span>(<span class="function">IRI</span>(<span class="function">REPLACE</span>(<span class="variable">?formatter</span>, <span class="string">"\\$1"</span>, <span class="variable">?geonames</span>)) <span class="keyword">AS</span> <span class="variable">?url</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>P1630 — Formatter URL property</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cross-Reference Matching</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find Entity by External ID</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Find by ORCID</span>
+  <span class="variable">?item</span> <span class="entity">wdt:P496</span> <span class="string">"0000-0001-5109-3700"</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Reverse lookup by external ID</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Entities with Multiple Authority IDs</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?viaf</span> <span class="variable">?gnd</span> <span class="variable">?orcid</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q1650915</span> ;  <span class="comment"># researcher</span>
+          <span class="entity">wdt:P214</span> <span class="variable">?viaf</span> ;         <span class="comment"># VIAF</span>
+          <span class="entity">wdt:P227</span> <span class="variable">?gnd</span> ;          <span class="comment"># GND</span>
+          <span class="entity">wdt:P496</span> <span class="variable">?orcid</span> .        <span class="comment"># ORCID</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Multi-source linking</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Coverage Analysis</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Languages Missing GitHub Topic</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .  <span class="comment"># programming language</span>
+
+  <span class="comment"># Has no GitHub topic ID</span>
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?lang</span> <span class="entity">wdt:P9100</span> <span class="variable">?github</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Finding missing links</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Count External IDs per Entity Type</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?extProp</span>) <span class="keyword">AS</span> <span class="variable">?extIdCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;  <span class="comment"># programming language</span>
+        <span class="variable">?extProp</span> <span class="variable">?extValue</span> .
+
+  <span class="variable">?prop</span> <span class="entity">wikibase:directClaim</span> <span class="variable">?extProp</span> ;
+        <span class="entity">wikibase:propertyType</span> <span class="entity">wikibase:ExternalId</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?extIdCount</span>)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Measure linking coverage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Key External ID Properties</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Name</th>
+              <th>Domain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>P214</code></td>
+              <td>VIAF ID</td>
+              <td>People, organizations</td>
+            </tr>
+            <tr>
+              <td><code>P227</code></td>
+              <td>GND ID</td>
+              <td>German authority</td>
+            </tr>
+            <tr>
+              <td><code>P244</code></td>
+              <td>LCNAF</td>
+              <td>US Library of Congress</td>
+            </tr>
+            <tr>
+              <td><code>P496</code></td>
+              <td>ORCID</td>
+              <td>Researchers</td>
+            </tr>
+            <tr>
+              <td><code>P1566</code></td>
+              <td>GeoNames ID</td>
+              <td>Geographic places</td>
+            </tr>
+            <tr>
+              <td><code>P2037</code></td>
+              <td>GitHub username</td>
+              <td>Developers</td>
+            </tr>
+            <tr>
+              <td><code>P9100</code></td>
+              <td>GitHub topic</td>
+              <td>Programming topics</td>
+            </tr>
+            <tr>
+              <td><code>P856</code></td>
+              <td>Official website</td>
+              <td>All entities</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="hierarchy.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Hierarchy Traversal</span>
+        </a>
+        <a href="ranking.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Ranking & Scoring</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

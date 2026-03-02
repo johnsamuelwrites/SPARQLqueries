@@ -1,59 +1,297 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn about blank nodes and anonymous patterns in SPARQL for querying without binding intermediate values." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>Omission - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">Omission</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html" class="active">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>Omission</h1>
+        <p class="hero-subtitle">
+          Use blank nodes and anonymous patterns. When you need to traverse through
+          intermediate nodes without caring about their values, blank nodes keep queries clean.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding Blank Nodes</h2>
+      <p>
+        Blank nodes (written as [] or _:name) represent intermediate values you don't
+        need to see in results. They're useful when you care about a relationship
+        existing but not about the connecting node's identity.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Anonymous Blank Nodes []</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Has Any Value for Property</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fitem%20%3FitemLabel%0AWHERE%20%7B%0A%20%20%3Fitem%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP2534%20%5B%5D%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+        <span class="entity">wdt:P2534</span> [] .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>People with any defining formula</span>
+        </div>
+      </div>
+
+      <p>
+        The [] means "some value exists". This finds humans with a defining formula
+        (P2534) without caring what the formula is. It's equivalent to using a
+        variable you never reference: wdt:P2534 ?unused.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Traverse Without Binding</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP800%20%5B%20wdt%3AP577%20%5B%5D%20%5D%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P800</span> [ <span class="entity">wdt:P577</span> [] ] .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>People with notable works that have publication dates</span>
+        </div>
+      </div>
+
+      <p>
+        Nested blank nodes traverse multiple relationships. This finds people with
+        notable works (P800) that have publication dates (P577), without binding
+        the work or date to variables. Only the person is returned.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Blank Node Properties</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Multiple Properties on Blank Node</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP36%20%5B%20wdt%3AP31%20wd%3AQ515%20%3B%20wdt%3AP1082%20%3Fpop%20%5D%20.%0A%20%20FILTER%28%3Fpop%20%3E%205000000%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P36</span> [ <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ; <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> ] .
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> <span class="operator">&gt;</span> <span class="number">5000000</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Countries with large capital cities</span>
+        </div>
+      </div>
+
+      <p>
+        Blank nodes can have multiple properties listed with semicolons, just like
+        regular subjects. This finds countries whose capital is a city with population
+        over 5 million. The capital city itself isn't returned—only the country.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Comparing to Variables</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Equivalent with Variable</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP36%20%3Fcapital%20.%0A%20%20%3Fcapital%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpop%20.%0A%20%20FILTER%28%3Fpop%20%3E%205000000%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P36</span> <span class="variable">?capital</span> .
+  <span class="variable">?capital</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+           <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> <span class="operator">&gt;</span> <span class="number">5000000</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Same query with explicit ?capital variable</span>
+        </div>
+      </div>
+
+      <p>
+        This is equivalent to the previous query but uses an explicit ?capital
+        variable. Use blank nodes when the intermediate value isn't needed in results
+        or for reference elsewhere. Use variables when you need to return or
+        reuse the value.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>human</td>
+            <td>wd:Q5</td>
+            <td>Any human being</td>
+          </tr>
+          <tr>
+            <td>country</td>
+            <td>wd:Q6256</td>
+            <td>Sovereign state</td>
+          </tr>
+          <tr>
+            <td>city</td>
+            <td>wd:Q515</td>
+            <td>Large human settlement</td>
+          </tr>
+          <tr>
+            <td>defining formula</td>
+            <td>wdt:P2534</td>
+            <td>Mathematical formula defining something</td>
+          </tr>
+          <tr>
+            <td>notable work</td>
+            <td>wdt:P800</td>
+            <td>Notable work by a person</td>
+          </tr>
+          <tr>
+            <td>publication date</td>
+            <td>wdt:P577</td>
+            <td>Date of first publication</td>
+          </tr>
+          <tr>
+            <td>capital</td>
+            <td>wdt:P36</td>
+            <td>Seat of government</td>
+          </tr>
+          <tr>
+            <td>population</td>
+            <td>wdt:P1082</td>
+            <td>Number of inhabitants</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="multiple.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">Multiple Patterns</span>
+      </a>
+      <a href="../expressions/index.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next Chapter</span>
+        <span class="topic-nav-title">Expressions</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

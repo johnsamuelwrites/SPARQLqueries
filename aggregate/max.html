@@ -1,53 +1,465 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="HAVING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="group.html">Group</a></li>
-       <li><a href="having.html">Having</a></li>
-       <li><a href="avg.html">Avg</a></li>
-       <li><a href="concat.html">Concat</a></li>
-       <li><a href="count.html">Count</a></li>
-       <li><a href="max.html">Max</a></li>
-       <li><a href="min.html">Min</a></li>
-       <li><a href="sample.html">Sample</a></li>
-       <li><a href="sum.html">Sum</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="aggregate">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn to use MAX in SPARQL to find maximum values with practical Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>MAX - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Aggregate</a></li>
+        <li aria-current="page">MAX</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="index.html" class="active">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Aggregate Topics</div>
+        <ul>
+          <li><a href="count.html">COUNT</a></li>
+          <li><a href="sum.html">SUM</a></li>
+          <li><a href="avg.html">AVG</a></li>
+          <li><a href="min.html">MIN</a></li>
+          <li><a href="max.html" class="active">MAX</a></li>
+          <li><a href="group.html">GROUP BY</a></li>
+          <li><a href="having.html">HAVING</a></li>
+          <li><a href="concat.html">GROUP_CONCAT</a></li>
+          <li><a href="sample.html">SAMPLE</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Aggregate</span>
+          <h1>MAX</h1>
+          <p class="hero-subtitle">
+            Find the largest value in a set. MAX returns the maximum value
+            for numeric, date, or string expressions across grouped results.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Understanding MAX</h2>
+        <p>
+          The MAX aggregate function returns the largest value from a set of values.
+          It works with numbers (highest value), dates (most recent), and strings
+          (alphabetically last).
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Syntax</th>
+              <th>Description</th>
+              <th>Example Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>MAX(?value)</code></td>
+              <td>Largest value overall</td>
+              <td>Single maximum</td>
+            </tr>
+            <tr>
+              <td><code>MAX(?value) ... GROUP BY ?category</code></td>
+              <td>Largest per group</td>
+              <td>One max per category</td>
+            </tr>
+            <tr>
+              <td><code>MAX(?date)</code></td>
+              <td>Most recent date</td>
+              <td>Last chronologically</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Finding Global Maximums</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Largest Country by Area</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%28MAX%28%3Farea%29%20AS%20%3FmaxArea%29%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2046%20%3Farea%20.%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> (<span class="function">MAX</span>(<span class="variable">?area</span>) <span class="keyword">AS</span> <span class="variable">?maxArea</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Returns: Russia's area (~17.1 million km²)</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Highest Elevation Point</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%28MAX%28%3Felevation%29%20AS%20%3FhighestPoint%29%0AWHERE%20%7B%0A%20%20%3Fplace%20wdt%3AP31%20wd%3AQ8502%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP2044%20%3Felevation%20.%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> (<span class="function">MAX</span>(<span class="variable">?elevation</span>) <span class="keyword">AS</span> <span class="variable">?highestPoint</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?place</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> ;
+         <span class="entity">wdt:P2044</span> <span class="variable">?elevation</span> .
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Returns: Mount Everest (8,848 m)</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Most Recently Founded University</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%28MAX%28%3Ffounded%29%20AS%20%3FlatestFounding%29%0AWHERE%20%7B%0A%20%20%3Funi%20wdt%3AP31%20wd%3AQ3918%20%3B%0A%20%20%20%20%20%20%20wdt%3AP571%20%3Ffounded%20.%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> (<span class="function">MAX</span>(<span class="variable">?founded</span>) <span class="keyword">AS</span> <span class="variable">?latestFounding</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?uni</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3918</span> ;
+       <span class="entity">wdt:P571</span> <span class="variable">?founded</span> .
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>MAX on dates finds the most recent</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>MAX with GROUP BY</h2>
+        <p>
+          Combining MAX with GROUP BY finds the maximum value within each category,
+          enabling comparisons across different groups.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Largest City per Country</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%28MAX%28%3Fpopulation%29%20AS%20%3FlargestCity%29%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20%3Fcountry%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel%0AORDER%20BY%20DESC%28%3FlargestCity%29%0ALIMIT%2020"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> (<span class="function">MAX</span>(<span class="variable">?population</span>) <span class="keyword">AS</span> <span class="variable">?largestCity</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?largestCity</span>)
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>One maximum per country</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Latest Birth Year per Profession</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Foccupation%20%3FoccupationLabel%20%28MAX%28YEAR%28%3Fbirth%29%29%20AS%20%3FlatestBirth%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Foccupation%20%7B%20wd%3AQ36180%20wd%3AQ82955%20wd%3AQ1028181%20wd%3AQ593644%20%7D%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20%3Foccupation%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fbirth%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AGROUP%20BY%20%3Foccupation%20%3FoccupationLabel%0AORDER%20BY%20DESC%28%3FlatestBirth%29"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?occupation</span> <span class="variable">?occupationLabel</span> (<span class="function">MAX</span>(<span class="function">YEAR</span>(<span class="variable">?birth</span>)) <span class="keyword">AS</span> <span class="variable">?latestBirth</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?occupation</span> { <span class="entity">wd:Q36180</span> <span class="entity">wd:Q82955</span> <span class="entity">wd:Q1028181</span> <span class="entity">wd:Q593644</span> }
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="variable">?occupation</span> ;
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?occupation</span> <span class="variable">?occupationLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?latestBirth</span>)</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Compare: writer, politician, painter, chemist</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Longest River per Continent</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcontinent%20%3FcontinentLabel%20%28MAX%28%3Flength%29%20AS%20%3FlongestRiver%29%0AWHERE%20%7B%0A%20%20%3Friver%20wdt%3AP31%20wd%3AQ4022%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP2043%20%3Flength%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP30%20%3Fcontinent%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AGROUP%20BY%20%3Fcontinent%20%3FcontinentLabel%0AORDER%20BY%20DESC%28%3FlongestRiver%29"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span> (<span class="function">MAX</span>(<span class="variable">?length</span>) <span class="keyword">AS</span> <span class="variable">?longestRiver</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?river</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q4022</span> ;
+         <span class="entity">wdt:P2043</span> <span class="variable">?length</span> ;
+         <span class="entity">wdt:P30</span> <span class="variable">?continent</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?longestRiver</span>)</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Geographic comparison across continents</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Finding the Item with Maximum Value</h2>
+        <p>
+          Often you want to find <em>which</em> item has the maximum value, not just
+          what the maximum is. This requires a subquery pattern.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Which Country Has Largest Area?</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Farea%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2046%20%3Farea%20.%0A%20%20%7B%0A%20%20%20%20SELECT%20%28MAX%28%3Fa%29%20AS%20%3FmaxArea%29%0A%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20%3Fc%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP2046%20%3Fa%20.%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20FILTER%28%3Farea%20%3D%20%3FmaxArea%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?area</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .
+  {
+    <span class="keyword">SELECT</span> (<span class="function">MAX</span>(<span class="variable">?a</span>) <span class="keyword">AS</span> <span class="variable">?maxArea</span>)
+    <span class="keyword">WHERE</span> {
+      <span class="variable">?c</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+         <span class="entity">wdt:P2046</span> <span class="variable">?a</span> .
+    }
+  }
+  <span class="keyword">FILTER</span>(<span class="variable">?area</span> = <span class="variable">?maxArea</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Subquery pattern to get the actual item</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Youngest Person in Each Profession</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Foccupation%20%3FoccupationLabel%20%3Fperson%20%3FpersonLabel%20%3Fbirth%0AWHERE%20%7B%0A%20%20VALUES%20%3Foccupation%20%7B%20wd%3AQ36180%20wd%3AQ82955%20wd%3AQ1028181%20%7D%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20%3Foccupation%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fbirth%20.%0A%20%20%7B%0A%20%20%20%20SELECT%20%3Foccupation%20%28MAX%28%3Fb%29%20AS%20%3FmaxBirth%29%0A%20%20%20%20WHERE%20%7B%0A%20%20%20%20%20%20VALUES%20%3Foccupation%20%7B%20wd%3AQ36180%20wd%3AQ82955%20wd%3AQ1028181%20%7D%0A%20%20%20%20%20%20%3Fp%20wdt%3AP106%20%3Foccupation%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fb%20.%0A%20%20%20%20%7D%0A%20%20%20%20GROUP%20BY%20%3Foccupation%0A%20%20%7D%0A%20%20FILTER%28%3Fbirth%20%3D%20%3FmaxBirth%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?occupation</span> <span class="variable">?occupationLabel</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birth</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?occupation</span> { <span class="entity">wd:Q36180</span> <span class="entity">wd:Q82955</span> <span class="entity">wd:Q1028181</span> }
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="variable">?occupation</span> ;
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  {
+    <span class="keyword">SELECT</span> <span class="variable">?occupation</span> (<span class="function">MAX</span>(<span class="variable">?b</span>) <span class="keyword">AS</span> <span class="variable">?maxBirth</span>)
+    <span class="keyword">WHERE</span> {
+      <span class="keyword">VALUES</span> <span class="variable">?occupation</span> { <span class="entity">wd:Q36180</span> <span class="entity">wd:Q82955</span> <span class="entity">wd:Q1028181</span> }
+      <span class="variable">?p</span> <span class="entity">wdt:P106</span> <span class="variable">?occupation</span> ;
+         <span class="entity">wdt:P569</span> <span class="variable">?b</span> .
+    }
+    <span class="keyword">GROUP BY</span> <span class="variable">?occupation</span>
+  }
+  <span class="keyword">FILTER</span>(<span class="variable">?birth</span> = <span class="variable">?maxBirth</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Per-group maximum with item details</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>MAX vs ORDER BY DESC + LIMIT 1</h2>
+        <p>
+          For finding a single maximum, <code>ORDER BY DESC ... LIMIT 1</code> is often simpler.
+          Use MAX when you need the value in an aggregate context or with GROUP BY.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Alternative: ORDER BY DESC for Maximum</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Farea%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2046%20%3Farea%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Farea%29%0ALIMIT%201"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?area</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?area</span>)
+<span class="keyword">LIMIT</span> <span class="number">1</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Simpler for single maximum with item details</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Combining MIN and MAX</h2>
+        <p>
+          You can use both MIN and MAX in the same query to find ranges or compare extremes.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Population Range per Country</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%0A%20%20%20%20%20%20%20%28MIN%28%3Fpop%29%20AS%20%3FsmallestCity%29%0A%20%20%20%20%20%20%20%28MAX%28%3Fpop%29%20AS%20%3FlargestCity%29%0A%20%20%20%20%20%20%20%28MAX%28%3Fpop%29%20-%20MIN%28%3Fpop%29%20AS%20%3Frange%29%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20%3Fcountry%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpop%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel%0AORDER%20BY%20DESC%28%3Frange%29%0ALIMIT%2010"
+                target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+       (<span class="function">MIN</span>(<span class="variable">?pop</span>) <span class="keyword">AS</span> <span class="variable">?smallestCity</span>)
+       (<span class="function">MAX</span>(<span class="variable">?pop</span>) <span class="keyword">AS</span> <span class="variable">?largestCity</span>)
+       (<span class="function">MAX</span>(<span class="variable">?pop</span>) - <span class="function">MIN</span>(<span class="variable">?pop</span>) <span class="keyword">AS</span> <span class="variable">?range</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?range</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-aggregate">Aggregate</span>
+            <span>Countries with greatest city size disparity</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="min.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">MIN</span>
+        </a>
+        <a href="group.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">GROUP BY</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

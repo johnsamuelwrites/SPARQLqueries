@@ -1,48 +1,404 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="STRING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="string.html">String</a></li>
-       <li><a href="date.html">Dates</a></li>
-       <li><a href="math.html">Math</a></li>
-       <li><a href="hash.html">Hash</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="expressions">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="SPARQL string functions: CONCAT, STRLEN, SUBSTR, UCASE, LCASE, CONTAINS, STRSTARTS, STRENDS, and more." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>String Functions - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Expressions</a></li>
+        <li aria-current="page">String Functions</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="index.html" class="active">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Expression Topics</div>
+        <ul>
+          <li><a href="string.html" class="active">String Functions</a></li>
+          <li><a href="date.html">Date Functions</a></li>
+          <li><a href="math.html">Math Functions</a></li>
+          <li><a href="hash.html">Hash Functions</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Expressions</span>
+          <h1>String Functions</h1>
+          <p class="hero-subtitle">
+            Manipulate and analyze text with SPARQL string functions.
+            Concatenate, search, extract, and transform strings.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>String Functions Overview</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Description</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>STRLEN(?s)</code></td>
+              <td>Length of string</td>
+              <td>STRLEN("hello") = 5</td>
+            </tr>
+            <tr>
+              <td><code>CONCAT(?a, ?b)</code></td>
+              <td>Concatenate strings</td>
+              <td>CONCAT("a", "b") = "ab"</td>
+            </tr>
+            <tr>
+              <td><code>SUBSTR(?s, start, len)</code></td>
+              <td>Extract substring</td>
+              <td>SUBSTR("hello", 1, 2) = "he"</td>
+            </tr>
+            <tr>
+              <td><code>UCASE(?s)</code></td>
+              <td>Uppercase</td>
+              <td>UCASE("hello") = "HELLO"</td>
+            </tr>
+            <tr>
+              <td><code>LCASE(?s)</code></td>
+              <td>Lowercase</td>
+              <td>LCASE("HELLO") = "hello"</td>
+            </tr>
+            <tr>
+              <td><code>CONTAINS(?s, ?sub)</code></td>
+              <td>Check if contains</td>
+              <td>CONTAINS("hello", "ell") = true</td>
+            </tr>
+            <tr>
+              <td><code>STRSTARTS(?s, ?pre)</code></td>
+              <td>Check prefix</td>
+              <td>STRSTARTS("hello", "he") = true</td>
+            </tr>
+            <tr>
+              <td><code>STRENDS(?s, ?suf)</code></td>
+              <td>Check suffix</td>
+              <td>STRENDS("hello", "lo") = true</td>
+            </tr>
+            <tr>
+              <td><code>REPLACE(?s, pat, rep)</code></td>
+              <td>Replace pattern</td>
+              <td>REPLACE("hello", "l", "L")</td>
+            </tr>
+            <tr>
+              <td><code>STR(?x)</code></td>
+              <td>Convert to string</td>
+              <td>STR(123) = "123"</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>String Concatenation</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Build Full Names from Labels</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span>
+       (<span class="function">CONCAT</span>(<span class="variable">?givenLabel</span>, <span class="string">" "</span>, <span class="variable">?familyLabel</span>) <span class="keyword">AS</span> <span class="variable">?fullName</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;        <span class="comment"># human</span>
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q82594</span> ;     <span class="comment"># computer scientist</span>
+          <span class="entity">wdt:P735</span> <span class="variable">?given</span> ;        <span class="comment"># given name</span>
+          <span class="entity">wdt:P734</span> <span class="variable">?family</span> .       <span class="comment"># family name</span>
+  <span class="variable">?given</span> <span class="entity">rdfs:label</span> <span class="variable">?givenLabel</span> .
+  <span class="variable">?family</span> <span class="entity">rdfs:label</span> <span class="variable">?familyLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?givenLabel</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?familyLabel</span>) = <span class="string">"en"</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>CONCAT — Join strings together</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Build Wikipedia URLs</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">CONCAT</span>(<span class="string">"https://en.wikipedia.org/wiki/"</span>,
+               <span class="function">ENCODE_FOR_URI</span>(<span class="variable">?langLabel</span>)) <span class="keyword">AS</span> <span class="variable">?wikiUrl</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .  <span class="comment"># programming language</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>ENCODE_FOR_URI — URL-safe encoding</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>String Search</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find Languages Containing "script"</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?langLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?langLabel</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">CONTAINS</span>(<span class="function">LCASE</span>(<span class="variable">?langLabel</span>), <span class="string">"script"</span>))
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?langLabel</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>CONTAINS + LCASE — Case-insensitive search</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museums Starting with "National"</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wdt:P17</span> <span class="variable">?country</span> ;
+          <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">STRSTARTS</span>(<span class="variable">?label</span>, <span class="string">"National"</span>))
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>STRSTARTS — Match prefix</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities Ending with "burg"</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;  <span class="comment"># city</span>
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">STRENDS</span>(<span class="variable">?label</span>, <span class="string">"burg"</span>))
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>STRENDS — Match suffix</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>String Extraction</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Extract First Letter of Names</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">SUBSTR</span>(<span class="variable">?langLabel</span>, 1, 1) <span class="keyword">AS</span> <span class="variable">?firstLetter</span>)
+       (<span class="function">STRLEN</span>(<span class="variable">?langLabel</span>) <span class="keyword">AS</span> <span class="variable">?nameLength</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .  <span class="comment"># programming language</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?firstLetter</span> <span class="variable">?langLabel</span>
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>SUBSTR + STRLEN — Extract and measure</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>String Replacement</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Normalize Labels (Remove Parenthetical)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?originalLabel</span>
+       (<span class="function">REPLACE</span>(<span class="variable">?originalLabel</span>, <span class="string">" \\\\(.*\\\\)"</span>, <span class="string">""</span>) <span class="keyword">AS</span> <span class="variable">?cleanLabel</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?originalLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?originalLabel</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">CONTAINS</span>(<span class="variable">?originalLabel</span>, <span class="string">"("</span>))
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>REPLACE with regex — Pattern substitution</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Case Conversion</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Normalize Case for Comparison</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">UCASE</span>(<span class="variable">?langLabel</span>) <span class="keyword">AS</span> <span class="variable">?upper</span>)
+       (<span class="function">LCASE</span>(<span class="variable">?langLabel</span>) <span class="keyword">AS</span> <span class="variable">?lower</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>UCASE + LCASE — Case transformation</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="index.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Expressions Overview</span>
+        </a>
+        <a href="date.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Date Functions</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

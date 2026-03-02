@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="multilingual">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Explore Wikidata's lexicographical data: words, forms, senses, and linguistic relationships." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Lexicographical Data - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Multilingual</a></li>
+        <li aria-current="page">Lexicographical Data</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="index.html" class="active">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Multilingual Topics</div>
+        <ul>
+          <li><a href="labels.html">Label Service</a></li>
+          <li><a href="languages.html">Language Tags</a></li>
+          <li><a href="scripts.html">Scripts & Writing</a></li>
+          <li><a href="translations.html">Translations</a></li>
+          <li><a href="lexemes.html" class="active">Lexicographical Data</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Multilingual</span>
+          <h1>Lexicographical Data</h1>
+          <p class="hero-subtitle">
+            Explore Wikidata's lexemes: words, grammatical forms, and senses.
+            Query linguistic data for language learning and research.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Lexeme Structure</h2>
+        <p>
+          Wikidata lexemes represent dictionary entries with three components:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Description</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lexeme</td>
+              <td>The dictionary entry (word)</td>
+              <td>L1234 "run" (English verb)</td>
+            </tr>
+            <tr>
+              <td>Form</td>
+              <td>Grammatical variations</td>
+              <td>"run", "runs", "ran", "running"</td>
+            </tr>
+            <tr>
+              <td>Sense</td>
+              <td>Different meanings</td>
+              <td>"to move quickly", "to operate"</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Basic Lexeme Queries</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find English Nouns</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lexeme</span> <span class="variable">?lemma</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lexeme</span> <span class="entity">dct:language</span> <span class="entity">wd:Q1860</span> ;   <span class="comment"># English</span>
+          <span class="entity">wikibase:lexicalCategory</span> <span class="entity">wd:Q1084</span> ;  <span class="comment"># noun</span>
+          <span class="entity">wikibase:lemma</span> <span class="variable">?lemma</span> .
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Properties: dct:language, wikibase:lexicalCategory</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Lexemes with Their Forms</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lexeme</span> <span class="variable">?lemma</span> <span class="variable">?form</span> <span class="variable">?formRep</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lexeme</span> <span class="entity">dct:language</span> <span class="entity">wd:Q1860</span> ;
+          <span class="entity">wikibase:lexicalCategory</span> <span class="entity">wd:Q24905</span> ;  <span class="comment"># verb</span>
+          <span class="entity">wikibase:lemma</span> <span class="variable">?lemma</span> ;
+          <span class="entity">ontolex:lexicalForm</span> <span class="variable">?form</span> .
+  <span class="variable">?form</span> <span class="entity">ontolex:representation</span> <span class="variable">?formRep</span> .
+  <span class="keyword">FILTER</span>(<span class="function">STR</span>(<span class="variable">?lemma</span>) = <span class="string">"run"</span>)
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Forms of the verb "run"</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Programming Terminology</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Terms as Lexemes</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lexeme</span> <span class="variable">?lemma</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Find lexemes whose sense links to programming concepts</span>
+  <span class="variable">?lexeme</span> <span class="entity">ontolex:sense</span> <span class="variable">?sense</span> .
+  <span class="variable">?sense</span> <span class="entity">wdt:P5137</span> <span class="variable">?concept</span> .  <span class="comment"># item for this sense</span>
+  <span class="variable">?concept</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q17155032</span> .  <span class="comment"># programming term</span>
+
+  <span class="variable">?lexeme</span> <span class="entity">wikibase:lemma</span> <span class="variable">?lemma</span> ;
+          <span class="entity">dct:language</span> <span class="variable">?lang</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Domain: Programming</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cross-Language Word Comparisons</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Same Concept in Different Languages</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?concept</span> <span class="variable">?conceptLabel</span>
+       <span class="variable">?enLemma</span> <span class="variable">?frLemma</span> <span class="variable">?deLemma</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?concept</span> { <span class="entity">wd:Q7239</span> }  <span class="comment"># organism</span>
+
+  <span class="keyword">OPTIONAL</span> {
+    <span class="variable">?enLex</span> <span class="entity">ontolex:sense</span>/<span class="entity">wdt:P5137</span> <span class="variable">?concept</span> ;
+           <span class="entity">dct:language</span> <span class="entity">wd:Q1860</span> ;  <span class="comment"># English</span>
+           <span class="entity">wikibase:lemma</span> <span class="variable">?enLemma</span> .
+  }
+  <span class="keyword">OPTIONAL</span> {
+    <span class="variable">?frLex</span> <span class="entity">ontolex:sense</span>/<span class="entity">wdt:P5137</span> <span class="variable">?concept</span> ;
+           <span class="entity">dct:language</span> <span class="entity">wd:Q150</span> ;   <span class="comment"># French</span>
+           <span class="entity">wikibase:lemma</span> <span class="variable">?frLemma</span> .
+  }
+  <span class="keyword">OPTIONAL</span> {
+    <span class="variable">?deLex</span> <span class="entity">ontolex:sense</span>/<span class="entity">wdt:P5137</span> <span class="variable">?concept</span> ;
+           <span class="entity">dct:language</span> <span class="entity">wd:Q188</span> ;   <span class="comment"># German</span>
+           <span class="entity">wikibase:lemma</span> <span class="variable">?deLemma</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Cross-language vocabulary</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Key Lexeme Properties</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wikibase:lemma</code></td>
+              <td>The canonical form of the word</td>
+            </tr>
+            <tr>
+              <td><code>dct:language</code></td>
+              <td>Language of the lexeme (Q-item)</td>
+            </tr>
+            <tr>
+              <td><code>wikibase:lexicalCategory</code></td>
+              <td>Part of speech (noun, verb, etc.)</td>
+            </tr>
+            <tr>
+              <td><code>ontolex:lexicalForm</code></td>
+              <td>Grammatical forms</td>
+            </tr>
+            <tr>
+              <td><code>ontolex:sense</code></td>
+              <td>Meanings/definitions</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P5137</code></td>
+              <td>Item for this sense (links to Q-items)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="translations.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Translations</span>
+        </a>
+        <a href="../patterns/index.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Patterns</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

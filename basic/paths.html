@@ -1,71 +1,326 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn property paths in SPARQL to traverse relationships, follow hierarchies, and match patterns with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>Property Paths - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">Property Paths</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html" class="active">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>OR</h2>
-      <p><b>Give me all the items with mathemtical formulae along with their types.</b></p>
-      <code>
-        <pre>
-SELECT ?type ?typeLabel (count(?item) as ?count){
-  ?item (wdt:P31|wdt:P279) ?type;
-        wdt:P2534 [].
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>Property Paths</h1>
+        <p class="hero-subtitle">
+          Navigate relationships with flexible patterns. Property paths let you follow
+          chains of properties, match alternatives, and traverse hierarchies in a single expression.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding Property Paths</h2>
+      <p>
+        Property paths extend basic triple patterns with operators for sequences (/),
+        alternatives (|), repetition (* + ?), and inversion (^). They're powerful for
+        traversing hierarchies, following chains, and matching flexible patterns.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Alternative Paths (|)</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Instance or Subclass</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fitem%20%3FitemLabel%20%3FtypeLabel%0AWHERE%20%7B%0A%20%20%3Fitem%20%28wdt%3AP31%7Cwdt%3AP279%29%20wd%3AQ7889%20.%0A%20%20%3Fitem%20%28wdt%3AP31%7Cwdt%3AP279%29%20%3Ftype%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span> <span class="variable">?typeLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> (<span class="entity">wdt:P31</span>|<span class="entity">wdt:P279</span>) <span class="entity">wd:Q7889</span> .
+  <span class="variable">?item</span> (<span class="entity">wdt:P31</span>|<span class="entity">wdt:P279</span>) <span class="variable">?type</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
 }
-GROUP BY ?type ?typeLabel
-ORDER by DESC(?count)
-        </pre>
-      </code>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Match either instance of OR subclass of video game</span>
+        </div>
+      </div>
+
+      <p>
+        The pipe operator (|) matches either property. This common pattern finds
+        items that are instances of or subclasses of video games, treating both
+        direct instances and subclasses alike.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Sequence Paths (/)</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Follow Chain of Properties</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP19%2Fwdt%3AP17%20%3Fcountry%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P19</span>/<span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Birth place → Country in one step</span>
+        </div>
+      </div>
+
+      <p>
+        The slash (/) chains properties together. Instead of separate patterns
+        for birth place and its country, this follows place of birth (P19)
+        then country (P17) in a single expression.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Repetition Paths (* + ?)</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Traverse Class Hierarchy</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20DISTINCT%20%3Fclass%20%3FclassLabel%0AWHERE%20%7B%0A%20%20wd%3AQ146%20wdt%3AP31%2Fwdt%3AP279%2a%20%3Fclass%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?class</span> <span class="variable">?classLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q146</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="variable">?class</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>All superclasses of "house cat"</span>
+        </div>
+      </div>
+
+      <p>
+        The asterisk (*) means "zero or more times". This finds the type of house cat,
+        then follows the subclass-of chain (P279) upward to find all ancestor classes:
+        cat → felid → carnivore → mammal → animal → organism.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Parent Chain (One or More)</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20DISTINCT%20%3Fancestor%20%3FancestorLabel%0AWHERE%20%7B%0A%20%20wd%3AQ9682%20wdt%3AP40%2b%20%3Fancestor%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?ancestor</span> <span class="variable">?ancestorLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q9682</span> <span class="entity">wdt:P40</span>+ <span class="variable">?ancestor</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Descendants of Queen Elizabeth II</span>
+        </div>
+      </div>
+
+      <p>
+        The plus (+) means "one or more times". This follows the child (P40)
+        relationship recursively to find all descendants. Use + when you need
+        at least one step; use * when zero steps (the starting point) is acceptable.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Inverse Paths (^)</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Follow Relationship Backwards</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fparent%20%3FparentLabel%0AWHERE%20%7B%0A%20%20wd%3AQ9682%20%5Ewdt%3AP40%20%3Fparent%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?parent</span> <span class="variable">?parentLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q9682</span> <span class="operator">^</span><span class="entity">wdt:P40</span> <span class="variable">?parent</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Parents of Queen Elizabeth II (reverse P40)</span>
+        </div>
+      </div>
+
+      <p>
+        The caret (^) inverts a property direction. While P40 means "has child",
+        ^P40 means "is child of", effectively finding parents. This is useful
+        when the property points the opposite direction from what you need.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>video game</td>
+            <td>wd:Q7889</td>
+            <td>Electronic game with video output</td>
+          </tr>
+          <tr>
+            <td>human</td>
+            <td>wd:Q5</td>
+            <td>Any human being</td>
+          </tr>
+          <tr>
+            <td>house cat</td>
+            <td>wd:Q146</td>
+            <td>Domesticated cat</td>
+          </tr>
+          <tr>
+            <td>Elizabeth II</td>
+            <td>wd:Q9682</td>
+            <td>Queen of the United Kingdom</td>
+          </tr>
+          <tr>
+            <td>instance of</td>
+            <td>wdt:P31</td>
+            <td>Type or class of item</td>
+          </tr>
+          <tr>
+            <td>subclass of</td>
+            <td>wdt:P279</td>
+            <td>Parent class in hierarchy</td>
+          </tr>
+          <tr>
+            <td>place of birth</td>
+            <td>wdt:P19</td>
+            <td>Location where born</td>
+          </tr>
+          <tr>
+            <td>country</td>
+            <td>wdt:P17</td>
+            <td>Sovereign state of location</td>
+          </tr>
+          <tr>
+            <td>child</td>
+            <td>wdt:P40</td>
+            <td>Person's child</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="negation.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">Negation</span>
+      </a>
+      <a href="subqueries.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">Subqueries</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

@@ -1,48 +1,496 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="STRING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="string.html">String</a></li>
-       <li><a href="date.html">Dates</a></li>
-       <li><a href="math.html">Math</a></li>
-       <li><a href="hash.html">Hash</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn SPARQL hash functions with practical examples. Generate MD5, SHA1, SHA256, and other cryptographic hashes." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Hash Functions - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Expressions</a></li>
+        <li aria-current="page">Hash Functions</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Expressions</span>
+          <h1>Hash Functions</h1>
+          <p class="hero-subtitle">
+            Generate cryptographic hashes for data verification, deduplication, and unique identifiers.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Hash Function Reference</h2>
+        <p>SPARQL provides cryptographic hash functions that convert strings into fixed-length hexadecimal representations.</p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Description</th>
+                <th>Output Length</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>MD5(str)</code></td>
+                <td>MD5 hash (128-bit)</td>
+                <td>32 hex characters</td>
+              </tr>
+              <tr>
+                <td><code>SHA1(str)</code></td>
+                <td>SHA-1 hash (160-bit)</td>
+                <td>40 hex characters</td>
+              </tr>
+              <tr>
+                <td><code>SHA256(str)</code></td>
+                <td>SHA-256 hash (256-bit)</td>
+                <td>64 hex characters</td>
+              </tr>
+              <tr>
+                <td><code>SHA384(str)</code></td>
+                <td>SHA-384 hash (384-bit)</td>
+                <td>96 hex characters</td>
+              </tr>
+              <tr>
+                <td><code>SHA512(str)</code></td>
+                <td>SHA-512 hash (512-bit)</td>
+                <td>128 hex characters</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box">
+          <p><strong>Note:</strong> Hash functions are one-way transformations. The same input always produces the same hash, but you cannot reverse a hash to get the original input.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Basic Hash Generation</h2>
+        <p>Generate hashes from string values.</p>
+
+        <h3>MD5 Hash of Labels</h3>
+        <p>Create MD5 hashes from entity labels:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">MD5 Hash of Country Names</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?hash</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .  <span class="comment"># country</span>
+  <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">MD5</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?hash</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span>
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+
+        <h3>SHA256 for Stronger Hashing</h3>
+        <p>Use SHA256 for more secure hashes:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">SHA256 Hash of City Names</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?sha256Hash</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># city</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .            <span class="comment"># France</span>
+  <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">SHA256</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?sha256Hash</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Comparing Hash Algorithms</h2>
+        <p>See the different outputs from various hash algorithms.</p>
+
+        <h3>Multiple Hash Types</h3>
+        <p>Generate different hash types for the same input:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Compare Hash Algorithms</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?md5</span> <span class="variable">?sha1</span> <span class="variable">?sha256</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q170790</span> .   <span class="comment"># mathematician</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P166</span> <span class="entity">wd:Q38104</span> .   <span class="comment"># Fields Medal winner</span>
+  <span class="variable">?person</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">MD5</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?md5</span>)
+  <span class="keyword">BIND</span>(<span class="function">SHA1</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?sha1</span>)
+  <span class="keyword">BIND</span>(<span class="function">SHA256</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?sha256</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Creating Unique Identifiers</h2>
+        <p>Use hashes to create unique identifiers from combined data.</p>
+
+        <h3>Composite Key Hashing</h3>
+        <p>Create a unique hash from multiple fields:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Hash of Name + Birth Year</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthYear</span> <span class="variable">?compositeHash</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> .      <span class="comment"># writer</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P27</span> <span class="entity">wd:Q145</span> .        <span class="comment"># UK</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?person</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?birthYear</span>)
+  <span class="keyword">BIND</span>(<span class="function">CONCAT</span>(<span class="variable">?label</span>, <span class="string">"|"</span>, <span class="function">STR</span>(<span class="variable">?birthYear</span>)) <span class="keyword">AS</span> <span class="variable">?composite</span>)
+  <span class="keyword">BIND</span>(<span class="function">MD5</span>(<span class="variable">?composite</span>) <span class="keyword">AS</span> <span class="variable">?compositeHash</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?birthYear</span>
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+
+        <h3>Hash as Short Identifier</h3>
+        <p>Use substring of hash as a short ID:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Short Hash IDs (8 characters)</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?painting</span> <span class="variable">?paintingLabel</span> <span class="variable">?shortId</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?painting</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3305213</span> .   <span class="comment"># painting</span>
+  <span class="variable">?painting</span> <span class="entity">wdt:P170</span> <span class="entity">wd:Q5582</span> .    <span class="comment"># by Van Gogh</span>
+  <span class="variable">?painting</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">SUBSTR</span>(<span class="function">MD5</span>(<span class="variable">?label</span>), <span class="number">1</span>, <span class="number">8</span>) <span class="keyword">AS</span> <span class="variable">?shortId</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Hashing URIs</h2>
+        <p>Create hashes from Wikidata entity URIs.</p>
+
+        <h3>Hash Entity URIs</h3>
+        <p>Generate a hash from the entity's IRI:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Hash of Entity URI</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?element</span> <span class="variable">?elementLabel</span> <span class="variable">?symbol</span> <span class="variable">?uriHash</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?element</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q11344</span> .    <span class="comment"># chemical element</span>
+  <span class="variable">?element</span> <span class="entity">wdt:P246</span> <span class="variable">?symbol</span> .      <span class="comment"># element symbol</span>
+  <span class="keyword">BIND</span>(<span class="function">MD5</span>(<span class="function">STR</span>(<span class="variable">?element</span>)) <span class="keyword">AS</span> <span class="variable">?uriHash</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?symbol</span>
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Data Verification</h2>
+        <p>Use hashes to verify data consistency and detect changes.</p>
+
+        <h3>Detecting Duplicate Labels</h3>
+        <p>Find entities with the same label hash:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Countries with Same Hash (Same Name)</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?hash</span> (<span class="function">COUNT</span>(<span class="variable">?person</span>) <span class="keyword">AS</span> <span class="variable">?count</span>) (<span class="function">SAMPLE</span>(<span class="variable">?label</span>) <span class="keyword">AS</span> <span class="variable">?sampleName</span>) <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q33999</span> .   <span class="comment"># actor</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P27</span> <span class="entity">wd:Q30</span> .       <span class="comment"># USA</span>
+  <span class="variable">?person</span> <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?label</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">MD5</span>(<span class="function">LCASE</span>(<span class="variable">?label</span>)) <span class="keyword">AS</span> <span class="variable">?hash</span>)
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?hash</span>
+<span class="keyword">HAVING</span> (<span class="function">COUNT</span>(<span class="variable">?person</span>) > <span class="number">1</span>)
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?count</span>)
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+
+        <h3>Content Fingerprint</h3>
+        <p>Create a fingerprint for entity data:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Data Fingerprint from Multiple Fields</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?book</span> <span class="variable">?bookLabel</span> <span class="variable">?authorLabel</span> <span class="variable">?year</span> <span class="variable">?fingerprint</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?book</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q7725634</span> .     <span class="comment"># literary work</span>
+  <span class="variable">?book</span> <span class="entity">wdt:P50</span> <span class="variable">?author</span> .          <span class="comment"># author</span>
+  <span class="variable">?book</span> <span class="entity">wdt:P577</span> <span class="variable">?pubDate</span> .        <span class="comment"># publication date</span>
+  <span class="variable">?book</span> <span class="entity">rdfs:label</span> <span class="variable">?bookName</span> .
+  <span class="variable">?author</span> <span class="entity">rdfs:label</span> <span class="variable">?authorName</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?bookName</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?authorName</span>) = <span class="string">"en"</span>)
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?pubDate</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+  <span class="keyword">BIND</span>(<span class="function">CONCAT</span>(<span class="variable">?bookName</span>, <span class="string">"|"</span>, <span class="variable">?authorName</span>, <span class="string">"|"</span>, <span class="function">STR</span>(<span class="variable">?year</span>)) <span class="keyword">AS</span> <span class="variable">?combined</span>)
+  <span class="keyword">BIND</span>(<span class="function">SHA256</span>(<span class="variable">?combined</span>) <span class="keyword">AS</span> <span class="variable">?fingerprint</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Anonymization with Hashing</h2>
+        <p>Use hashes to create pseudonymous identifiers.</p>
+
+        <h3>Pseudonymous IDs</h3>
+        <p>Replace identifiable information with hashes:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Pseudonymized Person Records</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?pseudoId</span> <span class="variable">?birthDecade</span> <span class="variable">?countryLabel</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q901</span> .      <span class="comment"># scientist</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?person</span> <span class="entity">wdt:P27</span> <span class="variable">?country</span> .
+  <span class="keyword">BIND</span>(<span class="function">FLOOR</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) / <span class="number">10</span>) * <span class="number">10</span> <span class="keyword">AS</span> <span class="variable">?birthDecade</span>)
+  <span class="keyword">BIND</span>(<span class="function">SUBSTR</span>(<span class="function">SHA256</span>(<span class="function">STR</span>(<span class="variable">?person</span>)), <span class="number">1</span>, <span class="number">12</span>) <span class="keyword">AS</span> <span class="variable">?pseudoId</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?birthDecade</span> >= <span class="number">1900</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?birthDecade</span>
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Hash-Based Grouping</h2>
+        <p>Use hash prefixes to distribute data into buckets.</p>
+
+        <h3>Partition by Hash Prefix</h3>
+        <p>Group items by the first character of their hash:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Count Items by Hash Bucket</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?bucket</span> (<span class="function">COUNT</span>(<span class="variable">?city</span>) <span class="keyword">AS</span> <span class="variable">?count</span>) <span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># city</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q183</span> .            <span class="comment"># Germany</span>
+  <span class="keyword">BIND</span>(<span class="function">SUBSTR</span>(<span class="function">MD5</span>(<span class="function">STR</span>(<span class="variable">?city</span>)), <span class="number">1</span>, <span class="number">1</span>) <span class="keyword">AS</span> <span class="variable">?bucket</span>)
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?bucket</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?bucket</span></code></pre>
+        </div>
+
+        <h3>Sample by Hash</h3>
+        <p>Use hash to get a reproducible random sample:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Reproducible 10% Sample</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?countryLabel</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .  <span class="comment"># museum</span>
+  <span class="variable">?museum</span> <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="keyword">BIND</span>(<span class="function">SUBSTR</span>(<span class="function">MD5</span>(<span class="function">STR</span>(<span class="variable">?museum</span>)), <span class="number">1</span>, <span class="number">1</span>) <span class="keyword">AS</span> <span class="variable">?bucket</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?bucket</span> = <span class="string">"a"</span>)  <span class="comment"># ~6% sample (1/16 hex values)</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Use Cases Summary</h2>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Use Case</th>
+                <th>Recommended Hash</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Quick lookups</td>
+                <td>MD5</td>
+                <td>Fast, sufficient for non-security uses</td>
+              </tr>
+              <tr>
+                <td>Unique identifiers</td>
+                <td>SHA256</td>
+                <td>Lower collision probability</td>
+              </tr>
+              <tr>
+                <td>Data fingerprints</td>
+                <td>SHA256</td>
+                <td>Good balance of security and length</td>
+              </tr>
+              <tr>
+                <td>Partitioning</td>
+                <td>MD5</td>
+                <td>Fast and evenly distributed</td>
+              </tr>
+              <tr>
+                <td>Maximum security</td>
+                <td>SHA512</td>
+                <td>Highest cryptographic strength</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="math.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Math Functions</span>
+        </a>
+        <a href="../aggregate/index.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next Chapter</span>
+          <span class="topic-nav-title">Aggregate Queries</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

@@ -1,59 +1,322 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use OPTIONAL in SPARQL to include results even when some data is missing with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>OPTIONAL - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">OPTIONAL</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html" class="active">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>OPTIONAL</h1>
+        <p class="hero-subtitle">
+          Include results even when data is missing. OPTIONAL allows patterns that may or
+          may not match, returning results with empty values for missing data instead of
+          excluding them entirely.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding OPTIONAL</h2>
+      <p>
+        Without OPTIONAL, SPARQL requires all patterns to match. If an entity lacks a property,
+        it's excluded from results. OPTIONAL lets you request data that might not exist—if it
+        does, you get it; if not, the result row still appears with that variable unbound.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Basic OPTIONAL Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Scientists with Optional Death Date</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%3Fbirth%20%3Fdeath%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ901%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fbirth%20.%0A%20%20OPTIONAL%20%7B%20%3Fperson%20wdt%3AP570%20%3Fdeath%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birth</span> <span class="variable">?death</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q901</span> ;
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?person</span> <span class="entity">wdt:P570</span> <span class="variable">?death</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Living scientists have empty death column</span>
+        </div>
+      </div>
+
+      <p>
+        This query finds scientists with their birth dates (required) and death dates (optional).
+        Living scientists appear in results with an empty ?death value. Without OPTIONAL,
+        only deceased scientists would be returned.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Cities with Optional Population</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcity%20%3FcityLabel%20%3Fpopulation%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20wd%3AQ183%20.%0A%20%20OPTIONAL%20%7B%20%3Fcity%20wdt%3AP1082%20%3Fpopulation%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2030" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q183</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>German cities with population if available</span>
+        </div>
+      </div>
+
+      <p>
+        Not all cities in Wikidata have population data recorded. Using OPTIONAL ensures
+        we get all German cities, showing population when available and leaving it empty
+        when not recorded.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Multiple OPTIONAL Clauses</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Authors with Optional Birth/Death Places</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fauthor%20%3FauthorLabel%20%3FbirthPlaceLabel%20%3FdeathPlaceLabel%0AWHERE%20%7B%0A%20%20%3Fauthor%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ36180%20.%0A%20%20OPTIONAL%20%7B%20%3Fauthor%20wdt%3AP19%20%3FbirthPlace%20.%20%7D%0A%20%20OPTIONAL%20%7B%20%3Fauthor%20wdt%3AP20%20%3FdeathPlace%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2025" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> <span class="variable">?birthPlaceLabel</span> <span class="variable">?deathPlaceLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?author</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?author</span> <span class="entity">wdt:P19</span> <span class="variable">?birthPlace</span> . }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?author</span> <span class="entity">wdt:P20</span> <span class="variable">?deathPlace</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">25</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Each OPTIONAL is independent</span>
+        </div>
+      </div>
+
+      <p>
+        Multiple OPTIONAL clauses are independent—each is tried separately. An author
+        might have a birth place but no death place, or vice versa, or neither, or both.
+        All combinations appear in the results.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>OPTIONAL with FILTER</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Filtering on Optional Values</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fmovie%20%3FmovieLabel%20%3Fbudget%0AWHERE%20%7B%0A%20%20%3Fmovie%20wdt%3AP31%20wd%3AQ11424%20%3B%0A%20%20%20%20%20%20%20%20%20wdt%3AP577%20%3Fdate%20.%0A%20%20FILTER%28YEAR%28%3Fdate%29%20%3D%202020%29%0A%20%20OPTIONAL%20%7B%20%3Fmovie%20wdt%3AP2130%20%3Fbudget%20.%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2030" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?movie</span> <span class="variable">?movieLabel</span> <span class="variable">?budget</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?movie</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q11424</span> ;
+         <span class="entity">wdt:P577</span> <span class="variable">?date</span> .
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?date</span>) <span class="operator">=</span> <span class="number">2020</span>)
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?movie</span> <span class="entity">wdt:P2130</span> <span class="variable">?budget</span> . }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>2020 films with budget if known</span>
+        </div>
+      </div>
+
+      <p>
+        The FILTER applies to required patterns, while OPTIONAL values are still included
+        when available. This gets all 2020 films, showing budget data only for films where
+        it's recorded. Use BOUND() with FILTER to check if optional values exist.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>human</td>
+            <td>wd:Q5</td>
+            <td>Any human being</td>
+          </tr>
+          <tr>
+            <td>scientist</td>
+            <td>wd:Q901</td>
+            <td>Person who conducts research</td>
+          </tr>
+          <tr>
+            <td>city</td>
+            <td>wd:Q515</td>
+            <td>Large human settlement</td>
+          </tr>
+          <tr>
+            <td>Germany</td>
+            <td>wd:Q183</td>
+            <td>Country in Central Europe</td>
+          </tr>
+          <tr>
+            <td>writer</td>
+            <td>wd:Q36180</td>
+            <td>Person who uses written words</td>
+          </tr>
+          <tr>
+            <td>film</td>
+            <td>wd:Q11424</td>
+            <td>Sequence of images for cinema</td>
+          </tr>
+          <tr>
+            <td>date of birth</td>
+            <td>wdt:P569</td>
+            <td>Date when person was born</td>
+          </tr>
+          <tr>
+            <td>date of death</td>
+            <td>wdt:P570</td>
+            <td>Date when person died</td>
+          </tr>
+          <tr>
+            <td>place of birth</td>
+            <td>wdt:P19</td>
+            <td>Location where person was born</td>
+          </tr>
+          <tr>
+            <td>place of death</td>
+            <td>wdt:P20</td>
+            <td>Location where person died</td>
+          </tr>
+          <tr>
+            <td>cost</td>
+            <td>wdt:P2130</td>
+            <td>Production budget amount</td>
+          </tr>
+          <tr>
+            <td>publication date</td>
+            <td>wdt:P577</td>
+            <td>Date of first publication</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="offset.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">OFFSET</span>
+      </a>
+      <a href="bind.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">BIND</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

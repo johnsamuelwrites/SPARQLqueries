@@ -1,48 +1,447 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="STRING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="string.html">String</a></li>
-       <li><a href="date.html">Dates</a></li>
-       <li><a href="math.html">Math</a></li>
-       <li><a href="hash.html">Hash</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn SPARQL date and time functions with practical Wikidata examples. Extract years, months, days, and perform date comparisons." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Date Functions - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Expressions</a></li>
+        <li aria-current="page">Date Functions</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Expressions</span>
+          <h1>Date Functions</h1>
+          <p class="hero-subtitle">
+            Extract components from dates, perform temporal calculations, and filter data by time periods.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Date Function Reference</h2>
+        <p>SPARQL provides functions to work with <code>xsd:dateTime</code> and <code>xsd:date</code> values.</p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>YEAR(date)</code></td>
+                <td>Extract the year as integer</td>
+                <td><code>YEAR("2024-03-15"^^xsd:date)</code> → 2024</td>
+              </tr>
+              <tr>
+                <td><code>MONTH(date)</code></td>
+                <td>Extract the month (1-12)</td>
+                <td><code>MONTH("2024-03-15"^^xsd:date)</code> → 3</td>
+              </tr>
+              <tr>
+                <td><code>DAY(date)</code></td>
+                <td>Extract the day of month (1-31)</td>
+                <td><code>DAY("2024-03-15"^^xsd:date)</code> → 15</td>
+              </tr>
+              <tr>
+                <td><code>HOURS(datetime)</code></td>
+                <td>Extract hours (0-23)</td>
+                <td><code>HOURS("2024-03-15T14:30:00"^^xsd:dateTime)</code> → 14</td>
+              </tr>
+              <tr>
+                <td><code>MINUTES(datetime)</code></td>
+                <td>Extract minutes (0-59)</td>
+                <td><code>MINUTES("2024-03-15T14:30:00"^^xsd:dateTime)</code> → 30</td>
+              </tr>
+              <tr>
+                <td><code>SECONDS(datetime)</code></td>
+                <td>Extract seconds (0-59)</td>
+                <td><code>SECONDS("2024-03-15T14:30:45"^^xsd:dateTime)</code> → 45</td>
+              </tr>
+              <tr>
+                <td><code>NOW()</code></td>
+                <td>Current date and time</td>
+                <td><code>YEAR(NOW())</code> → current year</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Extracting Date Components</h2>
+        <p>Use date functions to extract year, month, and day from date properties.</p>
+
+        <h3>Scientists Born in a Specific Year</h3>
+        <p>Find Nobel Prize winners born in a particular year:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Nobel Laureates Born in 1879</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthDate</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P166</span> <span class="entity">wd:Q7191</span> <span class="comment"># Nobel Prize winner</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) = <span class="number">1879</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?birthDate</span></code></pre>
+        </div>
+
+        <h3>People Born on a Specific Day</h3>
+        <p>Find notable people born on a particular date (month and day):</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Famous People Born on March 14 (Pi Day)</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthDate</span> <span class="variable">?birthYear</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> .          <span class="comment"># human</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="variable">?occupation</span> .  <span class="comment"># has occupation</span>
+  <span class="keyword">FILTER</span>(<span class="function">MONTH</span>(<span class="variable">?birthDate</span>) = <span class="number">3</span> && <span class="function">DAY</span>(<span class="variable">?birthDate</span>) = <span class="number">14</span>)
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?birthYear</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?birthYear</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Date Comparisons</h2>
+        <p>Compare dates to filter by time periods or find items within date ranges.</p>
+
+        <h3>Events in a Date Range</h3>
+        <p>Find events that occurred between two dates:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Space Missions Launched in the 1960s</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?mission</span> <span class="variable">?missionLabel</span> <span class="variable">?launchDate</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?mission</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q5916</span> .  <span class="comment"># spaceflight</span>
+  <span class="variable">?mission</span> <span class="entity">wdt:P619</span> <span class="variable">?launchDate</span> .         <span class="comment"># launch date</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?launchDate</span> >= <span class="string">"1960-01-01"</span>^^<span class="entity">xsd:date</span> &&
+         <span class="variable">?launchDate</span> < <span class="string">"1970-01-01"</span>^^<span class="entity">xsd:date</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?launchDate</span>
+<span class="keyword">LIMIT</span> <span class="number">100</span></code></pre>
+        </div>
+
+        <h3>Before and After Comparisons</h3>
+        <p>Find people who died before a certain age or date:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Composers Who Died Before Age 40</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?composer</span> <span class="variable">?composerLabel</span> <span class="variable">?birthDate</span> <span class="variable">?deathDate</span> <span class="variable">?age</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?composer</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q36834</span> .   <span class="comment"># occupation: composer</span>
+  <span class="variable">?composer</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?composer</span> <span class="entity">wdt:P570</span> <span class="variable">?deathDate</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?deathDate</span>) - <span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?age</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?age</span> < <span class="number">40</span> && <span class="variable">?age</span> > <span class="number">0</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?age</span>
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Using NOW() for Current Time</h2>
+        <p>The <code>NOW()</code> function returns the current date and time, useful for dynamic queries.</p>
+
+        <h3>Living People Over 100</h3>
+        <p>Find centenarians who are still alive:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Living Centenarians</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthDate</span> <span class="variable">?age</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> .           <span class="comment"># human</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?person</span> <span class="entity">wdt:P570</span> <span class="variable">?deathDate</span> . }  <span class="comment"># still alive</span>
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="function">NOW</span>()) - <span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?age</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?age</span> >= <span class="number">100</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?age</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+
+        <h3>Recent Events</h3>
+        <p>Find events from the past year:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Earthquakes in the Last Year</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?earthquake</span> <span class="variable">?earthquakeLabel</span> <span class="variable">?date</span> <span class="variable">?magnitude</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?earthquake</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q7944</span> .    <span class="comment"># earthquake</span>
+  <span class="variable">?earthquake</span> <span class="entity">wdt:P585</span> <span class="variable">?date</span> .       <span class="comment"># point in time</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?earthquake</span> <span class="entity">wdt:P2528</span> <span class="variable">?magnitude</span> . }
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="function">NOW</span>()) - <span class="number">1</span> <span class="keyword">AS</span> <span class="variable">?lastYear</span>)
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?date</span>) >= <span class="variable">?lastYear</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?date</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Grouping by Date Parts</h2>
+        <p>Use date extraction functions with GROUP BY for temporal aggregation.</p>
+
+        <h3>Count by Year</h3>
+        <p>Count events per year:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Movies Released Per Year (2000-2020)</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?year</span> (<span class="function">COUNT</span>(<span class="variable">?film</span>) <span class="keyword">AS</span> <span class="variable">?count</span>) <span class="keyword">WHERE</span> {
+  <span class="variable">?film</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q11424</span> .         <span class="comment"># film</span>
+  <span class="variable">?film</span> <span class="entity">wdt:P577</span> <span class="variable">?pubDate</span> .         <span class="comment"># publication date</span>
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?pubDate</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?year</span> >= <span class="number">2000</span> && <span class="variable">?year</span> <= <span class="number">2020</span>)
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?year</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?year</span></code></pre>
+        </div>
+
+        <h3>Count by Month</h3>
+        <p>Find which months have the most births:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Nobel Laureate Births by Month</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?month</span> (<span class="function">COUNT</span>(<span class="variable">?person</span>) <span class="keyword">AS</span> <span class="variable">?births</span>) <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P166</span> <span class="entity">wd:Q7191</span> .       <span class="comment"># Nobel Prize winner</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="keyword">BIND</span>(<span class="function">MONTH</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?month</span>)
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?month</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?month</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Date Arithmetic</h2>
+        <p>Calculate durations and differences between dates.</p>
+
+        <h3>Duration Calculation</h3>
+        <p>Calculate how long someone held a position:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">US Presidents by Years in Office</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?president</span> <span class="variable">?presidentLabel</span> <span class="variable">?start</span> <span class="variable">?end</span> <span class="variable">?yearsInOffice</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?president</span> <span class="entity">wdt:P39</span> <span class="entity">wd:Q11696</span> .    <span class="comment"># position held: US President</span>
+  <span class="variable">?president</span> <span class="entity">p:P39</span> <span class="variable">?statement</span> .
+  <span class="variable">?statement</span> <span class="entity">ps:P39</span> <span class="entity">wd:Q11696</span> .
+  <span class="variable">?statement</span> <span class="entity">pq:P580</span> <span class="variable">?start</span> .       <span class="comment"># start time</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?statement</span> <span class="entity">pq:P582</span> <span class="variable">?end</span> . }  <span class="comment"># end time</span>
+  <span class="keyword">BIND</span>(<span class="keyword">IF</span>(<span class="function">BOUND</span>(<span class="variable">?end</span>),
+       <span class="function">YEAR</span>(<span class="variable">?end</span>) - <span class="function">YEAR</span>(<span class="variable">?start</span>),
+       <span class="function">YEAR</span>(<span class="function">NOW</span>()) - <span class="function">YEAR</span>(<span class="variable">?start</span>)) <span class="keyword">AS</span> <span class="variable">?yearsInOffice</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?yearsInOffice</span>)</code></pre>
+        </div>
+
+        <h3>Age at Death</h3>
+        <p>Calculate precise ages:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Philosophers by Age at Death</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?philosopher</span> <span class="variable">?philosopherLabel</span> <span class="variable">?birthDate</span> <span class="variable">?deathDate</span> <span class="variable">?age</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?philosopher</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q4964182</span> .  <span class="comment"># occupation: philosopher</span>
+  <span class="variable">?philosopher</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?philosopher</span> <span class="entity">wdt:P570</span> <span class="variable">?deathDate</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?deathDate</span>) - <span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?age</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?age</span> > <span class="number">0</span>)  <span class="comment"># filter invalid dates</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?age</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Combined Date Filters</h2>
+        <p>Combine multiple date conditions for complex temporal queries.</p>
+
+        <h3>People Born and Died in Same Century</h3>
+        <p>Find people whose entire life was within one century:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Writers Who Lived Entirely in the 19th Century</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?writer</span> <span class="variable">?writerLabel</span> <span class="variable">?birthDate</span> <span class="variable">?deathDate</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?writer</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> .      <span class="comment"># occupation: writer</span>
+  <span class="variable">?writer</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="variable">?writer</span> <span class="entity">wdt:P570</span> <span class="variable">?deathDate</span> .
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) >= <span class="number">1801</span> && <span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <= <span class="number">1900</span>)
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?deathDate</span>) >= <span class="number">1801</span> && <span class="function">YEAR</span>(<span class="variable">?deathDate</span>) <= <span class="number">1900</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?birthDate</span>
+<span class="keyword">LIMIT</span> <span class="number">100</span></code></pre>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="string.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">String Functions</span>
+        </a>
+        <a href="math.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Math Functions</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

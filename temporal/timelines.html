@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="temporal">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Build chronological timelines and analyze time periods with SPARQL. Group events by decade, century, or custom intervals." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Timelines & Periods - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Temporal</a></li>
+        <li aria-current="page">Timelines & Periods</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="index.html" class="active">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Temporal Topics</div>
+        <ul>
+          <li><a href="dates.html">Working with Dates</a></li>
+          <li><a href="timelines.html" class="active">Timelines & Periods</a></li>
+          <li><a href="historical.html">Historical Queries</a></li>
+          <li><a href="precision.html">Time Precision</a></li>
+          <li><a href="calendars.html">Calendar Systems</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Temporal</span>
+          <h1>Timelines & Periods</h1>
+          <p class="hero-subtitle">
+            Build chronological timelines and analyze time periods. Group events by decade,
+            century, or custom intervals using SPARQL's aggregation features.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Creating Time Buckets</h2>
+        <p>
+          Grouping events into time periods (decades, centuries, eras) is essential for
+          historical analysis. Use arithmetic with FLOOR() to create time buckets.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Time Bucket</th>
+              <th>Formula</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Decade</td>
+              <td><code>FLOOR(YEAR(?date) / 10) * 10</code></td>
+            </tr>
+            <tr>
+              <td>Century</td>
+              <td><code>FLOOR((YEAR(?date) - 1) / 100) + 1</code></td>
+            </tr>
+            <tr>
+              <td>Quarter Century</td>
+              <td><code>FLOOR(YEAR(?date) / 25) * 25</code></td>
+            </tr>
+            <tr>
+              <td>Half Century</td>
+              <td><code>FLOOR(YEAR(?date) / 50) * 50</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Programming: Language Evolution Timeline</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Language Timeline (Visualization)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Timeline</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span> <span class="variable">?image</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P154</span> <span class="variable">?image</span> . }  <span class="comment"># logo</span>
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?inception</span>) >= 1950)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?inception</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>View: Timeline | Shows visual timeline in Wikidata Query Service</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Languages by Programming Paradigm Over Time</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?decade</span> <span class="variable">?paradigmLabel</span> (<span class="function">COUNT</span>(<span class="variable">?lang</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+  <span class="keyword">BIND</span>(<span class="function">FLOOR</span>(<span class="function">YEAR</span>(<span class="variable">?inception</span>) / 10) * 10 <span class="keyword">AS</span> <span class="variable">?decade</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?decade</span> >= 1960)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?decade</span> <span class="variable">?paradigmLabel</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?decade</span> <span class="keyword">DESC</span>(<span class="variable">?count</span>)</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Track paradigm adoption over decades</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cultural Heritage: Art Movement Periods</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Artists and Their Active Periods</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Timeline</span>
+<span class="keyword">SELECT</span> <span class="variable">?artist</span> <span class="variable">?artistLabel</span> <span class="variable">?birth</span> <span class="variable">?death</span>
+       <span class="variable">?movement</span> <span class="variable">?movementLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?artist</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q1028181</span> ;  <span class="comment"># painter</span>
+          <span class="entity">wdt:P135</span> <span class="variable">?movement</span> ;      <span class="comment"># movement</span>
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?artist</span> <span class="entity">wdt:P570</span> <span class="variable">?death</span> . }
+
+  <span class="comment"># Impressionism movement</span>
+  <span class="keyword">VALUES</span> <span class="variable">?movement</span> { <span class="entity">wd:Q40415</span> }  <span class="comment"># Impressionism</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?birth</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Cultural Heritage | Artist lifespans</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Artwork Production by Century</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:BarChart</span>
+<span class="keyword">SELECT</span> (<span class="function">CONCAT</span>(<span class="function">STR</span>(<span class="variable">?century</span>), <span class="string">"th century"</span>) <span class="keyword">AS</span> <span class="variable">?period</span>)
+       (<span class="function">COUNT</span>(<span class="variable">?artwork</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?artwork</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3305213</span> ;  <span class="comment"># painting</span>
+           <span class="entity">wdt:P571</span> <span class="variable">?date</span> .
+  <span class="keyword">BIND</span>(<span class="function">FLOOR</span>((<span class="function">YEAR</span>(<span class="variable">?date</span>) - 1) / 100) + 1 <span class="keyword">AS</span> <span class="variable">?century</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?century</span> >= 15 && <span class="variable">?century</span> <= 21)
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?century</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?century</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>View: BarChart | Paintings by century</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Urban: City Growth Over Time</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities Founded by Era</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?era</span> (<span class="function">COUNT</span>(<span class="variable">?city</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?cityLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?examples</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?founded</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?founded</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+  <span class="keyword">BIND</span>(
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < -3000, <span class="string">"1. Ancient (before 3000 BC)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < -500, <span class="string">"2. Bronze/Iron Age (-3000 to -500)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 500, <span class="string">"3. Classical (-500 to 500)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1500, <span class="string">"4. Medieval (500-1500)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1800, <span class="string">"5. Early Modern (1500-1800)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1900, <span class="string">"6. Industrial (1800-1900)"</span>,
+    <span class="string">"7. Modern (1900+)"</span>))))))
+  <span class="keyword">AS</span> <span class="variable">?era</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?era</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?era</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Urban | Custom era classification</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Infrastructure Timeline: Railways</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Timeline</span>
+<span class="keyword">SELECT</span> <span class="variable">?railway</span> <span class="variable">?railwayLabel</span> <span class="variable">?opened</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?railway</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q728937</span> ;  <span class="comment"># railway line</span>
+           <span class="entity">wdt:P1619</span> <span class="variable">?opened</span> ;     <span class="comment"># date opened</span>
+           <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="keyword">FILTER</span>(<span class="function">YEAR</span>(<span class="variable">?opened</span>) >= 1800 && <span class="function">YEAR</span>(<span class="variable">?opened</span>) <= 1900)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?opened</span>
+<span class="keyword">LIMIT</span> 200</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>View: Timeline | 19th century railway expansion</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Overlapping Time Periods</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find Contemporaries: Artists Active at Same Time</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?artist1Label</span> <span class="variable">?artist2Label</span>
+       <span class="variable">?birth1</span> <span class="variable">?death1</span> <span class="variable">?birth2</span> <span class="variable">?death2</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># First artist: Van Gogh</span>
+  <span class="keyword">BIND</span>(<span class="entity">wd:Q5582</span> <span class="keyword">AS</span> <span class="variable">?artist1</span>)
+  <span class="variable">?artist1</span> <span class="entity">wdt:P569</span> <span class="variable">?birth1</span> ;
+           <span class="entity">wdt:P570</span> <span class="variable">?death1</span> .
+
+  <span class="comment"># Find other painters with overlapping lifespans</span>
+  <span class="variable">?artist2</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q1028181</span> ;  <span class="comment"># painter</span>
+           <span class="entity">wdt:P569</span> <span class="variable">?birth2</span> ;
+           <span class="entity">wdt:P570</span> <span class="variable">?death2</span> .
+
+  <span class="comment"># Overlapping lifetimes</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?birth2</span> < <span class="variable">?death1</span> && <span class="variable">?death2</span> > <span class="variable">?birth1</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?artist1</span> != <span class="variable">?artist2</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Pattern: Overlapping date ranges</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="dates.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Working with Dates</span>
+        </a>
+        <a href="historical.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Historical Queries</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

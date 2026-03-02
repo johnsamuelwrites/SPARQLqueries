@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="temporal">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn temporal SPARQL queries: work with dates, timelines, historical periods, and time-based filtering using Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Temporal Queries - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li aria-current="page">Temporal Queries</li>
+      </ol>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Navigation</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="index.html" class="active">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Temporal Topics</div>
+        <ul>
+          <li><a href="dates.html">Working with Dates</a></li>
+          <li><a href="timelines.html">Timelines & Periods</a></li>
+          <li><a href="historical.html">Historical Queries</a></li>
+          <li><a href="precision.html">Time Precision</a></li>
+          <li><a href="calendars.html">Calendar Systems</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Domain Chapter</span>
+          <h1>Temporal Queries</h1>
+          <p class="hero-subtitle">
+            Master time-based queries in SPARQL. From filtering by dates to building timelines,
+            explore how to work with temporal data across programming language history,
+            cultural heritage events, and urban development.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">5</div>
+              <div class="hero-stat-label">Topics</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">15+</div>
+              <div class="hero-stat-label">Examples</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Intermediate</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>Time in Knowledge Graphs</h2>
+        <p>
+          Wikidata contains rich temporal information: when programming languages were created,
+          when historical buildings were constructed, when cities were founded, and when cultural
+          movements flourished. Understanding how to query temporal data unlocks powerful
+          historical analysis and timeline generation.
+        </p>
+        <p>
+          Temporal queries involve:
+        </p>
+        <ul>
+          <li><strong>Date filtering</strong> — Find entities before, after, or within date ranges</li>
+          <li><strong>Time extraction</strong> — Extract years, months, decades from datetime values</li>
+          <li><strong>Period analysis</strong> — Compare durations and overlapping timeframes</li>
+          <li><strong>Precision handling</strong> — Work with dates of varying precision (year, month, day)</li>
+          <li><strong>Historical context</strong> — Query across different calendar systems and eras</li>
+        </ul>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Temporal Topics</h2>
+
+        <div class="chapter-grid">
+          <a href="dates.html" class="chapter-card" data-domain="temporal">
+            <div class="chapter-card-icon">📅</div>
+            <h3>Working with Dates</h3>
+            <p>
+              Filter and compare dates using SPARQL date functions.
+              Learn YEAR(), MONTH(), DAY() and date comparisons.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-beginner">Beginner</span>
+              <span>Date functions</span>
+            </div>
+            <span class="chapter-card-link">Learn Dates</span>
+          </a>
+
+          <a href="timelines.html" class="chapter-card" data-domain="temporal">
+            <div class="chapter-card-icon">📊</div>
+            <h3>Timelines & Periods</h3>
+            <p>
+              Build chronological timelines and analyze time periods.
+              Group events by decade, century, or custom intervals.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Chronology</span>
+            </div>
+            <span class="chapter-card-link">Build Timelines</span>
+          </a>
+
+          <a href="historical.html" class="chapter-card" data-domain="temporal">
+            <div class="chapter-card-icon">🏛️</div>
+            <h3>Historical Queries</h3>
+            <p>
+              Query historical events, movements, and periods.
+              Explore cultural heritage through time-based analysis.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>History</span>
+            </div>
+            <span class="chapter-card-link">Explore History</span>
+          </a>
+
+          <a href="precision.html" class="chapter-card" data-domain="temporal">
+            <div class="chapter-card-icon">🎯</div>
+            <h3>Time Precision</h3>
+            <p>
+              Handle dates with different precision levels.
+              Work with year-only, month-only, and exact dates.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Precision</span>
+            </div>
+            <span class="chapter-card-link">Handle Precision</span>
+          </a>
+
+          <a href="calendars.html" class="chapter-card" data-domain="temporal">
+            <div class="chapter-card-icon">🌍</div>
+            <h3>Calendar Systems</h3>
+            <p>
+              Work with different calendar systems: Gregorian,
+              Julian, and proleptic calendars for ancient dates.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Calendars</span>
+            </div>
+            <span class="chapter-card-link">Explore Calendars</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Domain Examples -->
+      <section class="section">
+        <h2>Temporal Queries by Domain</h2>
+
+        <h3>Programming Languages Timeline</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Languages Created by Decade</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?decade</span> (<span class="function">COUNT</span>(<span class="variable">?lang</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?langLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?languages</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+  <span class="keyword">BIND</span>(<span class="function">FLOOR</span>(<span class="function">YEAR</span>(<span class="variable">?inception</span>) / 10) * 10 <span class="keyword">AS</span> <span class="variable">?decade</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?decade</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?decade</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Programming Languages</span>
+          </div>
+        </div>
+
+        <h3>Cultural Heritage Through Time</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">UNESCO World Heritage Sites by Century</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?century</span> (<span class="function">COUNT</span>(<span class="variable">?site</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?site</span> <span class="entity">wdt:P1435</span> <span class="entity">wd:Q9259</span> .  <span class="comment"># UNESCO World Heritage Site</span>
+  <span class="variable">?site</span> <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+  <span class="keyword">BIND</span>(<span class="function">FLOOR</span>((<span class="function">YEAR</span>(<span class="variable">?inception</span>) - 1) / 100) + 1 <span class="keyword">AS</span> <span class="variable">?century</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?century</span> > 0)  <span class="comment"># Only AD dates</span>
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?century</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?century</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+
+        <h3>Urban Development Timeline</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities Founded in Different Eras</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?era</span> (<span class="function">COUNT</span>(<span class="variable">?city</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+       (<span class="function">SAMPLE</span>(<span class="variable">?cityLabel</span>) <span class="keyword">AS</span> <span class="variable">?example</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;  <span class="comment"># city or subclass</span>
+        <span class="entity">wdt:P571</span> <span class="variable">?founded</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?founded</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+  <span class="keyword">BIND</span>(
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < -500, <span class="string">"Ancient (before 500 BC)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 500, <span class="string">"Classical (500 BC - 500 AD)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1500, <span class="string">"Medieval (500 - 1500)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1800, <span class="string">"Early Modern (1500 - 1800)"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?year</span> < 1900, <span class="string">"Industrial (1800 - 1900)"</span>,
+    <span class="string">"Modern (1900+)"</span>)))))
+  <span class="keyword">AS</span> <span class="variable">?era</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?era</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?era</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Urban/Geographic</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Temporal Properties -->
+      <section class="section">
+        <h2>Key Temporal Properties in Wikidata</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>ID</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>inception</td>
+              <td><code>wdt:P571</code></td>
+              <td>Date when entity was created/founded</td>
+            </tr>
+            <tr>
+              <td>dissolved/abolished</td>
+              <td><code>wdt:P576</code></td>
+              <td>Date when entity ceased to exist</td>
+            </tr>
+            <tr>
+              <td>start time</td>
+              <td><code>wdt:P580</code></td>
+              <td>When something started</td>
+            </tr>
+            <tr>
+              <td>end time</td>
+              <td><code>wdt:P582</code></td>
+              <td>When something ended</td>
+            </tr>
+            <tr>
+              <td>point in time</td>
+              <td><code>wdt:P585</code></td>
+              <td>When an event occurred</td>
+            </tr>
+            <tr>
+              <td>date of birth</td>
+              <td><code>wdt:P569</code></td>
+              <td>Birth date of a person</td>
+            </tr>
+            <tr>
+              <td>date of death</td>
+              <td><code>wdt:P570</code></td>
+              <td>Death date of a person</td>
+            </tr>
+            <tr>
+              <td>publication date</td>
+              <td><code>wdt:P577</code></td>
+              <td>When something was published</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Navigation -->
+      <section class="section">
+        <h2>Continue Learning</h2>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="federation">
+            <div class="chapter-card-icon">🌐</div>
+            <h3>← Federation</h3>
+            <p>Query multiple SPARQL endpoints.</p>
+            <a href="../federation/index.html" class="chapter-card-link">Go Back</a>
+          </article>
+
+          <article class="chapter-card" data-domain="geospatial">
+            <div class="chapter-card-icon">🗺️</div>
+            <h3>Geospatial →</h3>
+            <p>Work with locations, coordinates, and maps.</p>
+            <a href="../geospatial/index.html" class="chapter-card-link">Continue</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

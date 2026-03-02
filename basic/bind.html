@@ -1,59 +1,307 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use BIND in SPARQL to create computed variables and transform values with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>BIND - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">BIND</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html" class="active">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>BIND</h1>
+        <p class="hero-subtitle">
+          Create computed variables from expressions. BIND assigns the result of an expression
+          to a new variable, enabling calculations, transformations, and conditional logic.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding BIND</h2>
+      <p>
+        BIND takes an expression and assigns its result to a variable. This is useful for
+        computing values from existing data, formatting output, creating conditional values,
+        or extracting parts of complex data types like dates or URIs.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Basic BIND Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Calculate Age from Birth Year</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%3FbirthYear%20%3Fage%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ937857%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP569%20%3Fbirth%20.%0A%20%20FILTER%20NOT%20EXISTS%20%7B%20%3Fperson%20wdt%3AP570%20%3Fdeath%20.%20%7D%0A%20%20BIND%28YEAR%28%3Fbirth%29%20AS%20%3FbirthYear%29%0A%20%20BIND%28YEAR%28NOW%28%29%29%20-%20%3FbirthYear%20AS%20%3Fage%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2015" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthYear</span> <span class="variable">?age</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q937857</span> ;
+          <span class="entity">wdt:P569</span> <span class="variable">?birth</span> .
+  <span class="keyword">FILTER NOT EXISTS</span> { <span class="variable">?person</span> <span class="entity">wdt:P570</span> <span class="variable">?death</span> . }
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?birth</span>) <span class="keyword">AS</span> <span class="variable">?birthYear</span>)
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="function">NOW</span>()) <span class="operator">-</span> <span class="variable">?birthYear</span> <span class="keyword">AS</span> <span class="variable">?age</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">15</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Compute age for living football players</span>
+        </div>
+      </div>
+
+      <p>
+        This query finds living football players and calculates their approximate age.
+        The first BIND extracts the year from the birth date, and the second BIND
+        subtracts it from the current year to compute age.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Convert Units (Meters to Feet)</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fmountain%20%3FmountainLabel%20%3FheightM%20%3FheightFt%0AWHERE%20%7B%0A%20%20%3Fmountain%20wdt%3AP31%20wd%3AQ8502%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP2044%20%3FheightM%20.%0A%20%20FILTER%28%3FheightM%20%3E%207000%29%0A%20%20BIND%28%3FheightM%20%2A%203.28084%20AS%20%3FheightFt%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3FheightM%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?mountain</span> <span class="variable">?mountainLabel</span> <span class="variable">?heightM</span> <span class="variable">?heightFt</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?mountain</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> ;
+            <span class="entity">wdt:P2044</span> <span class="variable">?heightM</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?heightM</span> <span class="operator">&gt;</span> <span class="number">7000</span>)
+  <span class="keyword">BIND</span>(<span class="variable">?heightM</span> <span class="operator">*</span> <span class="number">3.28084</span> <span class="keyword">AS</span> <span class="variable">?heightFt</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?heightM</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Show mountain heights in both meters and feet</span>
+        </div>
+      </div>
+
+      <p>
+        BIND can perform arithmetic on existing values. This query converts mountain
+        elevation from meters to feet by multiplying by the conversion factor, showing
+        both values in the results.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Conditional BIND with IF</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Categorize by Value Range</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Fpopulation%20%3Fsize%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20BIND%28IF%28%3Fpopulation%20%3E%20100000000%2C%20%22Large%22%2C%0A%20%20%20%20%20%20%20%20IF%28%3Fpopulation%20%3E%2010000000%2C%20%22Medium%22%2C%20%22Small%22%29%29%20AS%20%3Fsize%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fpopulation%29%0ALIMIT%2030" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?population</span> <span class="variable">?size</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">BIND</span>(<span class="function">IF</span>(<span class="variable">?population</span> <span class="operator">&gt;</span> <span class="number">100000000</span>, <span class="string">"Large"</span>,
+        <span class="function">IF</span>(<span class="variable">?population</span> <span class="operator">&gt;</span> <span class="number">10000000</span>, <span class="string">"Medium"</span>, <span class="string">"Small"</span>)) <span class="keyword">AS</span> <span class="variable">?size</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Classify countries by population size</span>
+        </div>
+      </div>
+
+      <p>
+        The IF function enables conditional logic in BIND. This query classifies countries
+        as "Large", "Medium", or "Small" based on population thresholds. Nested IF statements
+        create multiple categories.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>String Operations with BIND</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Extract and Format Values</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%3FwikipediaUrl%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ1028181%20.%0A%20%20%3Farticle%20schema%3Aabout%20%3Fperson%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20schema%3AisPartOf%20%3Chttps%3A%2F%2Fen.wikipedia.org%2F%3E%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20schema%3Aname%20%3Ftitle%20.%0A%20%20BIND%28CONCAT%28%22https%3A%2F%2Fen.wikipedia.org%2Fwiki%2F%22%2C%20ENCODE_FOR_URI%28%3Ftitle%29%29%20AS%20%3FwikipediaUrl%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?wikipediaUrl</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q1028181</span> .
+  <span class="variable">?article</span> <span class="entity">schema:about</span> <span class="variable">?person</span> ;
+           <span class="entity">schema:isPartOf</span> &lt;https://en.wikipedia.org/&gt; ;
+           <span class="entity">schema:name</span> <span class="variable">?title</span> .
+  <span class="keyword">BIND</span>(<span class="function">CONCAT</span>(<span class="string">"https://en.wikipedia.org/wiki/"</span>, <span class="function">ENCODE_FOR_URI</span>(<span class="variable">?title</span>)) <span class="keyword">AS</span> <span class="variable">?wikipediaUrl</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Build Wikipedia URLs for painters</span>
+        </div>
+      </div>
+
+      <p>
+        BIND can use string functions like CONCAT to build new values from existing data.
+        This query constructs Wikipedia article URLs by combining the base URL with the
+        URL-encoded article title.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>human</td>
+            <td>wd:Q5</td>
+            <td>Any human being</td>
+          </tr>
+          <tr>
+            <td>association football player</td>
+            <td>wd:Q937857</td>
+            <td>Person who plays football</td>
+          </tr>
+          <tr>
+            <td>mountain</td>
+            <td>wd:Q8502</td>
+            <td>Large landform rising above terrain</td>
+          </tr>
+          <tr>
+            <td>country</td>
+            <td>wd:Q6256</td>
+            <td>Sovereign state</td>
+          </tr>
+          <tr>
+            <td>painter</td>
+            <td>wd:Q1028181</td>
+            <td>Artist who paints</td>
+          </tr>
+          <tr>
+            <td>date of birth</td>
+            <td>wdt:P569</td>
+            <td>Date when person was born</td>
+          </tr>
+          <tr>
+            <td>elevation</td>
+            <td>wdt:P2044</td>
+            <td>Height above sea level</td>
+          </tr>
+          <tr>
+            <td>population</td>
+            <td>wdt:P1082</td>
+            <td>Number of inhabitants</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="optional.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">OPTIONAL</span>
+      </a>
+      <a href="values.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">VALUES</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

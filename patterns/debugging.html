@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Diagnose and fix SPARQL query problems. Debug empty results, timeouts, and unexpected output." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Debugging Queries - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Debugging Queries</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html" class="active">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Debugging Queries</h1>
+          <p class="hero-subtitle">
+            Diagnose and fix query problems. Learn techniques for debugging
+            empty results, timeouts, unexpected output, and syntax errors.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Common Problems</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Symptom</th>
+              <th>Likely Cause</th>
+              <th>Debugging Approach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Empty results</td>
+              <td>Over-constrained, typos, wrong properties</td>
+              <td>Remove patterns one by one</td>
+            </tr>
+            <tr>
+              <td>Timeout</td>
+              <td>Too broad, unbounded traversal</td>
+              <td>Add LIMIT, narrow scope</td>
+            </tr>
+            <tr>
+              <td>Too many results</td>
+              <td>Missing constraints, cartesian product</td>
+              <td>Check variable connections</td>
+            </tr>
+            <tr>
+              <td>Wrong data</td>
+              <td>Wrong property, type mismatch</td>
+              <td>Inspect raw values</td>
+            </tr>
+            <tr>
+              <td>Syntax error</td>
+              <td>Missing brackets, typos</td>
+              <td>Check error message location</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Debug Empty Results</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Step 1: Simplify to Minimum</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Start with just the core pattern</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .  <span class="comment"># Just this - does it return results?</span>
+}
+<span class="keyword">LIMIT</span> 5</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Start minimal, add patterns back one by one</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Step 2: Check Entity Exists</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Verify the entity you're querying exists</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?item</span> { <span class="entity">wd:Q28865</span> }  <span class="comment"># Python</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Confirm entity IDs are correct</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Step 3: Check Property Has Values</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># See what properties an entity actually has</span>
+<span class="keyword">SELECT</span> <span class="variable">?prop</span> <span class="variable">?propLabel</span> <span class="variable">?value</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q28865</span> <span class="variable">?prop</span> <span class="variable">?value</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Discover available properties</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Debug Timeouts</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Add Aggressive LIMIT First</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Force small result set to test if query works</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .  <span class="comment"># museum</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 5  <span class="comment"># Very small limit to test</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>LIMIT 5 — Does it complete at all?</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Check Result Count</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># See how many results the pattern matches</span>
+<span class="keyword">SELECT</span> (<span class="function">COUNT</span>(<span class="variable">?item</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>COUNT reveals scale of the problem</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Narrow Scope with Filters</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Add constraints to reduce result set</span>
+<span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;  <span class="comment"># France only</span>
+          <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Add country/type constraints to narrow scope</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Debug Wrong Data</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Inspect Raw Values</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Don't use label service - see raw data</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?value</span> (<span class="function">DATATYPE</span>(<span class="variable">?value</span>) <span class="keyword">AS</span> <span class="variable">?type</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?value</span> .  <span class="comment"># inception date</span>
+}
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>DATATYPE() reveals value type</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Check for Multiple Types</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># See all types an entity has (may have multiple P31 values)</span>
+<span class="keyword">SELECT</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q28865</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> .  <span class="comment"># Python</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Entities can have multiple types</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Debug Duplicate Rows</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Identify Multi-Valued Properties</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># Count values per entity to find multiplication source</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">COUNT</span>(<span class="variable">?paradigm</span>) <span class="keyword">AS</span> <span class="variable">?paradigmCount</span>)
+       (<span class="function">COUNT</span>(<span class="variable">?designer</span>) <span class="keyword">AS</span> <span class="variable">?designerCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> . }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P287</span> <span class="variable">?designer</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">HAVING</span>(<span class="variable">?paradigmCount</span> > 1 || <span class="variable">?designerCount</span> > 1)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Find which properties cause multiplication</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Debug Syntax Errors</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Error Message</th>
+              <th>Likely Problem</th>
+              <th>Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lexical error</td>
+              <td>Unmatched quotes, brackets</td>
+              <td>Check string delimiters</td>
+            </tr>
+            <tr>
+              <td>Unexpected token</td>
+              <td>Missing period, keyword typo</td>
+              <td>Check line before error</td>
+            </tr>
+            <tr>
+              <td>Variable not in scope</td>
+              <td>Variable used before definition</td>
+              <td>Check pattern order</td>
+            </tr>
+            <tr>
+              <td>Unknown prefix</td>
+              <td>Missing or wrong prefix declaration</td>
+              <td>Add PREFIX declaration</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Common Syntax Issues</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># CORRECT: Periods end triple patterns</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .  <span class="comment"># Period here!</span>
+  <span class="variable">?item</span> <span class="entity">wdt:P287</span> <span class="variable">?designer</span> .  <span class="comment"># Period here!</span>
+}
+
+<span class="comment"># CORRECT: Semicolon continues same subject</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;  <span class="comment"># Semicolon - same subject</span>
+        <span class="entity">wdt:P287</span> <span class="variable">?designer</span> .  <span class="comment"># Period ends</span>
+}
+
+<span class="comment"># CORRECT: Comma continues same predicate</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ,  <span class="comment"># Comma - same predicate</span>
+              <span class="entity">wd:Q899523</span> .  <span class="comment"># Another object</span>
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Reference</span>
+            <span>. ; , — Triple separators</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Debugging Checklist</h2>
+
+        <ul>
+          <li><strong>Empty results?</strong> — Remove patterns one by one until results appear</li>
+          <li><strong>Timeout?</strong> — Add LIMIT 5, then narrow scope</li>
+          <li><strong>Wrong data?</strong> — Remove label service, inspect raw values</li>
+          <li><strong>Duplicates?</strong> — Use DISTINCT or GROUP BY with aggregates</li>
+          <li><strong>Syntax error?</strong> — Check line before the reported error</li>
+          <li><strong>Check entity IDs</strong> — Verify Q-numbers on wikidata.org</li>
+          <li><strong>Check property IDs</strong> — Verify P-numbers exist and have data</li>
+          <li><strong>Incremental build</strong> — Start simple, add complexity gradually</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Useful Debug Patterns</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">List All Properties of an Entity</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?prop</span> <span class="variable">?propLabel</span> <span class="variable">?value</span> <span class="variable">?valueLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="entity">wd:Q28865</span> <span class="variable">?p</span> <span class="variable">?value</span> .
+  <span class="variable">?prop</span> <span class="entity">wikibase:directClaim</span> <span class="variable">?p</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?propLabel</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>See all direct properties of an entity</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find Property by Name</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?prop</span> <span class="variable">?propLabel</span> <span class="variable">?propDescription</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?prop</span> <span class="entity">wikibase:directClaim</span> <span class="variable">?directProp</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?propLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?propLabel</span>) = <span class="string">"en"</span>)
+  <span class="keyword">FILTER</span>(<span class="function">CONTAINS</span>(<span class="function">LCASE</span>(<span class="variable">?propLabel</span>), <span class="string">"paradigm"</span>))
+
+  <span class="keyword">OPTIONAL</span> {
+    <span class="variable">?prop</span> <span class="entity">schema:description</span> <span class="variable">?propDescription</span> .
+    <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?propDescription</span>) = <span class="string">"en"</span>)
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Debug</span>
+            <span>Search for property by name</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="optimization.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Query Optimization</span>
+        </a>
+        <a href="index.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Patterns Overview</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

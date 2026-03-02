@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="multilingual">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Query across writing systems: Latin, Cyrillic, Arabic, Chinese, Japanese, Korean, and more." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Scripts & Writing - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Multilingual</a></li>
+        <li aria-current="page">Scripts & Writing</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="index.html" class="active">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Multilingual Topics</div>
+        <ul>
+          <li><a href="labels.html">Label Service</a></li>
+          <li><a href="languages.html">Language Tags</a></li>
+          <li><a href="scripts.html" class="active">Scripts & Writing</a></li>
+          <li><a href="translations.html">Translations</a></li>
+          <li><a href="lexemes.html">Lexicographical Data</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Multilingual</span>
+          <h1>Scripts & Writing</h1>
+          <p class="hero-subtitle">
+            Query across different writing systems. Work with Latin, Cyrillic, Arabic,
+            CJK characters, and more in Wikidata.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Writing Systems in Wikidata</h2>
+        <p>
+          Wikidata stores labels in many scripts. The writing system is usually
+          determined by the language tag, not stored separately.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Script</th>
+              <th>Languages</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Latin</td>
+              <td>en, fr, de, es</td>
+              <td>Paris</td>
+            </tr>
+            <tr>
+              <td>Cyrillic</td>
+              <td>ru, uk, bg</td>
+              <td>Москва</td>
+            </tr>
+            <tr>
+              <td>Arabic</td>
+              <td>ar, fa, ur</td>
+              <td>القاهرة</td>
+            </tr>
+            <tr>
+              <td>Han</td>
+              <td>zh, ja</td>
+              <td>東京</td>
+            </tr>
+            <tr>
+              <td>Hangul</td>
+              <td>ko</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <td>Devanagari</td>
+              <td>hi, sa</td>
+              <td>दिल्ली</td>
+            </tr>
+            <tr>
+              <td>Greek</td>
+              <td>el</td>
+              <td>Αθήνα</td>
+            </tr>
+            <tr>
+              <td>Hebrew</td>
+              <td>he</td>
+              <td>ירושלים</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Querying Multiple Scripts</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">City Names in Multiple Scripts</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?en</span> <span class="variable">?ru</span> <span class="variable">?ar</span> <span class="variable">?zh</span> <span class="variable">?ja</span> <span class="variable">?ko</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?city</span> {
+    <span class="entity">wd:Q84</span>    <span class="comment"># London</span>
+    <span class="entity">wd:Q90</span>    <span class="comment"># Paris</span>
+    <span class="entity">wd:Q649</span>   <span class="comment"># Moscow</span>
+    <span class="entity">wd:Q1490</span>  <span class="comment"># Tokyo</span>
+  }
+
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?en</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?en</span>) = <span class="string">"en"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?ru</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?ru</span>) = <span class="string">"ru"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?ar</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?ar</span>) = <span class="string">"ar"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?zh</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?zh</span>) = <span class="string">"zh"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?ja</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?ja</span>) = <span class="string">"ja"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?ko</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?ko</span>) = <span class="string">"ko"</span>) }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>6 different scripts side by side</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cultural Heritage in Original Scripts</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museum Names in Native Scripts</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?enLabel</span> <span class="variable">?nativeLabel</span>
+       (<span class="function">LANG</span>(<span class="variable">?nativeLabel</span>) <span class="keyword">AS</span> <span class="variable">?script</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;
+          <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="variable">?country</span> <span class="entity">wdt:P37</span> <span class="variable">?officialLang</span> .
+  <span class="variable">?officialLang</span> <span class="entity">wdt:P424</span> <span class="variable">?langCode</span> .
+
+  <span class="comment"># Get English and native labels</span>
+  <span class="variable">?museum</span> <span class="entity">rdfs:label</span> <span class="variable">?enLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?enLabel</span>) = <span class="string">"en"</span>)
+
+  <span class="variable">?museum</span> <span class="entity">rdfs:label</span> <span class="variable">?nativeLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?nativeLabel</span>) = <span class="variable">?langCode</span>)
+
+  <span class="comment"># Non-Latin scripts</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?langCode</span> IN (<span class="string">"ru"</span>, <span class="string">"ja"</span>, <span class="string">"zh"</span>, <span class="string">"ar"</span>, <span class="string">"he"</span>, <span class="string">"ko"</span>, <span class="string">"el"</span>))
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Right-to-Left Scripts</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Arabic and Hebrew City Names</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?enLabel</span> <span class="variable">?arLabel</span> <span class="variable">?heLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q801</span> .  <span class="comment"># Israel</span>
+
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?enLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?enLabel</span>) = <span class="string">"en"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?arLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?arLabel</span>) = <span class="string">"ar"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?heLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?heLabel</span>) = <span class="string">"he"</span>) }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>RTL scripts: Arabic, Hebrew</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="languages.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Language Tags</span>
+        </a>
+        <a href="translations.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Translations</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

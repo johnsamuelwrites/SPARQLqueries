@@ -1,53 +1,264 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="aggregate">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use SAMPLE in SPARQL to pick one value from a group with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>SAMPLE - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="HAVING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="group.html">Group</a></li>
-       <li><a href="having.html">Having</a></li>
-       <li><a href="avg.html">Avg</a></li>
-       <li><a href="concat.html">Concat</a></li>
-       <li><a href="count.html">Count</a></li>
-       <li><a href="max.html">Max</a></li>
-       <li><a href="min.html">Min</a></li>
-       <li><a href="sample.html">Sample</a></li>
-       <li><a href="sum.html">Sum</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Aggregate</a></li>
+      <li aria-current="page">SAMPLE</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../basic/index.html">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="index.html" class="active">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Aggregate Topics</div>
+      <ul>
+        <li><a href="count.html">COUNT</a></li>
+        <li><a href="sum.html">SUM</a></li>
+        <li><a href="avg.html">AVG</a></li>
+        <li><a href="min.html">MIN</a></li>
+        <li><a href="max.html">MAX</a></li>
+        <li><a href="group.html">GROUP BY</a></li>
+        <li><a href="having.html">HAVING</a></li>
+        <li><a href="concat.html">GROUP_CONCAT</a></li>
+        <li><a href="sample.html" class="active">SAMPLE</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Aggregate</span>
+        <h1>SAMPLE</h1>
+        <p class="hero-subtitle">
+          Pick one arbitrary value from a group. SAMPLE returns any single value from the
+          grouped items, useful when you just need a representative example.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding SAMPLE</h2>
+      <p>
+        SAMPLE is an aggregate function that returns one arbitrary value from a group.
+        Unlike MIN or MAX which have deterministic behavior, SAMPLE can return any value.
+        It's particularly useful when:
+      </p>
+      <ul>
+        <li>You need just one example from a group</li>
+        <li>All values in the group are effectively equivalent</li>
+        <li>You want to avoid GROUP BY errors without listing all variables</li>
+      </ul>
+      <p>
+        The specific value returned by SAMPLE may vary between query executions.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Basic SAMPLE Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">One City per Country</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%28SAMPLE%28%3FcityLabel%29%20AS%20%3FexampleCity%29%20%28COUNT%28%3Fcity%29%20AS%20%3FcityCount%29%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20%3Fcountry%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Fcity%20rdfs%3Alabel%20%3FcityLabel.%20%3Fcountry%20rdfs%3Alabel%20%3FcountryLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel%0AORDER%20BY%20DESC%28%3FcityCount%29%0ALIMIT%2015" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> (<span class="function">SAMPLE</span>(<span class="variable">?cityLabel</span>) <span class="keyword">AS</span> <span class="variable">?exampleCity</span>) (<span class="function">COUNT</span>(<span class="variable">?city</span>) <span class="keyword">AS</span> <span class="variable">?cityCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?cityLabel</span>. <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?countryLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?cityCount</span>)
+<span class="keyword">LIMIT</span> <span class="number">15</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>One example city plus total city count per country</span>
+        </div>
+      </div>
+      <p>
+        This query counts all cities in each country and shows one example city name.
+        SAMPLE picks any city from the group — the specific city may change between runs.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Example Work per Author</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fauthor%20%3FauthorLabel%20%28SAMPLE%28%3FworkLabel%29%20AS%20%3FexampleWork%29%20%28COUNT%28%3Fwork%29%20AS%20%3FworkCount%29%0AWHERE%20%7B%0A%20%20%3Fwork%20wdt%3AP50%20%3Fauthor%20.%0A%20%20%3Fauthor%20wdt%3AP31%20wd%3AQ5%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Fwork%20rdfs%3Alabel%20%3FworkLabel.%20%3Fauthor%20rdfs%3Alabel%20%3FauthorLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fauthor%20%3FauthorLabel%0AHAVING%20%28COUNT%28%3Fwork%29%20%3E%2050%29%0AORDER%20BY%20DESC%28%3FworkCount%29%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> (<span class="function">SAMPLE</span>(<span class="variable">?workLabel</span>) <span class="keyword">AS</span> <span class="variable">?exampleWork</span>) (<span class="function">COUNT</span>(<span class="variable">?work</span>) <span class="keyword">AS</span> <span class="variable">?workCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?work</span> <span class="entity">wdt:P50</span> <span class="variable">?author</span> .
+  <span class="variable">?author</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?work</span> <span class="entity">rdfs:label</span> <span class="variable">?workLabel</span>. <span class="variable">?author</span> <span class="entity">rdfs:label</span> <span class="variable">?authorLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span>
+<span class="keyword">HAVING</span> (<span class="function">COUNT</span>(<span class="variable">?work</span>) <span class="operator">&gt;</span> <span class="number">50</span>)
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?workCount</span>)
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Prolific authors with one example work</span>
+        </div>
+      </div>
+      <p>
+        Find authors with many works and show one example. SAMPLE provides a representative
+        work without needing to choose the first, longest, or most recent one.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>SAMPLE vs Other Approaches</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Avoiding Non-Aggregated Variable Errors</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcontinent%20%3FcontinentLabel%20%28COUNT%28%3Fcountry%29%20AS%20%3FcountryCount%29%0A%20%20%28SAMPLE%28%3FcountryLabel%29%20AS%20%3FexampleCountry%29%0A%20%20%28SUM%28%3Fpopulation%29%20AS%20%3FtotalPop%29%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP30%20%3Fcontinent%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Fcountry%20rdfs%3Alabel%20%3FcountryLabel.%20%3Fcontinent%20rdfs%3Alabel%20%3FcontinentLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcontinent%20%3FcontinentLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span> (<span class="function">COUNT</span>(<span class="variable">?country</span>) <span class="keyword">AS</span> <span class="variable">?countryCount</span>)
+  (<span class="function">SAMPLE</span>(<span class="variable">?countryLabel</span>) <span class="keyword">AS</span> <span class="variable">?exampleCountry</span>)
+  (<span class="function">SUM</span>(<span class="variable">?population</span>) <span class="keyword">AS</span> <span class="variable">?totalPop</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P30</span> <span class="variable">?continent</span> ;
+           <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?countryLabel</span>. <span class="variable">?continent</span> <span class="entity">rdfs:label</span> <span class="variable">?continentLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Continent stats with one example country</span>
+        </div>
+      </div>
+      <p>
+        Without SAMPLE, including <code>?countryLabel</code> would require adding it to GROUP BY,
+        which would create one row per country instead of per continent. SAMPLE lets you include
+        a representative value without changing the grouping.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>SAMPLE with Images</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Countries with Example Image</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcontinent%20%3FcontinentLabel%20%28COUNT%28%3Fcountry%29%20AS%20%3FcountryCount%29%0A%20%20%28SAMPLE%28%3Fimage%29%20AS%20%3FexampleImage%29%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP30%20%3Fcontinent%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP18%20%3Fimage%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcontinent%20%3FcontinentLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span> (<span class="function">COUNT</span>(<span class="variable">?country</span>) <span class="keyword">AS</span> <span class="variable">?countryCount</span>)
+  (<span class="function">SAMPLE</span>(<span class="variable">?image</span>) <span class="keyword">AS</span> <span class="variable">?exampleImage</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P30</span> <span class="variable">?continent</span> ;
+           <span class="entity">wdt:P18</span> <span class="variable">?image</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>One representative image per continent</span>
+        </div>
+      </div>
+      <p>
+        SAMPLE is particularly useful with images — you often just need one representative
+        image rather than all of them. This query picks one country's image per continent.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q5</code></td><td>Human</td></tr>
+          <tr><td><code>wd:Q515</code></td><td>City</td></tr>
+          <tr><td><code>wd:Q6256</code></td><td>Country</td></tr>
+          <tr><td><code>wdt:P17</code></td><td>Country</td></tr>
+          <tr><td><code>wdt:P18</code></td><td>Image</td></tr>
+          <tr><td><code>wdt:P30</code></td><td>Continent</td></tr>
+          <tr><td><code>wdt:P31</code></td><td>Instance of (type)</td></tr>
+          <tr><td><code>wdt:P50</code></td><td>Author</td></tr>
+          <tr><td><code>wdt:P1082</code></td><td>Population</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="concat.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">GROUP_CONCAT</span>
+      </a>
+      <a href="../advanced/index.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next Chapter</span>
+        <span class="topic-nav-title">Advanced</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

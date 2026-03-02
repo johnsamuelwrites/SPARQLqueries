@@ -1,44 +1,386 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="federation">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn SPARQL federation: query multiple endpoints simultaneously using SERVICE to combine data from Wikidata, DBpedia, and other sources." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Federation - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="index.html" class="active">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Federation Topics</div>
+        <ul>
+          <li><a href="service.html">SERVICE Keyword</a></li>
+          <li><a href="endpoints.html">SPARQL Endpoints</a></li>
+          <li><a href="patterns.html">Federation Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Chapter 5</span>
+          <h1>Federation</h1>
+          <p class="hero-subtitle">
+            Query the entire Linked Data web. Use SERVICE to combine data from multiple
+            SPARQL endpoints in a single query — Wikidata, DBpedia, and beyond.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">∞</div>
+              <div class="hero-stat-label">Endpoints</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">SERVICE</div>
+              <div class="hero-stat-label">Keyword</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Advanced</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>The Power of Linked Data</h2>
+        <p>
+          No single knowledge base contains all the information you need. Wikidata might have
+          an entity, but DBpedia has additional details, or another specialized endpoint has
+          domain-specific data.
+        </p>
+        <p>
+          SPARQL federation solves this with the <code>SERVICE</code> keyword. Execute parts
+          of your query against remote endpoints and combine results seamlessly — all from
+          a single query.
+        </p>
+        <p>
+          This is the vision of the Semantic Web: interconnected data that can be queried as
+          if it were a single giant database.
+        </p>
+      </section>
+
+      <!-- How It Works -->
+      <section class="section">
+        <h2>How Federation Works</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Federation Structure</span>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?localVar</span> <span class="variable">?remoteVar</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Local patterns (run on current endpoint)</span>
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Remote patterns (run on external endpoint)</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaItem</span> <span class="entity">owl:sameAs</span> <span class="variable">?item</span> .
+    <span class="variable">?dbpediaItem</span> <span class="entity">foaf:homepage</span> <span class="variable">?remoteVar</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Combines local + remote data</span>
+          </div>
+        </div>
+
+        <p>
+          The query engine sends the <code>SERVICE</code> block to the remote endpoint,
+          receives the results, and joins them with local results based on shared variables.
+        </p>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Federation Topics</h2>
+
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="federation">
+            <div class="chapter-card-icon">🔗</div>
+            <h3>SERVICE Keyword</h3>
+            <p>
+              The core of SPARQL federation. Learn syntax, variable passing,
+              and how to structure federated queries effectively.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Core concept</span>
+            </div>
+            <a href="service.html" class="chapter-card-link">Learn SERVICE</a>
+          </article>
+
+          <article class="chapter-card" data-domain="federation">
+            <div class="chapter-card-icon">🌐</div>
+            <h3>SPARQL Endpoints</h3>
+            <p>
+              Discover useful public endpoints: DBpedia, Getty Vocabularies,
+              Europeana, and domain-specific knowledge bases.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Data sources</span>
+            </div>
+            <a href="endpoints.html" class="chapter-card-link">Explore Endpoints</a>
+          </article>
+
+          <article class="chapter-card" data-domain="federation">
+            <div class="chapter-card-icon">🧩</div>
+            <h3>Federation Patterns</h3>
+            <p>
+              Common patterns for effective federation: entity linking,
+              enrichment, cross-validation, and aggregation.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Best practices</span>
+            </div>
+            <a href="patterns.html" class="chapter-card-link">View Patterns</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Quick Examples -->
+      <section class="section">
+        <h2>Federation Examples</h2>
+
+        <h3>Wikidata + DBpedia</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Enrich Wikidata with DBpedia</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Get programming languages from Wikidata</span>
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Get homepage from DBpedia via sameAs link</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaLang</span> <span class="entity">owl:sameAs</span> <span class="variable">?lang</span> ;
+                  <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Sources: Wikidata, DBpedia</span>
+          </div>
+        </div>
+
+        <h3>SERVICE SILENT</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Graceful Failure Handling</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># SILENT: Don't fail if endpoint is unavailable</span>
+  <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaLang</span> <span class="entity">owl:sameAs</span> <span class="variable">?lang</span> ;
+                  <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Feature: SERVICE SILENT for graceful degradation</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Popular Endpoints -->
+      <section class="section">
+        <h2>Popular SPARQL Endpoints</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Endpoint</th>
+              <th>URL</th>
+              <th>Domain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wikidata</td>
+              <td><code>https://query.wikidata.org/sparql</code></td>
+              <td>General knowledge</td>
+            </tr>
+            <tr>
+              <td>DBpedia</td>
+              <td><code>http://dbpedia.org/sparql</code></td>
+              <td>Wikipedia data</td>
+            </tr>
+            <tr>
+              <td>Getty Vocabularies</td>
+              <td><code>http://vocab.getty.edu/sparql</code></td>
+              <td>Art & cultural heritage</td>
+            </tr>
+            <tr>
+              <td>UniProt</td>
+              <td><code>https://sparql.uniprot.org/sparql</code></td>
+              <td>Proteins & biology</td>
+            </tr>
+            <tr>
+              <td>LinkedGeoData</td>
+              <td><code>http://linkedgeodata.org/sparql</code></td>
+              <td>OpenStreetMap data</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Best Practices -->
+      <section class="section">
+        <h2>Federation Best Practices</h2>
+
+        <ul>
+          <li><strong>Minimize remote calls</strong> — Filter locally first, then federate with smaller result sets</li>
+          <li><strong>Use SERVICE SILENT</strong> — Prevent query failure when remote endpoints are down</li>
+          <li><strong>Check endpoint availability</strong> — Not all endpoints are always online</li>
+          <li><strong>Respect rate limits</strong> — Many public endpoints have query limits</li>
+          <li><strong>Use entity links</strong> — owl:sameAs, skos:exactMatch help join across datasets</li>
+          <li><strong>Test queries separately</strong> — Debug each SERVICE block independently first</li>
+        </ul>
+      </section>
+
+      <!-- Navigation -->
+      <section class="section">
+        <h2>You've Completed the Core Chapters!</h2>
+        <p>
+          Congratulations! You've learned SPARQL from basic queries to advanced federation.
+          Continue exploring with more examples or revisit any chapter.
+        </p>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="advanced">
+            <div class="chapter-card-icon">🚀</div>
+            <h3>← Advanced Queries</h3>
+            <p>Review ASK, CONSTRUCT, and DESCRIBE.</p>
+            <a href="../advanced/index.html" class="chapter-card-link">Go Back</a>
+          </article>
+
+          <article class="chapter-card" data-domain="basic">
+            <div class="chapter-card-icon">📘</div>
+            <h3>Start Over →</h3>
+            <p>Review the basics or explore more examples.</p>
+            <a href="../basic/index.html" class="chapter-card-link">Basic Queries</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      const themeToggle = document.getElementById('themeToggle');
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        setTheme(currentTheme === 'light' ? 'dark' : 'light');
+      });
+    </script>
+  </body>
+
 </html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="geospatial">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Work with latitude and longitude coordinates in SPARQL. Extract, parse, and use geographic points." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Coordinates - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Geospatial</a></li>
+        <li aria-current="page">Coordinates</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="index.html" class="active">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Geospatial Topics</div>
+        <ul>
+          <li><a href="coordinates.html" class="active">Coordinates</a></li>
+          <li><a href="distance.html">Distance Queries</a></li>
+          <li><a href="bounding.html">Bounding Boxes</a></li>
+          <li><a href="regions.html">Regions & Areas</a></li>
+          <li><a href="maps.html">Map Visualizations</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Geospatial</span>
+          <h1>Coordinates</h1>
+          <p class="hero-subtitle">
+            Work with latitude and longitude coordinates in SPARQL. Learn to extract,
+            parse, and use geographic points from Wikidata.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Coordinate Basics</h2>
+        <p>
+          Wikidata stores geographic coordinates using the WKT (Well-Known Text) format.
+          The main property is <code>wdt:P625</code> (coordinate location), which returns
+          a point in the format <code>Point(longitude latitude)</code>.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>ID</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>coordinate location</td>
+              <td><code>wdt:P625</code></td>
+              <td>Geographic coordinates (WKT point)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Important:</strong> WKT format uses <code>Point(longitude latitude)</code> —
+          longitude comes first, which is the opposite of the common "lat, long" convention.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Basic Coordinate Queries</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Get Coordinates for Programming Language Creators</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?birthplace</span> <span class="variable">?birthplaceLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;      <span class="comment"># programming language</span>
+        <span class="entity">wdt:P178</span> <span class="variable">?developer</span> .   <span class="comment"># developer</span>
+  <span class="variable">?developer</span> <span class="entity">wdt:P19</span> <span class="variable">?birthplace</span> .  <span class="comment"># place of birth</span>
+  <span class="variable">?birthplace</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 100</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>View: Map | Birthplaces of language creators</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Extracting Latitude and Longitude</h2>
+        <p>
+          To extract individual latitude and longitude values, use the GeoSPARQL functions
+          <code>geof:latitude</code> and <code>geof:longitude</code>.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Extract Lat/Long from Coordinates</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?coord</span>
+       (<span class="function">geof:latitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?lat</span>)
+       (<span class="function">geof:longitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?long</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?city</span> {
+    <span class="entity">wd:Q90</span>    <span class="comment"># Paris</span>
+    <span class="entity">wd:Q84</span>    <span class="comment"># London</span>
+    <span class="entity">wd:Q60</span>    <span class="comment"># New York</span>
+    <span class="entity">wd:Q1490</span>  <span class="comment"># Tokyo</span>
+  }
+  <span class="variable">?city</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Functions: geof:latitude(), geof:longitude()</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cultural Heritage: Museum Locations</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Major Museums with Coordinates</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?coord</span> <span class="variable">?visitors</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?museum</span> <span class="entity">wdt:P1174</span> <span class="variable">?visitors</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?visitors</span>)
+<span class="keyword">LIMIT</span> 200</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Cultural Heritage | Museums worldwide</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">UNESCO World Heritage Sites</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?site</span> <span class="variable">?siteLabel</span> <span class="variable">?coord</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?site</span> <span class="entity">wdt:P1435</span> <span class="entity">wd:Q9259</span> ;  <span class="comment"># UNESCO World Heritage Site</span>
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>View: Map | All UNESCO sites</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Urban: City Coordinates</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Capital Cities with Population</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+       <span class="variable">?coord</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;  <span class="comment"># country</span>
+           <span class="entity">wdt:P36</span> <span class="variable">?city</span> .      <span class="comment"># capital</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Urban | World capitals</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Filter Cities by Hemisphere</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?coord</span> <span class="variable">?lat</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> ;
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">BIND</span>(<span class="function">geof:latitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?lat</span>)
+
+  <span class="comment"># Southern hemisphere only (negative latitude)</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?lat</span> < 0)
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> > 1000000)  <span class="comment"># Cities over 1M</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 100</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Filter by latitude for hemisphere</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Creating Coordinates with BIND</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Create a WKT Point</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?point</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Create a point for Paris (longitude, latitude)</span>
+  <span class="keyword">BIND</span>(<span class="string">"Point(2.3522 48.8566)"</span>^^<span class="entity">geo:wktLiteral</span> <span class="keyword">AS</span> <span class="variable">?point</span>)
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Create WKT point with BIND</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="index.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Geospatial</span>
+        </a>
+        <a href="distance.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Distance Queries</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

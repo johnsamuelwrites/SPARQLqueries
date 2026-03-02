@@ -1,48 +1,499 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="STRING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="string.html">String</a></li>
-       <li><a href="date.html">Dates</a></li>
-       <li><a href="math.html">Math</a></li>
-       <li><a href="hash.html">Hash</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn SPARQL math functions with practical Wikidata examples. Perform calculations, rounding, and numeric operations." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Math Functions - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Expressions</a></li>
+        <li aria-current="page">Math Functions</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Expressions</span>
+          <h1>Math Functions</h1>
+          <p class="hero-subtitle">
+            Perform numeric calculations, rounding, and mathematical operations on Wikidata values.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Math Function Reference</h2>
+        <p>SPARQL provides various mathematical functions for numeric calculations.</p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ABS(x)</code></td>
+                <td>Absolute value</td>
+                <td><code>ABS(-5)</code> → 5</td>
+              </tr>
+              <tr>
+                <td><code>ROUND(x)</code></td>
+                <td>Round to nearest integer</td>
+                <td><code>ROUND(3.7)</code> → 4</td>
+              </tr>
+              <tr>
+                <td><code>CEIL(x)</code></td>
+                <td>Round up to integer</td>
+                <td><code>CEIL(3.2)</code> → 4</td>
+              </tr>
+              <tr>
+                <td><code>FLOOR(x)</code></td>
+                <td>Round down to integer</td>
+                <td><code>FLOOR(3.9)</code> → 3</td>
+              </tr>
+              <tr>
+                <td><code>RAND()</code></td>
+                <td>Random number 0-1</td>
+                <td><code>RAND()</code> → 0.573...</td>
+              </tr>
+              <tr>
+                <td><code>+, -, *, /</code></td>
+                <td>Basic arithmetic</td>
+                <td><code>10 / 3</code> → 3.333...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Basic Arithmetic</h2>
+        <p>Perform calculations on numeric properties.</p>
+
+        <h3>Calculate Population Density</h3>
+        <p>Divide population by area to get density:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Country Population Density</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?population</span> <span class="variable">?area</span> <span class="variable">?density</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .      <span class="comment"># instance of: country</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .  <span class="comment"># population</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .       <span class="comment"># area in km²</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?area</span> > <span class="number">0</span>)                <span class="comment"># avoid division by zero</span>
+  <span class="keyword">BIND</span>(<span class="variable">?population</span> / <span class="variable">?area</span> <span class="keyword">AS</span> <span class="variable">?density</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?density</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+
+        <h3>Price Per Unit Calculation</h3>
+        <p>Calculate ratios and unit prices:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Building Height to Floor Ratio</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?building</span> <span class="variable">?buildingLabel</span> <span class="variable">?height</span> <span class="variable">?floors</span> <span class="variable">?heightPerFloor</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?building</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q11303</span> .  <span class="comment"># skyscraper</span>
+  <span class="variable">?building</span> <span class="entity">wdt:P2048</span> <span class="variable">?height</span> .        <span class="comment"># height in meters</span>
+  <span class="variable">?building</span> <span class="entity">wdt:P1101</span> <span class="variable">?floors</span> .        <span class="comment"># number of floors</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?floors</span> > <span class="number">0</span>)
+  <span class="keyword">BIND</span>(<span class="variable">?height</span> / <span class="variable">?floors</span> <span class="keyword">AS</span> <span class="variable">?heightPerFloor</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?height</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Rounding Functions</h2>
+        <p>Control decimal precision with ROUND, CEIL, and FLOOR.</p>
+
+        <h3>Round to Nearest Integer</h3>
+        <p>Clean up calculated values:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Rounded Population Density</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span> <span class="variable">?area</span> <span class="variable">?densityRounded</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># city</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="variable">?city</span> <span class="entity">wdt:P2046</span> <span class="variable">?area</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?area</span> > <span class="number">0</span> && <span class="variable">?population</span> > <span class="number">1000000</span>)
+  <span class="keyword">BIND</span>(<span class="function">ROUND</span>(<span class="variable">?population</span> / <span class="variable">?area</span>) <span class="keyword">AS</span> <span class="variable">?densityRounded</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?densityRounded</span>)
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+
+        <h3>Ceiling and Floor</h3>
+        <p>Round up or down:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Height Categories Using CEIL</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?mountain</span> <span class="variable">?mountainLabel</span> <span class="variable">?elevation</span> <span class="variable">?elevationKm</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?mountain</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> .     <span class="comment"># mountain</span>
+  <span class="variable">?mountain</span> <span class="entity">wdt:P2044</span> <span class="variable">?elevation</span> . <span class="comment"># elevation in meters</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?elevation</span> > <span class="number">7000</span>)
+  <span class="keyword">BIND</span>(<span class="function">CEIL</span>(<span class="variable">?elevation</span> / <span class="number">1000</span>) <span class="keyword">AS</span> <span class="variable">?elevationKm</span>)  <span class="comment"># Round up to km</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?elevation</span>)
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Absolute Value</h2>
+        <p>Use ABS() to get magnitude regardless of sign.</p>
+
+        <h3>Temperature Extremes</h3>
+        <p>Find places with extreme temperatures (hot or cold):</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Cities with Extreme Temperature Variations</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?latitude</span> <span class="variable">?absLatitude</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># city</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="variable">?city</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">BIND</span>(<span class="entity">geof:latitude</span>(<span class="variable">?coord</span>) <span class="keyword">AS</span> <span class="variable">?latitude</span>)
+  <span class="keyword">BIND</span>(<span class="function">ABS</span>(<span class="variable">?latitude</span>) <span class="keyword">AS</span> <span class="variable">?absLatitude</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?population</span> > <span class="number">100000</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?absLatitude</span> > <span class="number">60</span>)  <span class="comment"># Far from equator (north or south)</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?absLatitude</span>)
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+
+        <h3>Difference from Average</h3>
+        <p>Find how far values deviate from a reference:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">People Born Far from Year 1900</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> <span class="variable">?birthYear</span> <span class="variable">?yearsFrom1900</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q170790</span> .      <span class="comment"># mathematician</span>
+  <span class="variable">?person</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?birthYear</span>)
+  <span class="keyword">BIND</span>(<span class="function">ABS</span>(<span class="variable">?birthYear</span> - <span class="number">1900</span>) <span class="keyword">AS</span> <span class="variable">?yearsFrom1900</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?yearsFrom1900</span> <= <span class="number">50</span>)  <span class="comment"># Within 50 years of 1900</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?yearsFrom1900</span>
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Random Sampling</h2>
+        <p>Use RAND() to get random samples of data.</p>
+
+        <h3>Random Selection</h3>
+        <p>Get a random sample of items:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">10 Random Paintings</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?painting</span> <span class="variable">?paintingLabel</span> <span class="variable">?creatorLabel</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?painting</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3305213</span> .  <span class="comment"># painting</span>
+  <span class="variable">?painting</span> <span class="entity">wdt:P170</span> <span class="variable">?creator</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">RAND</span>()
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+        </div>
+
+        <h3>Random with Conditions</h3>
+        <p>Random sample within constraints:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">5 Random French Writers</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?writer</span> <span class="variable">?writerLabel</span> <span class="variable">?birthYear</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?writer</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> .      <span class="comment"># writer</span>
+  <span class="variable">?writer</span> <span class="entity">wdt:P27</span> <span class="entity">wd:Q142</span> .        <span class="comment"># country: France</span>
+  <span class="variable">?writer</span> <span class="entity">wdt:P569</span> <span class="variable">?birthDate</span> .
+  <span class="keyword">BIND</span>(<span class="function">YEAR</span>(<span class="variable">?birthDate</span>) <span class="keyword">AS</span> <span class="variable">?birthYear</span>)
+  <span class="keyword">FILTER</span>(<span class="variable">?birthYear</span> >= <span class="number">1800</span> && <span class="variable">?birthYear</span> <= <span class="number">1900</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">RAND</span>()
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Percentage Calculations</h2>
+        <p>Calculate percentages and proportions.</p>
+
+        <h3>Percentage of Total</h3>
+        <p>Calculate what percentage each value represents:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Country Population as % of World</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?population</span> <span class="variable">?percentOfWorld</span> <span class="keyword">WHERE</span> {
+  <span class="keyword">BIND</span>(<span class="number">8000000000</span> <span class="keyword">AS</span> <span class="variable">?worldPop</span>)  <span class="comment"># Approximate world population</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="variable">?country</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">BIND</span>(<span class="function">ROUND</span>(<span class="variable">?population</span> * <span class="number">10000</span> / <span class="variable">?worldPop</span>) / <span class="number">100</span> <span class="keyword">AS</span> <span class="variable">?percentOfWorld</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+
+        <h3>Ratio Calculations</h3>
+        <p>Compare two quantities:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">GDP Per Capita</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?gdp</span> <span class="variable">?population</span> <span class="variable">?gdpPerCapita</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .      <span class="comment"># country</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P2131</span> <span class="variable">?gdp</span> .        <span class="comment"># nominal GDP</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?population</span> > <span class="number">0</span>)
+  <span class="keyword">BIND</span>(<span class="function">ROUND</span>(<span class="variable">?gdp</span> / <span class="variable">?population</span>) <span class="keyword">AS</span> <span class="variable">?gdpPerCapita</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?gdpPerCapita</span>)
+<span class="keyword">LIMIT</span> <span class="number">30</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Unit Conversions</h2>
+        <p>Convert between different units of measurement.</p>
+
+        <h3>Meters to Feet</h3>
+        <p>Convert elevation from meters to feet:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">Mountain Heights in Feet</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?mountain</span> <span class="variable">?mountainLabel</span> <span class="variable">?elevationM</span> <span class="variable">?elevationFt</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?mountain</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q8502</span> .       <span class="comment"># mountain</span>
+  <span class="variable">?mountain</span> <span class="entity">wdt:P2044</span> <span class="variable">?elevationM</span> .  <span class="comment"># elevation in meters</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?elevationM</span> > <span class="number">8000</span>)
+  <span class="keyword">BIND</span>(<span class="function">ROUND</span>(<span class="variable">?elevationM</span> * <span class="number">3.28084</span>) <span class="keyword">AS</span> <span class="variable">?elevationFt</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?elevationM</span>)</code></pre>
+        </div>
+
+        <h3>Kilometers to Miles</h3>
+        <p>Convert distance units:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">River Lengths in Miles</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?river</span> <span class="variable">?riverLabel</span> <span class="variable">?lengthKm</span> <span class="variable">?lengthMi</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?river</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q4022</span> .       <span class="comment"># river</span>
+  <span class="variable">?river</span> <span class="entity">wdt:P2043</span> <span class="variable">?lengthKm</span> .    <span class="comment"># length in km</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?lengthKm</span> > <span class="number">3000</span>)
+  <span class="keyword">BIND</span>(<span class="function">ROUND</span>(<span class="variable">?lengthKm</span> * <span class="number">0.621371</span>) <span class="keyword">AS</span> <span class="variable">?lengthMi</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?lengthKm</span>)
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Conditional Calculations</h2>
+        <p>Combine math with IF statements for conditional logic.</p>
+
+        <h3>Categorizing by Size</h3>
+        <p>Assign size categories based on numeric values:</p>
+
+        <div class="query-box">
+          <div class="query-header">
+            <span class="query-title">City Size Categories</span>
+            <div class="query-actions">
+              <button class="query-action-btn" title="Copy to clipboard">Copy</button>
+              <a href="https://query.wikidata.org/" class="query-action-btn primary" target="_blank"
+                rel="noopener">Run</a>
+            </div>
+          </div>
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span> <span class="variable">?sizeCategory</span> <span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q30</span> .           <span class="comment"># USA</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">BIND</span>(
+    <span class="keyword">IF</span>(<span class="variable">?population</span> > <span class="number">1000000</span>, <span class="string">"Major City"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?population</span> > <span class="number">500000</span>, <span class="string">"Large City"</span>,
+    <span class="keyword">IF</span>(<span class="variable">?population</span> > <span class="number">100000</span>, <span class="string">"Medium City"</span>,
+    <span class="string">"Small City"</span>))) <span class="keyword">AS</span> <span class="variable">?sizeCategory</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="function">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">50</span></code></pre>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="date.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Date Functions</span>
+        </a>
+        <a href="hash.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Hash Functions</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
 </html>

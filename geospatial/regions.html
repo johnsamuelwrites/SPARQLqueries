@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="geospatial">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Query by administrative regions, countries, or custom geographic areas in SPARQL." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Regions & Areas - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Geospatial</a></li>
+        <li aria-current="page">Regions & Areas</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="index.html" class="active">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Geospatial Topics</div>
+        <ul>
+          <li><a href="coordinates.html">Coordinates</a></li>
+          <li><a href="distance.html">Distance Queries</a></li>
+          <li><a href="bounding.html">Bounding Boxes</a></li>
+          <li><a href="regions.html" class="active">Regions & Areas</a></li>
+          <li><a href="maps.html">Map Visualizations</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Geospatial</span>
+          <h1>Regions & Areas</h1>
+          <p class="hero-subtitle">
+            Query by administrative regions, countries, or custom geographic areas.
+            Use Wikidata's hierarchical location data for precise geographic filtering.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Administrative Hierarchy Properties</h2>
+        <p>
+          Wikidata uses hierarchical properties to describe where entities are located.
+          The key property is <code>wdt:P131</code> (located in administrative territorial entity).
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>ID</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>located in</td>
+              <td><code>wdt:P131</code></td>
+              <td>Administrative territorial entity</td>
+            </tr>
+            <tr>
+              <td>country</td>
+              <td><code>wdt:P17</code></td>
+              <td>Country of location</td>
+            </tr>
+            <tr>
+              <td>continent</td>
+              <td><code>wdt:P30</code></td>
+              <td>Continent</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Query by Country</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Universities in Germany</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?uni</span> <span class="variable">?uniLabel</span> <span class="variable">?coord</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?uni</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q3918</span> ;  <span class="comment"># university</span>
+       <span class="entity">wdt:P17</span> <span class="entity">wd:Q183</span> ;              <span class="comment"># country: Germany</span>
+       <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?uni</span> <span class="entity">wdt:P131</span> <span class="variable">?city</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,de"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Property: P17 for country filtering</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Hierarchical Location Query</h2>
+        <p>
+          Use property paths with <code>wdt:P131*</code> to traverse the administrative hierarchy.
+          This finds entities at any level within a region.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">All Museums in California (Any Administrative Level)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wdt:P131</span>* <span class="entity">wd:Q99</span> ;             <span class="comment"># in California (recursive)</span>
+          <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 200</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Property path: P131* for recursive hierarchy</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Cultural Heritage by Region</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Archaeological Sites in Greece</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?site</span> <span class="variable">?siteLabel</span> <span class="variable">?coord</span>
+       <span class="variable">?period</span> <span class="variable">?periodLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?site</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q839954</span> ;      <span class="comment"># archaeological site</span>
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q41</span> ;            <span class="comment"># Greece</span>
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?site</span> <span class="entity">wdt:P2348</span> <span class="variable">?period</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,el"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Historic Buildings in Paris</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?building</span> <span class="variable">?buildingLabel</span> <span class="variable">?coord</span>
+       (<span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?built</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?building</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q41176</span> ;  <span class="comment"># building</span>
+            <span class="entity">wdt:P131</span>* <span class="entity">wd:Q90</span> ;              <span class="comment"># in Paris</span>
+            <span class="entity">wdt:P625</span> <span class="variable">?coord</span> ;
+            <span class="entity">wdt:P1435</span> <span class="variable">?heritage</span> .          <span class="comment"># has heritage status</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?building</span> <span class="entity">wdt:P571</span> <span class="variable">?inception</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?built</span>
+<span class="keyword">LIMIT</span> 200</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Heritage buildings in Paris</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Urban Infrastructure by Region</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Metro Stations by City</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> (<span class="function">COUNT</span>(<span class="variable">?station</span>) <span class="keyword">AS</span> <span class="variable">?stationCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?station</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q928830</span> ;  <span class="comment"># metro station</span>
+           <span class="entity">wdt:P131</span> <span class="variable">?city</span> .
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># city</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?stationCount</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Urban | Count by city</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Query by Continent</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Capitals in Africa</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?capital</span> <span class="variable">?capitalLabel</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;  <span class="comment"># country</span>
+           <span class="entity">wdt:P30</span> <span class="entity">wd:Q15</span> ;     <span class="comment"># continent: Africa</span>
+           <span class="entity">wdt:P36</span> <span class="variable">?capital</span> .  <span class="comment"># capital</span>
+  <span class="variable">?capital</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Property: P30 for continent</span>
+          </div>
+        </div>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="bounding.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Bounding Boxes</span>
+        </a>
+        <a href="maps.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Map Visualizations</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

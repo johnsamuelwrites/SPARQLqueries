@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="multilingual">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn multilingual SPARQL queries: work with labels in multiple languages, handle different scripts, and explore cross-language knowledge in Wikidata." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Multilingual Queries - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li aria-current="page">Multilingual Queries</li>
+      </ol>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Navigation</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="index.html" class="active">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Multilingual Topics</div>
+        <ul>
+          <li><a href="labels.html">Label Service</a></li>
+          <li><a href="languages.html">Language Tags</a></li>
+          <li><a href="scripts.html">Scripts & Writing</a></li>
+          <li><a href="translations.html">Translations</a></li>
+          <li><a href="lexemes.html">Lexicographical Data</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Domain Chapter</span>
+          <h1>Multilingual Queries</h1>
+          <p class="hero-subtitle">
+            Explore Wikidata's 400+ languages. Query labels across scripts, work with
+            language fallbacks, discover translations, and access lexicographical
+            data for linguistic research.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">400+</div>
+              <div class="hero-stat-label">Languages</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Scripts</div>
+              <div class="hero-stat-label">Multiple</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Intermediate</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>A Truly Multilingual Knowledge Base</h2>
+        <p>
+          Wikidata is one of the most multilingual databases in the world. Every entity can
+          have labels, descriptions, and aliases in hundreds of languages. This makes it
+          invaluable for cross-cultural research, language learning applications, and
+          building multilingual software.
+        </p>
+        <p>
+          Multilingual queries enable you to:
+        </p>
+        <ul>
+          <li><strong>Retrieve labels</strong> — Get names in any supported language</li>
+          <li><strong>Use fallback chains</strong> — Gracefully handle missing translations</li>
+          <li><strong>Compare languages</strong> — Find terms across language families</li>
+          <li><strong>Work with scripts</strong> — Query in Latin, Cyrillic, Arabic, CJK, and more</li>
+          <li><strong>Access lexemes</strong> — Explore words, forms, and senses</li>
+        </ul>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Multilingual Topics</h2>
+
+        <div class="chapter-grid">
+          <a href="labels.html" class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">🏷️</div>
+            <h3>Label Service</h3>
+            <p>
+              Master the Wikidata label service. Automatically
+              retrieve labels in your preferred languages.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-beginner">Beginner</span>
+              <span>Essential</span>
+            </div>
+            <span class="chapter-card-link">Learn Labels</span>
+          </a>
+
+          <a href="languages.html" class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">🌍</div>
+            <h3>Language Tags</h3>
+            <p>
+              Understand BCP 47 language tags and how to
+              filter, compare, and work with specific languages.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Standards</span>
+            </div>
+            <span class="chapter-card-link">Explore Tags</span>
+          </a>
+
+          <a href="scripts.html" class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">✍️</div>
+            <h3>Scripts & Writing</h3>
+            <p>
+              Query across writing systems: Latin, Cyrillic,
+              Arabic, Chinese, Japanese, Korean, and more.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Unicode</span>
+            </div>
+            <span class="chapter-card-link">Work with Scripts</span>
+          </a>
+
+          <a href="translations.html" class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">🔄</div>
+            <h3>Translations</h3>
+            <p>
+              Find translations and equivalents across languages.
+              Compare how concepts are named worldwide.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Cross-language</span>
+            </div>
+            <span class="chapter-card-link">Find Translations</span>
+          </a>
+
+          <a href="lexemes.html" class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">📖</div>
+            <h3>Lexicographical Data</h3>
+            <p>
+              Explore Wikidata's lexemes: words, forms, senses,
+              and linguistic relationships.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Linguistics</span>
+            </div>
+            <span class="chapter-card-link">Explore Lexemes</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Domain Examples -->
+      <section class="section">
+        <h2>Multilingual Queries by Domain</h2>
+
+        <h3>Programming: Language Names Worldwide</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Language Names in Multiple Languages</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?enLabel</span> <span class="variable">?frLabel</span> <span class="variable">?zhLabel</span>
+       <span class="variable">?jaLabel</span> <span class="variable">?arLabel</span> <span class="variable">?ruLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Get labels in specific languages</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?enLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?enLabel</span>) = <span class="string">"en"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?frLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?frLabel</span>) = <span class="string">"fr"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?zhLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?zhLabel</span>) = <span class="string">"zh"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?jaLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?jaLabel</span>) = <span class="string">"ja"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?arLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?arLabel</span>) = <span class="string">"ar"</span>) }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?ruLabel</span> . <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?ruLabel</span>) = <span class="string">"ru"</span>) }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Languages: English, French, Chinese, Japanese, Arabic, Russian</span>
+          </div>
+        </div>
+
+        <h3>Cultural Heritage: Art Terms Across Cultures</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Art Movement Names in Original Languages</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?movement</span> <span class="variable">?movementLabel</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+       <span class="variable">?nativeLabel</span> (<span class="function">LANG</span>(<span class="variable">?nativeLabel</span>) <span class="keyword">AS</span> <span class="variable">?nativeLang</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?movement</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q968159</span> .  <span class="comment"># art movement</span>
+  <span class="variable">?movement</span> <span class="entity">wdt:P495</span> <span class="variable">?country</span> .    <span class="comment"># country of origin</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P37</span> <span class="variable">?officialLang</span> . <span class="comment"># official language</span>
+  <span class="variable">?officialLang</span> <span class="entity">wdt:P424</span> <span class="variable">?langCode</span> . <span class="comment"># Wikimedia language code</span>
+
+  <span class="comment"># Get label in country's official language</span>
+  <span class="variable">?movement</span> <span class="entity">rdfs:label</span> <span class="variable">?nativeLabel</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?nativeLabel</span>) = <span class="variable">?langCode</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Domain: Cultural Heritage | Feature: Native language labels</span>
+          </div>
+        </div>
+
+        <h3>Urban: City Names in Local Scripts</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Capital Cities in Native Scripts</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+       <span class="variable">?nativeName</span> (<span class="function">LANG</span>(<span class="variable">?nativeName</span>) <span class="keyword">AS</span> <span class="variable">?script</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;     <span class="comment"># is a country</span>
+           <span class="entity">wdt:P36</span> <span class="variable">?city</span> ;         <span class="comment"># has capital</span>
+           <span class="entity">wdt:P37</span> <span class="variable">?officialLang</span> . <span class="comment"># official language</span>
+  <span class="variable">?officialLang</span> <span class="entity">wdt:P424</span> <span class="variable">?langCode</span> .
+
+  <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?nativeName</span> .
+  <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?nativeName</span>) = <span class="variable">?langCode</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span>
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Domain: Urban | Feature: Multiple scripts</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Label Service Reference -->
+      <section class="section">
+        <h2>The Wikidata Label Service</h2>
+        <p>
+          The easiest way to get labels is using the Wikidata label service. It automatically
+          retrieves labels, descriptions, and aliases for your query variables.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Label Service with Fallback Chain</span>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+  <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"[AUTO_LANGUAGE],en,fr,de,es"</span> .
+}
+<span class="comment"># [AUTO_LANGUAGE] = user's browser language</span>
+<span class="comment"># Fallback: en → fr → de → es</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-multilingual">Multilingual</span>
+            <span>Best practice: Always include fallback languages</span>
+          </div>
+        </div>
+
+        <h3>Language Codes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Language</th>
+              <th>Script</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>en</code></td>
+              <td>English</td>
+              <td>Latin</td>
+            </tr>
+            <tr>
+              <td><code>fr</code></td>
+              <td>French</td>
+              <td>Latin</td>
+            </tr>
+            <tr>
+              <td><code>zh</code></td>
+              <td>Chinese</td>
+              <td>Han (Simplified)</td>
+            </tr>
+            <tr>
+              <td><code>zh-hant</code></td>
+              <td>Chinese (Traditional)</td>
+              <td>Han (Traditional)</td>
+            </tr>
+            <tr>
+              <td><code>ja</code></td>
+              <td>Japanese</td>
+              <td>Han, Hiragana, Katakana</td>
+            </tr>
+            <tr>
+              <td><code>ar</code></td>
+              <td>Arabic</td>
+              <td>Arabic</td>
+            </tr>
+            <tr>
+              <td><code>ru</code></td>
+              <td>Russian</td>
+              <td>Cyrillic</td>
+            </tr>
+            <tr>
+              <td><code>hi</code></td>
+              <td>Hindi</td>
+              <td>Devanagari</td>
+            </tr>
+            <tr>
+              <td><code>he</code></td>
+              <td>Hebrew</td>
+              <td>Hebrew</td>
+            </tr>
+            <tr>
+              <td><code>ko</code></td>
+              <td>Korean</td>
+              <td>Hangul</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Navigation -->
+      <section class="section">
+        <h2>Continue Learning</h2>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="geospatial">
+            <div class="chapter-card-icon">🗺️</div>
+            <h3>← Geospatial</h3>
+            <p>Query locations, distances, and maps.</p>
+            <a href="../geospatial/index.html" class="chapter-card-link">Go Back</a>
+          </article>
+
+          <article class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🧩</div>
+            <h3>Patterns →</h3>
+            <p>Reusable SPARQL query patterns.</p>
+            <a href="../patterns/index.html" class="chapter-card-link">Continue</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

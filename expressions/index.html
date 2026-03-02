@@ -1,55 +1,386 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-</head>
-<body>
-  <div id="header">
-    <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="STRING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="string.html">String</a></li>
-       <li><a href="date.html">Dates</a></li>
-       <li><a href="math.html">Math</a></li>
-       <li><a href="hash.html">Hash</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>String</h2>
-    </div>
-    <div class="section">
-     <h2>Dates</h2>
-    </div>
-    <div class="section">
-     <h2>Math</h2>
-    </div>
-    <div class="section">
-     <h2>Hash</h2>
-    </div>
-    <div class="section">
-    <h2>References</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
-</body>
+<!DOCTYPE html>
+<html lang="en" data-chapter="expressions">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn SPARQL expression functions: string manipulation, date operations, mathematical calculations, and hash functions with Wikidata examples." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Expressions - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="index.html" class="active">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Expression Topics</div>
+        <ul>
+          <li><a href="string.html">String Functions</a></li>
+          <li><a href="date.html">Date Functions</a></li>
+          <li><a href="math.html">Math Functions</a></li>
+          <li><a href="hash.html">Hash Functions</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Chapter 2</span>
+          <h1>Expressions</h1>
+          <p class="hero-subtitle">
+            Transform and manipulate data with SPARQL's powerful expression functions.
+            Work with strings, dates, numbers, and hashes to extract precisely the information you need.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">4</div>
+              <div class="hero-stat-label">Categories</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">30+</div>
+              <div class="hero-stat-label">Functions</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Intermediate</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>Working with Expressions</h2>
+        <p>
+          SPARQL expressions allow you to transform, filter, and compute new values from your query results.
+          Whether you need to extract a year from a date, concatenate strings, perform calculations, or
+          generate identifiers, expression functions provide the tools you need.
+        </p>
+        <p>
+          Expressions are used in <code>FILTER</code> clauses, <code>BIND</code> statements, and
+          <code>SELECT</code> projections to manipulate and derive new data.
+        </p>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Function Categories</h2>
+
+        <div class="chapter-grid">
+          <!-- String Functions -->
+          <a href="string.html" class="chapter-card" data-domain="expressions">
+            <div class="chapter-card-icon">📝</div>
+            <h3>String Functions</h3>
+            <p>
+              Manipulate text with functions like CONCAT, SUBSTR, STRLEN, REPLACE, UCASE, LCASE,
+              CONTAINS, STRSTARTS, STRENDS, and more.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>15+ functions</span>
+            </div>
+            <span class="chapter-card-link">Explore Strings</span>
+          </a>
+
+          <!-- Date Functions -->
+          <a href="date.html" class="chapter-card" data-domain="expressions">
+            <div class="chapter-card-icon">📅</div>
+            <h3>Date Functions</h3>
+            <p>
+              Work with temporal data using YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS,
+              TIMEZONE, and NOW functions.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Date & Time</span>
+            </div>
+            <span class="chapter-card-link">Explore Dates</span>
+          </a>
+
+          <!-- Math Functions -->
+          <a href="math.html" class="chapter-card" data-domain="expressions">
+            <div class="chapter-card-icon">🔢</div>
+            <h3>Math Functions</h3>
+            <p>
+              Perform calculations with ABS, ROUND, CEIL, FLOOR, RAND,
+              and arithmetic operators (+, -, *, /).
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Numeric ops</span>
+            </div>
+            <span class="chapter-card-link">Explore Math</span>
+          </a>
+
+          <!-- Hash Functions -->
+          <a href="hash.html" class="chapter-card" data-domain="expressions">
+            <div class="chapter-card-icon">🔐</div>
+            <h3>Hash Functions</h3>
+            <p>
+              Generate identifiers and checksums with MD5, SHA1, SHA256, SHA384,
+              and SHA512 hash functions.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Cryptographic</span>
+            </div>
+            <span class="chapter-card-link">Explore Hashes</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Quick Examples -->
+      <section class="section">
+        <h2>Quick Examples</h2>
+
+        <h3>String Manipulation</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Extract and Transform Text</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">UCASE</span>(<span class="variable">?langLabel</span>) <span class="keyword">AS</span> <span class="variable">?upperName</span>)
+       (<span class="function">STRLEN</span>(<span class="variable">?langLabel</span>) <span class="keyword">AS</span> <span class="variable">?nameLength</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>Functions: UCASE, STRLEN</span>
+          </div>
+        </div>
+
+        <h3>Date Extraction</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Extract Year from Date</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span>
+       (<span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+       (<span class="function">MONTH</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?month</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?inception</span>)
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>Functions: YEAR, MONTH</span>
+          </div>
+        </div>
+
+        <h3>Mathematical Calculations</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Calculate Age of Programming Languages</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span>
+       (<span class="function">YEAR</span>(<span class="function">NOW</span>()) - <span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?age</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?age</span>)
+<span class="keyword">LIMIT</span> 10</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-expressions">Expressions</span>
+            <span>Functions: NOW, YEAR, arithmetic</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Common Functions Reference -->
+      <section class="section">
+        <h2>Common Functions Reference</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Category</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>STR()</code></td>
+              <td>String</td>
+              <td>Convert to string</td>
+            </tr>
+            <tr>
+              <td><code>CONCAT()</code></td>
+              <td>String</td>
+              <td>Concatenate strings</td>
+            </tr>
+            <tr>
+              <td><code>SUBSTR()</code></td>
+              <td>String</td>
+              <td>Extract substring</td>
+            </tr>
+            <tr>
+              <td><code>UCASE() / LCASE()</code></td>
+              <td>String</td>
+              <td>Convert case</td>
+            </tr>
+            <tr>
+              <td><code>YEAR() / MONTH() / DAY()</code></td>
+              <td>Date</td>
+              <td>Extract date components</td>
+            </tr>
+            <tr>
+              <td><code>NOW()</code></td>
+              <td>Date</td>
+              <td>Current datetime</td>
+            </tr>
+            <tr>
+              <td><code>ABS() / ROUND() / FLOOR() / CEIL()</code></td>
+              <td>Math</td>
+              <td>Numeric operations</td>
+            </tr>
+            <tr>
+              <td><code>MD5() / SHA256()</code></td>
+              <td>Hash</td>
+              <td>Generate hash</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Navigation -->
+      <section class="section">
+        <h2>Continue Learning</h2>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="basic">
+            <div class="chapter-card-icon">📘</div>
+            <h3>← Basic Queries</h3>
+            <p>Review foundational SPARQL concepts.</p>
+            <a href="../basic/index.html" class="chapter-card-link">Go Back</a>
+          </article>
+
+          <article class="chapter-card" data-domain="aggregate">
+            <div class="chapter-card-icon">📊</div>
+            <h3>Aggregate Queries →</h3>
+            <p>Learn to analyze data with COUNT, SUM, and GROUP BY.</p>
+            <a href="../aggregate/index.html" class="chapter-card-link">Continue</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      const themeToggle = document.getElementById('themeToggle');
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        setTheme(currentTheme === 'light' ? 'dark' : 'light');
+      });
+    </script>
+  </body>
+
 </html>

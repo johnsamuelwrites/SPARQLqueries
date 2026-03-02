@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="federation">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn common SPARQL federation patterns: entity linking, data enrichment, cross-validation, and aggregation across multiple endpoints." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Federation Patterns - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Federation</a></li>
+        <li aria-current="page">Federation Patterns</li>
+      </ol>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="index.html" class="active">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Federation Topics</div>
+        <ul>
+          <li><a href="service.html">SERVICE Keyword</a></li>
+          <li><a href="endpoints.html">SPARQL Endpoints</a></li>
+          <li><a href="patterns.html" class="active">Federation Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Topic Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Federation</span>
+          <h1>Federation Patterns</h1>
+          <p class="hero-subtitle">
+            Common patterns for effective federated queries: entity linking, data enrichment,
+            cross-validation, and combining data from multiple sources.
+          </p>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>Why Patterns Matter</h2>
+        <p>
+          Federated queries can be slow and complex. These patterns help you structure queries
+          efficiently, handle failures gracefully, and get the most out of distributed data.
+        </p>
+      </section>
+
+      <!-- Pattern 1: Entity Linking -->
+      <section class="section">
+        <h2>Pattern 1: Entity Linking</h2>
+        <p>
+          Use <code>owl:sameAs</code> or external IDs to find the same entity across different
+          datasets. This is the foundation of most federated queries.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Link Entities via owl:sameAs</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0A%0ASELECT%20%3Fcity%20%3FcityLabel%20%3Fpopulation%0AWHERE%20%7B%0A%20%20%23%20Cities%20in%20Germany%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20wd%3AQ183%20.%0A%20%20%0A%20%20%23%20Link%20to%20DBpedia%20via%20sameAs%0A%20%20SERVICE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbCity%20owl%3AsameAs%20%3Fcity%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20dbo%3ApopulationTotal%20%3Fpopulation%20.%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fpopulation%29%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?population</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Cities in Germany</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q183</span> .
+
+  <span class="comment"># Link to DBpedia via sameAs</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbCity</span> <span class="entity">owl:sameAs</span> <span class="variable">?city</span> ;
+            <span class="entity">dbo:populationTotal</span> <span class="variable">?population</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?population</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Join datasets via owl:sameAs</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pattern 2: Data Enrichment -->
+      <section class="section">
+        <h2>Pattern 2: Data Enrichment</h2>
+        <p>
+          Add information from external sources that Wikidata doesn't have. This is the most
+          common use case for federation.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Enrich with External Descriptions</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0A%0ASELECT%20%3Fmuseum%20%3FmuseumLabel%20%3Fabstract%0AWHERE%20%7B%0A%20%20%23%20Art%20museums%0A%20%20%3Fmuseum%20wdt%3AP31%20wd%3AQ207694%20.%0A%20%20%0A%20%20%23%20Get%20rich%20description%20from%20DBpedia%0A%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbMuseum%20owl%3AsameAs%20%3Fmuseum%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20dbo%3Aabstract%20%3Fabstract%20.%0A%20%20%20%20FILTER%28LANG%28%3Fabstract%29%20%3D%20%22en%22%29%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0ALIMIT%205" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?abstract</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Art museums</span>
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q207694</span> .
+
+  <span class="comment"># Get rich description from DBpedia</span>
+  <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbMuseum</span> <span class="entity">owl:sameAs</span> <span class="variable">?museum</span> ;
+               <span class="entity">dbo:abstract</span> <span class="variable">?abstract</span> .
+    <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?abstract</span>) = <span class="string">"en"</span>)
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Add Wikipedia abstracts to Wikidata results</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pattern 3: Cross-Validation -->
+      <section class="section">
+        <h2>Pattern 3: Cross-Validation</h2>
+        <p>
+          Compare data between sources to find discrepancies or validate information.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Compare Population Data</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0A%0ASELECT%20%3Fcountry%20%3FcountryLabel%20%3FwdPop%20%3FdbPop%20%28ABS%28%3FwdPop%20-%20%3FdbPop%29%20AS%20%3Fdiff%29%0AWHERE%20%7B%0A%20%20%23%20Countries%20with%20population%20in%20Wikidata%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3FwdPop%20.%0A%20%20%0A%20%20%23%20Get%20population%20from%20DBpedia%0A%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbCountry%20owl%3AsameAs%20%3Fcountry%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20dbo%3ApopulationTotal%20%3FdbPop%20.%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0AORDER%20BY%20DESC%28%3Fdiff%29%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?wdPop</span> <span class="variable">?dbPop</span> (<span class="function">ABS</span>(<span class="variable">?wdPop</span> - <span class="variable">?dbPop</span>) <span class="keyword">AS</span> <span class="variable">?diff</span>)
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Countries with population in Wikidata</span>
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P1082</span> <span class="variable">?wdPop</span> .
+
+  <span class="comment"># Get population from DBpedia</span>
+  <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbCountry</span> <span class="entity">owl:sameAs</span> <span class="variable">?country</span> ;
+                <span class="entity">dbo:populationTotal</span> <span class="variable">?dbPop</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?diff</span>)
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Find largest population discrepancies</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pattern 4: Filter First -->
+      <section class="section">
+        <h2>Pattern 4: Filter First</h2>
+        <p>
+          Always filter locally before federating. Sending fewer bindings to remote endpoints
+          dramatically improves performance.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Filter Before Federation</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0A%0ASELECT%20%3Fscientist%20%3FscientistLabel%20%3Fabstract%0AWHERE%20%7B%0A%20%20%23%20Filter%20locally%3A%20Nobel%20Prize%20winners%20in%20Chemistry%0A%20%20%3Fscientist%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP166%20wd%3AQ44585%20.%0A%20%20%0A%20%20%23%20Only%20then%20federate%20with%20small%20result%20set%0A%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbScientist%20owl%3AsameAs%20%3Fscientist%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20dbo%3Aabstract%20%3Fabstract%20.%0A%20%20%20%20FILTER%28LANG%28%3Fabstract%29%20%3D%20%22en%22%29%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?scientist</span> <span class="variable">?scientistLabel</span> <span class="variable">?abstract</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Filter locally: Nobel Prize winners in Chemistry</span>
+  <span class="variable">?scientist</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+             <span class="entity">wdt:P166</span> <span class="entity">wd:Q44585</span> .
+
+  <span class="comment"># Only then federate with small result set</span>
+  <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbScientist</span> <span class="entity">owl:sameAs</span> <span class="variable">?scientist</span> ;
+                  <span class="entity">dbo:abstract</span> <span class="variable">?abstract</span> .
+    <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?abstract</span>) = <span class="string">"en"</span>)
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Only ~200 Nobel laureates to look up</span>
+          </div>
+        </div>
+
+        <p>
+          <strong>Anti-pattern:</strong> Don't query the remote endpoint first and then filter
+          locally. This downloads massive amounts of data before filtering.
+        </p>
+      </section>
+
+      <!-- Pattern 5: OPTIONAL Federation -->
+      <section class="section">
+        <h2>Pattern 5: OPTIONAL Federation</h2>
+        <p>
+          Use <code>OPTIONAL</code> with <code>SERVICE SILENT</code> to return results even
+          when the remote data doesn't exist or the endpoint fails.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Optional Remote Data</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20foaf%3A%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0A%0ASELECT%20%3Funi%20%3FuniLabel%20%3Fhomepage%0AWHERE%20%7B%0A%20%20%23%20Universities%20in%20France%0A%20%20%3Funi%20wdt%3AP31%20wd%3AQ3918%20%3B%0A%20%20%20%20%20%20%20wdt%3AP17%20wd%3AQ142%20.%0A%20%20%0A%20%20%23%20Optionally%20get%20homepage%20from%20DBpedia%0A%20%20OPTIONAL%20%7B%0A%20%20%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%20%20%3FdbUni%20owl%3AsameAs%20%3Funi%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20foaf%3Ahomepage%20%3Fhomepage%20.%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%2Cfr%22%20.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">foaf:</span> <span class="uri">&lt;http://xmlns.com/foaf/0.1/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?uni</span> <span class="variable">?uniLabel</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Universities in France</span>
+  <span class="variable">?uni</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3918</span> ;
+       <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .
+
+  <span class="comment"># Optionally get homepage from DBpedia</span>
+  <span class="keyword">OPTIONAL</span> {
+    <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+      <span class="variable">?dbUni</span> <span class="entity">owl:sameAs</span> <span class="variable">?uni</span> ;
+              <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+    }
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Returns universities even without homepage</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pattern 6: Multiple Endpoints -->
+      <section class="section">
+        <h2>Pattern 6: Multiple Endpoints</h2>
+        <p>
+          Combine data from several external sources in a single query. Use SERVICE SILENT
+          for each to handle failures gracefully.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Combine Multiple Sources</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0APREFIX%20foaf%3A%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0A%0ASELECT%20%3Fartist%20%3FartistLabel%20%3Fabstract%20%3Fhomepage%0AWHERE%20%7B%0A%20%20%23%20Painters%0A%20%20%3Fartist%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ1028181%20.%0A%20%20%0A%20%20%23%20Source%201%3A%20DBpedia%20abstract%0A%20%20OPTIONAL%20%7B%0A%20%20%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%20%20%3FdbArtist%20owl%3AsameAs%20%3Fartist%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20dbo%3Aabstract%20%3Fabstract%20.%0A%20%20%20%20%20%20FILTER%28LANG%28%3Fabstract%29%20%3D%20%22en%22%29%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20%0A%20%20%23%20Source%202%3A%20DBpedia%20homepage%0A%20%20OPTIONAL%20%7B%0A%20%20%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%20%20%3FdbArtist2%20owl%3AsameAs%20%3Fartist%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20foaf%3Ahomepage%20%3Fhomepage%20.%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0ALIMIT%205" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">foaf:</span> <span class="uri">&lt;http://xmlns.com/foaf/0.1/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?artist</span> <span class="variable">?artistLabel</span> <span class="variable">?abstract</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Painters</span>
+  <span class="variable">?artist</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q1028181</span> .
+
+  <span class="comment"># Source 1: DBpedia abstract</span>
+  <span class="keyword">OPTIONAL</span> {
+    <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+      <span class="variable">?dbArtist</span> <span class="entity">owl:sameAs</span> <span class="variable">?artist</span> ;
+                  <span class="entity">dbo:abstract</span> <span class="variable">?abstract</span> .
+      <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?abstract</span>) = <span class="string">"en"</span>)
+    }
+  }
+
+  <span class="comment"># Source 2: DBpedia homepage</span>
+  <span class="keyword">OPTIONAL</span> {
+    <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+      <span class="variable">?dbArtist2</span> <span class="entity">owl:sameAs</span> <span class="variable">?artist</span> ;
+                   <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+    }
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Multiple OPTIONAL SERVICE blocks</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Best Practices Summary -->
+      <section class="section">
+        <h2>Best Practices Summary</h2>
+        <ul>
+          <li><strong>Filter first</strong> — Minimize data before federating</li>
+          <li><strong>Use SERVICE SILENT</strong> — Handle endpoint failures gracefully</li>
+          <li><strong>Use OPTIONAL</strong> — Return results even when remote data is missing</li>
+          <li><strong>Test separately</strong> — Debug each SERVICE block independently</li>
+          <li><strong>Limit results</strong> — Start small, scale up carefully</li>
+          <li><strong>Use entity links</strong> — owl:sameAs and external IDs are essential</li>
+          <li><strong>Monitor performance</strong> — Federated queries can be slow</li>
+        </ul>
+      </section>
+
+      <!-- Key Entities -->
+      <section class="section">
+        <h2>Key Entities</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>owl:sameAs</code></td>
+              <td>Links identical entities across datasets</td>
+            </tr>
+            <tr>
+              <td><code>skos:exactMatch</code></td>
+              <td>Links equivalent concepts (weaker than sameAs)</td>
+            </tr>
+            <tr>
+              <td><code>SERVICE SILENT</code></td>
+              <td>Graceful failure handling for federation</td>
+            </tr>
+            <tr>
+              <td><code>OPTIONAL</code></td>
+              <td>Return results even if pattern doesn't match</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Topic Navigation -->
+      <nav class="topic-nav">
+        <a href="endpoints.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">SPARQL Endpoints</span>
+        </a>
+        <a href="../index.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Back to Home</span>
+        </a>
+      </nav>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

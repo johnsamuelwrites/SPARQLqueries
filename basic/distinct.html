@@ -1,59 +1,272 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="basic">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use DISTINCT in SPARQL to eliminate duplicate results with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>DISTINCT - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="SELECT" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="prefix.html">Prefix</a></li>
-       <li><a href="select.html">Select</a></li>
-       <li><a href="distinct.html">Distinct</a></li>
-       <li><a href="label.html">Label</a></li>
-       <li><a href="limit.html">Limit</a></li>
-       <li><a href="offset.html">Offset</a></li>
-       <li><a href="filter.html">Filter</a></li>
-       <li><a href="optional.html">Optional</a></li>
-       <li><a href="omission.html">Omission</a></li>
-       <li><a href="bind.html">Bind</a></li>
-       <li><a href="values.html">Values</a></li>
-       <li><a href="negation.html">Negation</a></li>
-       <li><a href="minus.html">Minus</a></li>
-       <li><a href="paths.html">Paths</a></li>
-       <li><a href="subqueries.html">Subqueries</a></li>
-       <li><a href="values.html">Values</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Basic</a></li>
+      <li aria-current="page">DISTINCT</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html" class="active">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Basic Topics</div>
+      <ul>
+        <li><a href="select.html">SELECT</a></li>
+        <li><a href="prefix.html">PREFIX</a></li>
+        <li><a href="filter.html">FILTER</a></li>
+        <li><a href="distinct.html" class="active">DISTINCT</a></li>
+        <li><a href="label.html">Labels</a></li>
+        <li><a href="limit.html">LIMIT</a></li>
+        <li><a href="offset.html">OFFSET</a></li>
+        <li><a href="optional.html">OPTIONAL</a></li>
+        <li><a href="bind.html">BIND</a></li>
+        <li><a href="values.html">VALUES</a></li>
+        <li><a href="negation.html">Negation</a></li>
+        <li><a href="paths.html">Property Paths</a></li>
+        <li><a href="subqueries.html">Subqueries</a></li>
+        <li><a href="multiple.html">Multiple Patterns</a></li>
+        <li><a href="omission.html">Omission</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Basic</span>
+        <h1>DISTINCT</h1>
+        <p class="hero-subtitle">
+          Eliminate duplicate rows from query results. DISTINCT ensures each combination
+          of values appears only once, cleaning up results when entities match multiple patterns.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding DISTINCT</h2>
+      <p>
+        DISTINCT removes duplicate rows from query results. This is especially useful when
+        entities have multiple values for a property (like multiple occupations or citizenships),
+        which would otherwise produce repeated rows.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Basic DISTINCT Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Unique Countries of Nobel Laureates</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20DISTINCT%20%3Fcountry%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP166%20%3Faward%20.%0A%20%20%3Faward%20wdt%3AP31%20wd%3AQ7191%20.%0A%20%20%3Fperson%20wdt%3AP27%20%3Fcountry%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AORDER%20BY%20%3FcountryLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P166</span> <span class="variable">?award</span> .
+  <span class="variable">?award</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q7191</span> .
+  <span class="variable">?person</span> <span class="entity">wdt:P27</span> <span class="variable">?country</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?countryLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Each country appears once regardless of laureate count</span>
+        </div>
+      </div>
+
+      <p>
+        Without DISTINCT, countries with many Nobel laureates would appear multiple times.
+        The query finds Nobel Prize winners (P166 award of instance Q7191), gets their
+        citizenship (P27), and returns each unique country once.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Unique Genres of Films by a Director</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20DISTINCT%20%3Fgenre%20%3FgenreLabel%0AWHERE%20%7B%0A%20%20%3Ffilm%20wdt%3AP57%20wd%3AQ25191%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP136%20%3Fgenre%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?genre</span> <span class="variable">?genreLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?film</span> <span class="entity">wdt:P57</span> <span class="entity">wd:Q25191</span> ;
+        <span class="entity">wdt:P136</span> <span class="variable">?genre</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>All unique genres from Steven Spielberg's films</span>
+        </div>
+      </div>
+
+      <p>
+        This query finds all films directed by Steven Spielberg (Q25191) and returns
+        each unique genre only once. Since a director makes many films in the same genre,
+        DISTINCT prevents repeated genre entries.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>DISTINCT with Multiple Variables</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Unique Occupation-Country Pairs</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20DISTINCT%20%3FoccupationLabel%20%3FcountryLabel%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP106%20%3Foccupation%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP27%20%3Fcountry%20.%0A%20%20%3Foccupation%20wdt%3AP31%20wd%3AQ28640%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%20100" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?occupationLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="variable">?occupation</span> ;
+          <span class="entity">wdt:P27</span> <span class="variable">?country</span> .
+  <span class="variable">?occupation</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q28640</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">100</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-basic">Basic</span>
+          <span>Each profession-country combination appears once</span>
+        </div>
+      </div>
+
+      <p>
+        DISTINCT applies to the entire row. This query finds professions (occupations that
+        are instance of profession Q28640) paired with countries, returning each unique
+        combination once even if many people share that occupation-country pair.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>When to Use DISTINCT</h2>
+      <p>
+        Use DISTINCT when: (1) entities can have multiple values for a property you're
+        querying, (2) you only need to know what values exist, not how many times they
+        appear, or (3) intermediate joins produce unwanted duplicates. Avoid DISTINCT
+        when you need counts, as it may hide valuable frequency information.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table class="entity-table">
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th>ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nobel Prize</td>
+            <td>wd:Q7191</td>
+            <td>Set of annual international awards</td>
+          </tr>
+          <tr>
+            <td>Steven Spielberg</td>
+            <td>wd:Q25191</td>
+            <td>American film director</td>
+          </tr>
+          <tr>
+            <td>profession</td>
+            <td>wd:Q28640</td>
+            <td>Vocation requiring training</td>
+          </tr>
+          <tr>
+            <td>award received</td>
+            <td>wdt:P166</td>
+            <td>Award or honor received</td>
+          </tr>
+          <tr>
+            <td>country of citizenship</td>
+            <td>wdt:P27</td>
+            <td>Country of legal citizenship</td>
+          </tr>
+          <tr>
+            <td>director</td>
+            <td>wdt:P57</td>
+            <td>Director of a film or show</td>
+          </tr>
+          <tr>
+            <td>genre</td>
+            <td>wdt:P136</td>
+            <td>Creative genre of work</td>
+          </tr>
+          <tr>
+            <td>occupation</td>
+            <td>wdt:P106</td>
+            <td>Person's job or profession</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="filter.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">FILTER</span>
+      </a>
+      <a href="label.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">Labels</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

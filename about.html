@@ -1,61 +1,314 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
   <head>
-   <meta charset="utf-8"/>
-   <title>About SPARQLqueries</title>
-   <link rel="stylesheet" type="text/css" href="style.css"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="About SPARQLqueries - An open-source resource for learning SPARQL through real-world queries on Wikidata." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <title>About - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
-  <body vocab="http://schema.org/" typeof="Website"> 
-  <div id="header">
-    <div id="logo"><a href="./index.html">SPARQLqueries</a></div>
-    <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="FILTER"/>
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
-      </form>
-    </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="basic/index.html">Basic</a></li>
-       <li><a href="expressions/index.html">Expressions</a></li>
-       <li><a href="aggregate/index.html">Aggregate</a></li>
-       <li><a href="advanced/index.html">Advanced</a></li>
-       <li><a href="federation/index.html">Federation</a></li>
-       <li><a href="about.html">About</a></li>
-     </ul>
-    </div>
-  </div>
-  <div id="content">
-    <div id="title">
-      <h2>About SPARQLqueries</h2>
-    </div>
-    <div class="section">
-      <h3>Goals</h3>
-      <p>SPARQLqueries:</p>
-      <ul>
-	 <li></li>
-      </ul>
-    </div>
-    <div class="section">
-     <h3>Source code</h3>
-     <ul>
-       <li><a href="https://github.com/johnsamuelwrites/SPARQLqueries">SPARQLqueries on Github</a></li>
-     </ul>
-    </div>
-    <div class="section">
-     <h3>Team</h3>
-     <ul>
-      <li>John Samuel</li>
-     </ul>
-    </div>
-    <div class="section">
-     <h3>References</h3>
-     <ul>
-       <li><a href="https://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Query Language</a></li>
-     </ul>
-    </div>
-   </div>
+
+  <body vocab="http://schema.org/" typeof="Website">
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="./index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="./search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="basic/index.html">Basic</a></li>
+          <li><a href="expressions/index.html">Expressions</a></li>
+          <li><a href="aggregate/index.html">Aggregate</a></li>
+          <li><a href="advanced/index.html">Advanced</a></li>
+          <li><a href="federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="temporal/index.html">Temporal</a></li>
+          <li><a href="geospatial/index.html">Geospatial</a></li>
+          <li><a href="multilingual/index.html">Multilingual</a></li>
+          <li><a href="patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service ↗</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Open Source Project</span>
+          <h1>About SPARQLqueries</h1>
+          <p class="hero-subtitle">
+            An open-source learning resource designed to go beyond traditional SPARQL tutorials
+            by working with real-world data from Wikidata and demonstrating practical query techniques.
+          </p>
+        </div>
+      </section>
+
+      <!-- Mission Section -->
+      <section class="section">
+        <h2>Our Mission</h2>
+        <p>
+          <strong>SPARQLqueries</strong> was created to bridge the gap between theoretical SPARQL knowledge
+          and practical application. While many resources teach SPARQL syntax, few demonstrate how to work
+          with real-world knowledge graphs at scale.
+        </p>
+        <p>
+          This project aims to:
+        </p>
+        <ul>
+          <li><strong>Teach by example</strong> — Every query runs against live Wikidata endpoints</li>
+          <li><strong>Cover real challenges</strong> — Address common issues like missing data, multilingual labels, and
+            performance optimization</li>
+          <li><strong>Explore multiple domains</strong> — From programming languages to cultural heritage and urban data
+          </li>
+          <li><strong>Demonstrate all SPARQL features</strong> — Progressive coverage from basic SELECT to advanced
+            federation</li>
+          <li><strong>Stay current</strong> — Evolve with the semantic web and knowledge graph ecosystem</li>
+        </ul>
+      </section>
+
+      <!-- What Makes This Different -->
+      <section class="section">
+        <h2>What Makes This Different?</h2>
+
+        <div class="chapter-grid">
+          <div class="chapter-card">
+            <div class="chapter-card-icon">🌍</div>
+            <h3>Real Data</h3>
+            <p>
+              No toy examples. Every query works with Wikidata's billions of triples,
+              teaching you to handle real-world complexity.
+            </p>
+          </div>
+
+          <div class="chapter-card">
+            <div class="chapter-card-icon">🔗</div>
+            <h3>Multi-Domain</h3>
+            <p>
+              Explore programming languages, cultural heritage, urban geography,
+              and more — see how SPARQL adapts to different knowledge domains.
+            </p>
+          </div>
+
+          <div class="chapter-card">
+            <div class="chapter-card-icon">🚀</div>
+            <h3>Progressive Learning</h3>
+            <p>
+              From your first SELECT to complex federated queries across multiple
+              endpoints, each chapter builds on the last.
+            </p>
+          </div>
+
+          <div class="chapter-card">
+            <div class="chapter-card-icon">⚡</div>
+            <h3>Run Anywhere</h3>
+            <p>
+              Click "Run on Wikidata" to execute queries instantly.
+              No setup required — start learning immediately.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Author Section -->
+      <section class="section">
+        <h2>Author</h2>
+        <div class="chapter-card" style="max-width: 400px;">
+          <div class="chapter-card-icon">👤</div>
+          <h3>John Samuel</h3>
+          <p>
+            Researcher and educator passionate about semantic web technologies,
+            knowledge graphs, and open data.
+          </p>
+          <a href="https://github.com/johnsamuelwrites" class="chapter-card-link" target="_blank" rel="noopener">
+            View GitHub Profile
+          </a>
+        </div>
+      </section>
+
+      <!-- Technical Stack -->
+      <section class="section">
+        <h2>Technical Details</h2>
+
+        <h3>Data Sources</h3>
+        <ul>
+          <li><a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> — Primary knowledge base
+            with structured data about the world</li>
+          <li><a href="https://wiki.dbpedia.org/" target="_blank" rel="noopener">DBpedia</a> — Structured data extracted
+            from Wikipedia</li>
+          <li>Additional SPARQL endpoints for federated query examples</li>
+        </ul>
+
+        <h3>Standards</h3>
+        <ul>
+          <li><a href="https://www.w3.org/TR/sparql11-query/" target="_blank" rel="noopener">SPARQL 1.1 Query
+              Language</a> — W3C Recommendation</li>
+          <li><a href="https://www.w3.org/TR/sparql11-federated-query/" target="_blank" rel="noopener">SPARQL 1.1
+              Federated Query</a> — Cross-endpoint queries</li>
+          <li><a href="https://www.w3.org/TR/rdf11-concepts/" target="_blank" rel="noopener">RDF 1.1 Concepts</a> —
+            Resource Description Framework</li>
+        </ul>
+
+        <h3>This Website</h3>
+        <ul>
+          <li>Pure HTML, CSS, and vanilla JavaScript — no framework dependencies</li>
+          <li>Dark-first design with light mode support</li>
+          <li>Responsive layout for all screen sizes</li>
+          <li>Accessible and performant</li>
+        </ul>
+      </section>
+
+      <!-- Source Code & License -->
+      <section class="section">
+        <h2>Source Code & License</h2>
+
+        <p>
+          This project is fully open source and welcomes contributions.
+        </p>
+
+        <div class="chapter-grid">
+          <div class="chapter-card">
+            <div class="chapter-card-icon">📦</div>
+            <h3>Repository</h3>
+            <p>Browse the source code, report issues, or contribute improvements.</p>
+            <a href="https://github.com/johnsamuelwrites/SPARQLqueries" class="chapter-card-link" target="_blank"
+              rel="noopener">
+              View on GitHub
+            </a>
+          </div>
+
+          <div class="chapter-card">
+            <div class="chapter-card-icon">⚖️</div>
+            <h3>Licenses</h3>
+            <p>
+              <strong>Code:</strong> <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank"
+                rel="noopener">GPLv3+</a><br />
+              <strong>Documentation:</strong> <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank"
+                rel="noopener">CC-BY-SA 4.0</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- References -->
+      <section class="section">
+        <h2>References & Resources</h2>
+
+        <h3>SPARQL Learning Resources</h3>
+        <ul>
+          <li><a href="https://www.w3.org/TR/sparql11-query/" target="_blank" rel="noopener">SPARQL 1.1 Query Language
+              Specification</a> — Official W3C documentation</li>
+          <li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_tutorial" target="_blank" rel="noopener">Wikidata
+              SPARQL Tutorial</a> — Wikidata's official guide</li>
+          <li><a href="https://www.wikidata.org/wiki/Wikidata:SPARQL_query_service/queries/examples" target="_blank"
+              rel="noopener">Wikidata Query Examples</a> — Community-contributed queries</li>
+        </ul>
+
+        <h3>Tools</h3>
+        <ul>
+          <li><a href="https://query.wikidata.org/" target="_blank" rel="noopener">Wikidata Query Service</a> — Execute
+            SPARQL queries against Wikidata</li>
+          <li><a href="https://www.wikidata.org/wiki/Wikidata:Tools" target="_blank" rel="noopener">Wikidata Tools</a> —
+            Collection of useful Wikidata utilities</li>
+        </ul>
+
+        <h3>Related Projects</h3>
+        <ul>
+          <li><a href="https://www.wikidata.org/" target="_blank" rel="noopener">Wikidata</a> — Free knowledge base</li>
+          <li><a href="https://www.dbpedia.org/" target="_blank" rel="noopener">DBpedia</a> — Structured Wikipedia data
+          </li>
+          <li><a href="https://linkeddata.org/" target="_blank" rel="noopener">Linked Data</a> — The web of data</li>
+        </ul>
+      </section>
+
+      <!-- Contributing -->
+      <section class="section">
+        <h2>Contributing</h2>
+        <p>
+          Contributions are welcome! Whether you want to add new queries, fix errors,
+          improve documentation, or suggest new features, your input is valued.
+        </p>
+        <ul>
+          <li><strong>Report issues</strong> — Found a bug or error? Open an issue on GitHub</li>
+          <li><strong>Submit queries</strong> — Have an interesting SPARQL query? Share it!</li>
+          <li><strong>Improve docs</strong> — Help make explanations clearer</li>
+          <li><strong>Translate</strong> — Help make content accessible in more languages</li>
+        </ul>
+        <p>
+          <a href="https://github.com/johnsamuelwrites/SPARQLqueries/issues" target="_blank" rel="noopener"
+            class="chapter-card-link">
+            Open an Issue on GitHub
+          </a>
+        </p>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <!-- Theme Toggle Script -->
+    <script>
+      const themeToggle = document.getElementById('themeToggle');
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        setTheme(currentTheme === 'light' ? 'dark' : 'light');
+      });
+    </script>
   </body>
+
 </html>

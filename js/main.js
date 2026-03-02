@@ -3,7 +3,7 @@
  * Handles theme toggle, copy buttons, and run link pre-population
  */
 
-(function() {
+(function () {
   'use strict';
 
   // ============================================

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Master reusable SPARQL query patterns: entity linking, graph traversal, data transformation, and optimization techniques." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Query Patterns - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li aria-current="page">Query Patterns</li>
+      </ol>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Navigation</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../sitemap.html">Sitemap</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Chapter Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Domain Chapter</span>
+          <h1>Query Patterns</h1>
+          <p class="hero-subtitle">
+            Master reusable SPARQL patterns that solve common challenges. From traversing
+            hierarchies to deduplicating results, these patterns form the building blocks
+            for complex real-world queries.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-value">6</div>
+              <div class="hero-stat-label">Topics</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">20+</div>
+              <div class="hero-stat-label">Patterns</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">Advanced</div>
+              <div class="hero-stat-label">Level</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>Building Blocks for Complex Queries</h2>
+        <p>
+          After mastering SPARQL syntax, the next step is learning reusable patterns
+          that solve recurring problems. These patterns are the "design patterns" of
+          SPARQL — proven solutions you can adapt to many situations.
+        </p>
+        <p>
+          This chapter covers:
+        </p>
+        <ul>
+          <li><strong>Hierarchy traversal</strong> — Navigate class hierarchies and transitive relationships</li>
+          <li><strong>Entity linking</strong> — Connect entities across identifiers and datasets</li>
+          <li><strong>Ranking & scoring</strong> — Order results by computed relevance</li>
+          <li><strong>Deduplication</strong> — Handle multiple values and remove duplicates cleanly</li>
+          <li><strong>Optimization</strong> — Make queries faster and more efficient</li>
+          <li><strong>Debugging</strong> — Diagnose and fix query problems</li>
+        </ul>
+      </section>
+
+      <!-- Topics Grid -->
+      <section class="section section-transparent">
+        <h2>Pattern Topics</h2>
+
+        <div class="chapter-grid">
+          <a href="hierarchy.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🌳</div>
+            <h3>Hierarchy Traversal</h3>
+            <p>
+              Navigate class and property hierarchies using
+              property paths. Query transitive relationships.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>P279, P31</span>
+            </div>
+            <span class="chapter-card-link">Learn Hierarchies</span>
+          </a>
+
+          <a href="linking.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🔗</div>
+            <h3>Entity Linking</h3>
+            <p>
+              Connect entities using external IDs, sameAs
+              links, and cross-dataset identifiers.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>External IDs</span>
+            </div>
+            <span class="chapter-card-link">Link Entities</span>
+          </a>
+
+          <a href="ranking.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🏆</div>
+            <h3>Ranking & Scoring</h3>
+            <p>
+              Compute relevance scores and rank results.
+              Weight multiple factors for better ordering.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Scoring</span>
+            </div>
+            <span class="chapter-card-link">Rank Results</span>
+          </a>
+
+          <a href="dedup.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🧹</div>
+            <h3>Deduplication</h3>
+            <p>
+              Handle multi-valued properties cleanly.
+              Remove duplicates and aggregate values.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Data quality</span>
+            </div>
+            <span class="chapter-card-link">Deduplicate</span>
+          </a>
+
+          <a href="optimization.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">⚡</div>
+            <h3>Optimization</h3>
+            <p>
+              Write faster queries. Understand query planning,
+              use hints, and avoid common pitfalls.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-advanced">Advanced</span>
+              <span>Performance</span>
+            </div>
+            <span class="chapter-card-link">Optimize</span>
+          </a>
+
+          <a href="debugging.html" class="chapter-card" data-domain="patterns">
+            <div class="chapter-card-icon">🔍</div>
+            <h3>Debugging</h3>
+            <p>
+              Diagnose query problems. Debug empty results,
+              timeouts, and unexpected output.
+            </p>
+            <div class="chapter-card-meta">
+              <span class="difficulty difficulty-intermediate">Intermediate</span>
+              <span>Troubleshooting</span>
+            </div>
+            <span class="chapter-card-link">Debug Queries</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Essential Patterns -->
+      <section class="section">
+        <h2>Essential Patterns</h2>
+
+        <h3>Pattern 1: Instance-of with Subclass Traversal</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find All Museums (Including Subtypes)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Match museums AND all subclasses of museum</span>
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .  <span class="comment"># museum</span>
+
+  <span class="comment"># Get the specific type</span>
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>wdt:P31/wdt:P279* — The "instance of subclass" pattern</span>
+          </div>
+        </div>
+
+        <h3>Pattern 2: SAMPLE for Multi-Valued Properties</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Get One Value Per Entity</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">SAMPLE</span>(<span class="variable">?paradigmLabel</span>) <span class="keyword">AS</span> <span class="variable">?oneParadigm</span>)
+       (<span class="function">COUNT</span>(<span class="variable">?paradigm</span>) <span class="keyword">AS</span> <span class="variable">?paradigmCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?paradigmCount</span>)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>SAMPLE() — Pick one arbitrary value from a group</span>
+          </div>
+        </div>
+
+        <h3>Pattern 3: Concatenate Multiple Values</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Combine All Values into One Cell</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?paradigmLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?paradigms</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>GROUP_CONCAT — Combine multiple values into a list</span>
+          </div>
+        </div>
+
+        <h3>Pattern 4: Ranking by Computed Score</h3>
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Rank Languages by "Popularity" Score</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?sitelinks</span> <span class="variable">?statements</span>
+       (<span class="variable">?sitelinks</span> * 2 + <span class="variable">?statements</span> <span class="keyword">AS</span> <span class="variable">?score</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> ;
+        <span class="entity">wikibase:statements</span> <span class="variable">?statements</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?score</span>)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Computed scores using wikibase:sitelinks + statements</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Anti-Patterns -->
+      <section class="section">
+        <h2>Anti-Patterns to Avoid</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Anti-Pattern</th>
+              <th>Problem</th>
+              <th>Better Approach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SELECT *</code></td>
+              <td>Returns all variables, including internal ones</td>
+              <td>Explicitly list needed variables</td>
+            </tr>
+            <tr>
+              <td>Unbound <code>wdt:P279*</code></td>
+              <td>Can traverse entire class hierarchy (slow)</td>
+              <td>Always start from a specific entity</td>
+            </tr>
+            <tr>
+              <td>Missing <code>LIMIT</code></td>
+              <td>May return millions of rows</td>
+              <td>Always add LIMIT during development</td>
+            </tr>
+            <tr>
+              <td>Cartesian products</td>
+              <td>Unrelated patterns multiply results</td>
+              <td>Ensure patterns share variables</td>
+            </tr>
+            <tr>
+              <td><code>FILTER(STR(?x) = "...")</code></td>
+              <td>String comparison is slow</td>
+              <td>Use direct entity references</td>
+            </tr>
+            <tr>
+              <td>Multiple <code>OPTIONAL</code>s</td>
+              <td>Each OPTIONAL can multiply results</td>
+              <td>Use SAMPLE or GROUP_CONCAT</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Optimization Tips -->
+      <section class="section">
+        <h2>Quick Optimization Tips</h2>
+
+        <ul>
+          <li><strong>Put most selective patterns first</strong> — Reduce result set early</li>
+          <li><strong>Use LIMIT during development</strong> — Test with small result sets</li>
+          <li><strong>Avoid regex when possible</strong> — Use CONTAINS or STRSTARTS instead</li>
+          <li><strong>Filter early</strong> — Move FILTER clauses as close to the pattern as possible</li>
+          <li><strong>Use property paths wisely</strong> — Limit depth with <code>{1,5}</code> syntax</li>
+          <li><strong>Check query plan</strong> — Use EXPLAIN (where available) to understand execution</li>
+          <li><strong>Consider subqueries</strong> — Break complex queries into smaller pieces</li>
+        </ul>
+      </section>
+
+      <!-- Navigation -->
+      <section class="section">
+        <h2>Continue Learning</h2>
+        <div class="chapter-grid">
+          <article class="chapter-card" data-domain="multilingual">
+            <div class="chapter-card-icon">🌐</div>
+            <h3>← Multilingual</h3>
+            <p>Query across languages and scripts.</p>
+            <a href="../multilingual/index.html" class="chapter-card-link">Go Back</a>
+          </article>
+
+          <article class="chapter-card" data-domain="basic">
+            <div class="chapter-card-icon">📘</div>
+            <h3>Start Over →</h3>
+            <p>Review the basics or explore examples.</p>
+            <a href="../basic/index.html" class="chapter-card-link">Basic Queries</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

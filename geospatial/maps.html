@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="geospatial">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Display SPARQL query results on interactive maps using Wikidata Query Service visualizations." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Map Visualizations - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Geospatial</a></li>
+        <li aria-current="page">Map Visualizations</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="index.html" class="active">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Geospatial Topics</div>
+        <ul>
+          <li><a href="coordinates.html">Coordinates</a></li>
+          <li><a href="distance.html">Distance Queries</a></li>
+          <li><a href="bounding.html">Bounding Boxes</a></li>
+          <li><a href="regions.html">Regions & Areas</a></li>
+          <li><a href="maps.html" class="active">Map Visualizations</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Geospatial</span>
+          <h1>Map Visualizations</h1>
+          <p class="hero-subtitle">
+            Display query results on interactive maps using Wikidata Query Service's
+            built-in visualization features. Create beautiful geographic presentations.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Default View Magic Comments</h2>
+        <p>
+          Wikidata Query Service supports special comments that change how results are displayed.
+          Add <code>#defaultView:Map</code> as the first line to render on a map.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Comment</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>#defaultView:Map</code></td>
+              <td>Display on interactive map</td>
+            </tr>
+            <tr>
+              <td><code>#defaultView:Map{"markercluster": true}</code></td>
+              <td>Cluster nearby markers</td>
+            </tr>
+            <tr>
+              <td><code>#defaultView:Map{"hide": ["?coord"]}</code></td>
+              <td>Hide coordinate column in popup</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Basic Map Visualization</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Simple Map with Labels</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?place</span> <span class="variable">?placeLabel</span> <span class="variable">?coord</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?place</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;       <span class="comment"># city</span>
+         <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;        <span class="comment"># France</span>
+         <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> ;
+         <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> > 100000)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>View: Map | French cities over 100k</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Maps with Custom Markers</h2>
+        <p>
+          Add images to map markers by including an <code>?image</code> variable.
+          The image will appear in the popup when you click the marker.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museums with Images</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?coord</span> <span class="variable">?image</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;
+          <span class="entity">wdt:P17</span> <span class="entity">wd:Q145</span> ;  <span class="comment"># UK</span>
+          <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?museum</span> <span class="entity">wdt:P18</span> <span class="variable">?image</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 100</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Feature: Images in popups</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Clustered Maps</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">World Heritage Sites with Clustering</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map{"markercluster": true}</span>
+<span class="keyword">SELECT</span> <span class="variable">?site</span> <span class="variable">?siteLabel</span> <span class="variable">?coord</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?site</span> <span class="entity">wdt:P1435</span> <span class="entity">wd:Q9259</span> ;  <span class="comment"># UNESCO site</span>
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Feature: Marker clustering for many points</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Colored Markers by Layer</h2>
+        <p>
+          Add a <code>?layer</code> variable to color-code markers by category.
+          Each unique layer value gets a different color.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Infrastructure by Type</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span> <span class="variable">?coord</span> <span class="variable">?typeLabel</span>
+       (<span class="variable">?typeLabel</span> <span class="keyword">AS</span> <span class="variable">?layer</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?type</span> {
+    <span class="entity">wd:Q928830</span>   <span class="comment"># metro station</span>
+    <span class="entity">wd:Q55488</span>    <span class="comment"># railway station</span>
+    <span class="entity">wd:Q1248784</span>  <span class="comment"># airport</span>
+  }
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> ;
+        <span class="entity">wdt:P131</span>* <span class="entity">wd:Q90</span> ;  <span class="comment"># Paris</span>
+        <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Feature: Layer-based coloring</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Map with Rich Popups</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Language Origins with Details</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment">#defaultView:Map{"hide": ["?coord"]}</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?coord</span>
+       <span class="variable">?place</span> <span class="variable">?placeLabel</span>
+       (<span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+       <span class="variable">?image</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> ;
+        <span class="entity">wdt:P178</span> <span class="variable">?developer</span> .
+  <span class="variable">?developer</span> <span class="entity">wdt:P159</span> <span class="variable">?place</span> .
+  <span class="variable">?place</span> <span class="entity">wdt:P625</span> <span class="variable">?coord</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P154</span> <span class="variable">?image</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 100</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-geospatial">Geospatial</span>
+            <span>Domain: Programming | Rich popups with logos</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Other Visualization Types</h2>
+        <p>
+          Beyond maps, Wikidata Query Service offers other visualizations for geographic data.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Comment</th>
+              <th>Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>#defaultView:Globe</code></td>
+              <td>3D globe view</td>
+            </tr>
+            <tr>
+              <td><code>#defaultView:ImageGrid</code></td>
+              <td>Grid of images</td>
+            </tr>
+            <tr>
+              <td><code>#defaultView:BubbleChart</code></td>
+              <td>Bubble chart (size by value)</td>
+            </tr>
+            <tr>
+              <td><code>#defaultView:TreeMap</code></td>
+              <td>Hierarchical treemap</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="regions.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Regions & Areas</span>
+        </a>
+        <a href="../multilingual/index.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Multilingual</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

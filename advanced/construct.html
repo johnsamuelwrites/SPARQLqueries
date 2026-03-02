@@ -1,47 +1,264 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="advanced">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use CONSTRUCT queries in SPARQL to create new RDF graphs with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>CONSTRUCT - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="FILTER"/>
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="ask.html">Ask</a></li>
-       <li><a href="construct.html">Construct</a></li>
-       <li><a href="describe.html">Describe</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Advanced</a></li>
+      <li aria-current="page">CONSTRUCT</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../basic/index.html">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="index.html" class="active">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Advanced Topics</div>
+      <ul>
+        <li><a href="ask.html">ASK</a></li>
+        <li><a href="construct.html" class="active">CONSTRUCT</a></li>
+        <li><a href="describe.html">DESCRIBE</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Advanced</span>
+        <h1>CONSTRUCT</h1>
+        <p class="hero-subtitle">
+          Create new RDF graphs from query results. CONSTRUCT transforms data into a specified
+          graph structure, enabling data reshaping and export.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding CONSTRUCT</h2>
+      <p>
+        CONSTRUCT queries return an RDF graph rather than a table of bindings. You define
+        a template of triples, and the query engine fills in variable values from the
+        WHERE clause to produce the output graph.
+      </p>
+      <p>
+        CONSTRUCT is useful for:
+      </p>
+      <ul>
+        <li>Transforming data into a different vocabulary or schema</li>
+        <li>Extracting subgraphs for export</li>
+        <li>Creating simplified views of complex data</li>
+        <li>Converting between ontologies</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Basic CONSTRUCT Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Simple Triple Construction</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#CONSTRUCT%20%7B%0A%20%20%3Fcountry%20%3Chttp%3A%2F%2Fexample.org%2FhasCapital%3E%20%3Fcapital%20.%0A%7D%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP36%20%3Fcapital%20.%0A%7D%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">CONSTRUCT</span> {
+  <span class="variable">?country</span> <span class="entity">&lt;http://example.org/hasCapital&gt;</span> <span class="variable">?capital</span> .
+}
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P36</span> <span class="variable">?capital</span> .
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Creates new triples with a custom predicate</span>
+        </div>
+      </div>
+      <p>
+        This query finds countries and their capitals, then outputs them using a custom
+        predicate <code>http://example.org/hasCapital</code> instead of the Wikidata property.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Extract Labeled Data</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#CONSTRUCT%20%7B%0A%20%20%3Fcity%20rdfs%3Alabel%20%3FcityLabel%20.%0A%20%20%3Fcity%20%3Chttp%3A%2F%2Fexample.org%2Fpopulation%3E%20%3Fpopulation%20.%0A%7D%0AWHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20FILTER%28%3Fpopulation%20%3E%205000000%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">CONSTRUCT</span> {
+  <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?cityLabel</span> .
+  <span class="variable">?city</span> <span class="entity">&lt;http://example.org/population&gt;</span> <span class="variable">?population</span> .
+}
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?population</span> <span class="operator">&gt;</span> <span class="number">5000000</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Creates RDF with labels and populations for large cities</span>
+        </div>
+      </div>
+      <p>
+        This query extracts major cities (population over 5 million) and outputs them with
+        their English labels and population values using custom predicates.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Multiple Triple Patterns</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Complete Entity Description</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#CONSTRUCT%20%7B%0A%20%20%3Fperson%20a%20%3Chttp%3A%2F%2Fexample.org%2FScientist%3E%20.%0A%20%20%3Fperson%20rdfs%3Alabel%20%3FpersonLabel%20.%0A%20%20%3Fperson%20%3Chttp%3A%2F%2Fexample.org%2FbornIn%3E%20%3FbirthPlace%20.%0A%20%20%3Fperson%20%3Chttp%3A%2F%2Fexample.org%2FdiedIn%3E%20%3FdeathPlace%20.%0A%7D%0AWHERE%20%7B%0A%20%20%3Fperson%20wdt%3AP106%20wd%3AQ901%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP19%20%3FbirthPlace%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP20%20%3FdeathPlace%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">CONSTRUCT</span> {
+  <span class="variable">?person</span> <span class="keyword">a</span> <span class="entity">&lt;http://example.org/Scientist&gt;</span> .
+  <span class="variable">?person</span> <span class="entity">rdfs:label</span> <span class="variable">?personLabel</span> .
+  <span class="variable">?person</span> <span class="entity">&lt;http://example.org/bornIn&gt;</span> <span class="variable">?birthPlace</span> .
+  <span class="variable">?person</span> <span class="entity">&lt;http://example.org/diedIn&gt;</span> <span class="variable">?deathPlace</span> .
+}
+<span class="keyword">WHERE</span> {
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="entity">wd:Q901</span> ;
+          <span class="entity">wdt:P19</span> <span class="variable">?birthPlace</span> ;
+          <span class="entity">wdt:P20</span> <span class="variable">?deathPlace</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Build complete RDF descriptions of scientists</span>
+        </div>
+      </div>
+      <p>
+        This query creates a small RDF dataset about scientists (Q901 occupation), including
+        their type classification, name, birth place, and death place — all using a custom
+        vocabulary.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Creating Relationships</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Border Network</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#CONSTRUCT%20%7B%0A%20%20%3Fcountry1%20%3Chttp%3A%2F%2Fexample.org%2Fneighbor%3E%20%3Fcountry2%20.%0A%7D%0AWHERE%20%7B%0A%20%20%3Fcountry1%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP30%20wd%3AQ46%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP47%20%3Fcountry2%20.%0A%20%20%3Fcountry2%20wdt%3AP30%20wd%3AQ46%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">CONSTRUCT</span> {
+  <span class="variable">?country1</span> <span class="entity">&lt;http://example.org/neighbor&gt;</span> <span class="variable">?country2</span> .
+}
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country1</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+            <span class="entity">wdt:P30</span> <span class="entity">wd:Q46</span> ;
+            <span class="entity">wdt:P47</span> <span class="variable">?country2</span> .
+  <span class="variable">?country2</span> <span class="entity">wdt:P30</span> <span class="entity">wd:Q46</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Creates a graph of European country borders</span>
+        </div>
+      </div>
+      <p>
+        This query constructs a network graph of European countries (Q46 continent) and their
+        border relationships. The result can be used for network analysis or visualization.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q46</code></td><td>Europe</td></tr>
+          <tr><td><code>wd:Q515</code></td><td>City</td></tr>
+          <tr><td><code>wd:Q901</code></td><td>Scientist (occupation)</td></tr>
+          <tr><td><code>wd:Q6256</code></td><td>Country</td></tr>
+          <tr><td><code>wdt:P19</code></td><td>Place of birth</td></tr>
+          <tr><td><code>wdt:P20</code></td><td>Place of death</td></tr>
+          <tr><td><code>wdt:P30</code></td><td>Continent</td></tr>
+          <tr><td><code>wdt:P31</code></td><td>Instance of</td></tr>
+          <tr><td><code>wdt:P36</code></td><td>Capital</td></tr>
+          <tr><td><code>wdt:P47</code></td><td>Shares border with</td></tr>
+          <tr><td><code>wdt:P106</code></td><td>Occupation</td></tr>
+          <tr><td><code>wdt:P1082</code></td><td>Population</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="ask.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">ASK</span>
+      </a>
+      <a href="describe.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">DESCRIBE</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

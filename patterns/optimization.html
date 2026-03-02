@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Write faster SPARQL queries. Understand query planning, avoid common pitfalls, and use optimization hints." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Query Optimization - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Query Optimization</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html" class="active">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Query Optimization</h1>
+          <p class="hero-subtitle">
+            Write faster SPARQL queries. Learn query planning principles,
+            avoid common performance pitfalls, and use Wikidata-specific hints.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Optimization Principles</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Principle</th>
+              <th>Why It Helps</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Filter early</td>
+              <td>Reduce data volume before expensive operations</td>
+            </tr>
+            <tr>
+              <td>Be specific</td>
+              <td>Narrow patterns match fewer triples</td>
+            </tr>
+            <tr>
+              <td>Limit results</td>
+              <td>Stop processing when you have enough</td>
+            </tr>
+            <tr>
+              <td>Use indexes</td>
+              <td>Property patterns use indexes; calculations don't</td>
+            </tr>
+            <tr>
+              <td>Avoid cartesian products</td>
+              <td>Unrelated patterns multiply result counts</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Pattern Order Matters</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Slow: Filter After Large Scan</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># SLOW: Scans all cities, then filters</span>
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?pop</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> .  <span class="comment"># ALL cities worldwide</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .  <span class="comment"># Then filter to France</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Anti-Pattern</span>
+            <span>Filters applied too late</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Fast: Filter First</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># FAST: Filter to France first, then get details</span>
+<span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?pop</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;  <span class="comment"># France first (smaller set)</span>
+        <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Most selective pattern first</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Avoid Unbounded Traversals</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Slow: Unlimited Depth</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># SLOW: Can traverse entire class hierarchy</span>
+<span class="keyword">SELECT</span> <span class="variable">?class</span> <span class="variable">?classLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?class</span> <span class="entity">wdt:P279</span>* <span class="entity">wd:Q35120</span> .  <span class="comment"># entity - very broad!</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 100</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Anti-Pattern</span>
+            <span>Unlimited P279* from broad class</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Fast: Limited Depth</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># FAST: Limit traversal depth</span>
+<span class="keyword">SELECT</span> <span class="variable">?class</span> <span class="variable">?classLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?class</span> <span class="entity">wdt:P279</span>{1,3} <span class="entity">wd:Q9143</span> .  <span class="comment"># programming language, 1-3 levels</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Bounded depth: {1,3}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Prefer Direct Properties Over Calculations</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Slow: String Comparison</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># SLOW: String comparison can't use indexes</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">STR</span>(<span class="variable">?label</span>) = <span class="string">"Python"</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Anti-Pattern</span>
+            <span>FILTER(STR(?x) = ...) is slow</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Fast: Direct Reference</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># FAST: Use entity directly</span>
+<span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?itemLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?item</span> { <span class="entity">wd:Q28865</span> }  <span class="comment"># Python directly</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>VALUES or direct entity reference</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Use CONTAINS Instead of REGEX</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Slow: Full Regex</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># SLOW: Regex is expensive</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">REGEX</span>(<span class="variable">?label</span>, <span class="string">"script"</span>, <span class="string">"i"</span>))
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Anti-Pattern</span>
+            <span>REGEX() is computationally expensive</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Fast: CONTAINS</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># FASTER: CONTAINS is simpler</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">rdfs:label</span> <span class="variable">?label</span> .
+  <span class="keyword">FILTER</span>(<span class="function">CONTAINS</span>(<span class="function">LCASE</span>(<span class="variable">?label</span>), <span class="string">"script"</span>))
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>CONTAINS(LCASE(?x), "text") is faster</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Wikidata-Specific: Optimizer Hints</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">hint:Prior for Join Order</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?pop</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Force this pattern to be evaluated first</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .
+  <span class="entity">hint:Prior</span> <span class="entity">hint:runFirst</span> <span class="string">"true"</span> .
+
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>hint:Prior hint:runFirst — Control evaluation order</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Subqueries for Complex Logic</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Subquery to Limit First</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?designerLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># First: get top 20 languages by sitelinks</span>
+  {
+    <span class="keyword">SELECT</span> <span class="variable">?lang</span>
+    <span class="keyword">WHERE</span> {
+      <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+            <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> .
+    }
+    <span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?sitelinks</span>)
+    <span class="keyword">LIMIT</span> 20
+  }
+
+  <span class="comment"># Then: get expensive details only for top 20</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P287</span> <span class="variable">?designer</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Subquery to reduce dataset before joins</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Optimization Checklist</h2>
+
+        <ul>
+          <li><strong>Add LIMIT</strong> during development — Always test with limited results</li>
+          <li><strong>Put selective patterns first</strong> — Start with smallest result set</li>
+          <li><strong>Use specific entities</strong> — Avoid string matching when possible</li>
+          <li><strong>Limit property path depth</strong> — Use {1,5} instead of *</li>
+          <li><strong>Prefer CONTAINS over REGEX</strong> — Simpler = faster</li>
+          <li><strong>Move FILTER close to pattern</strong> — Filter early in evaluation</li>
+          <li><strong>Use subqueries</strong> — Reduce data before expensive operations</li>
+          <li><strong>Check for cartesian products</strong> — Ensure patterns share variables</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>Performance Comparison</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Slow Pattern</th>
+              <th>Fast Alternative</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>FILTER(STR(?x) = "...")</code></td>
+              <td><code>VALUES ?x { wd:Q... }</code></td>
+            </tr>
+            <tr>
+              <td><code>REGEX(?x, "...")</code></td>
+              <td><code>CONTAINS(?x, "...")</code></td>
+            </tr>
+            <tr>
+              <td><code>wdt:P279*</code> unbounded</td>
+              <td><code>wdt:P279{1,5}</code> limited</td>
+            </tr>
+            <tr>
+              <td>Filter at end</td>
+              <td>Selective pattern first</td>
+            </tr>
+            <tr>
+              <td>SELECT *</td>
+              <td>SELECT ?specific ?variables</td>
+            </tr>
+            <tr>
+              <td>No LIMIT</td>
+              <td>LIMIT during development</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="dedup.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Deduplication</span>
+        </a>
+        <a href="debugging.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Debugging Queries</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

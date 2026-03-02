@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Compute relevance scores and rank SPARQL results. Weight multiple factors for better ordering." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Ranking & Scoring - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Ranking & Scoring</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html" class="active">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Ranking & Scoring</h1>
+          <p class="hero-subtitle">
+            Order results by computed relevance scores. Combine multiple signals
+            like sitelinks, statements, and domain-specific metrics.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Wikidata Quality Signals</h2>
+        <p>
+          Wikidata provides built-in metrics that indicate entity importance and data quality.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Meaning</th>
+              <th>Higher = ?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wikibase:sitelinks</code></td>
+              <td>Wikipedia articles linking to entity</td>
+              <td>More notable</td>
+            </tr>
+            <tr>
+              <td><code>wikibase:statements</code></td>
+              <td>Number of statements on entity</td>
+              <td>Better documented</td>
+            </tr>
+            <tr>
+              <td><code>wikibase:identifiers</code></td>
+              <td>Number of external IDs</td>
+              <td>Better linked</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Basic Ranking</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Languages by Notability</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?sitelinks</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?sitelinks</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Simple ranking by sitelinks</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museums by Documentation Quality</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?statements</span> <span class="variable">?identifiers</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wikibase:statements</span> <span class="variable">?statements</span> ;
+          <span class="entity">wikibase:identifiers</span> <span class="variable">?identifiers</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?statements</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Composite Scoring</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Weighted Score Formula</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       <span class="variable">?sitelinks</span> <span class="variable">?statements</span> <span class="variable">?identifiers</span>
+       (<span class="variable">?sitelinks</span> * 3 + <span class="variable">?statements</span> + <span class="variable">?identifiers</span> * 2 <span class="keyword">AS</span> <span class="variable">?score</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> ;
+        <span class="entity">wikibase:statements</span> <span class="variable">?statements</span> ;
+        <span class="entity">wikibase:identifiers</span> <span class="variable">?identifiers</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?score</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Formula: sitelinks×3 + statements + identifiers×2</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Normalized Scores (0-100)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?sitelinks</span>
+       (<span class="function">ROUND</span>(<span class="variable">?sitelinks</span> * 100.0 / 350) <span class="keyword">AS</span> <span class="variable">?normalizedScore</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> .
+
+  <span class="comment"># Only include languages with some notability</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?sitelinks</span> > 10)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?normalizedScore</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Normalized to 0-100 scale (assuming max ~350)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Domain-Specific Ranking</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities by Population and Notability</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span> <span class="variable">?pop</span> <span class="variable">?sitelinks</span>
+       (<span class="variable">?pop</span> / 10000 + <span class="variable">?sitelinks</span> * 10 <span class="keyword">AS</span> <span class="variable">?score</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q515</span> ;  <span class="comment"># city</span>
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;              <span class="comment"># France</span>
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?score</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Urban | Combine population + notability</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Programming Languages by Relationship Count</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?influenced</span>) <span class="keyword">AS</span> <span class="variable">?influenceCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Count languages this one influenced</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?influenced</span> <span class="entity">wdt:P737</span> <span class="variable">?lang</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?influenceCount</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Rank by incoming relationships (P737 influenced by)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Recency-Based Ranking</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Most Recently Created Languages</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span>
+       (<span class="function">YEAR</span>(<span class="function">NOW</span>()) - <span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?age</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P571</span> <span class="variable">?inception</span> .
+
+  <span class="comment"># Only languages created in last 20 years</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?inception</span> >= <span class="string">"2005-01-01"</span>^^<span class="entity">xsd:dateTime</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?inception</span>)
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Rank by recency (P571 inception date)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Tiered Rankings</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Categorize into Tiers</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?sitelinks</span> <span class="variable">?tier</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wikibase:sitelinks</span> <span class="variable">?sitelinks</span> .
+
+  <span class="keyword">BIND</span>(
+    <span class="keyword">IF</span>(<span class="variable">?sitelinks</span> >= 200, <span class="string">"Tier 1: Major"</span>,
+      <span class="keyword">IF</span>(<span class="variable">?sitelinks</span> >= 50, <span class="string">"Tier 2: Notable"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?sitelinks</span> >= 10, <span class="string">"Tier 3: Minor"</span>,
+          <span class="string">"Tier 4: Obscure"</span>)))
+    <span class="keyword">AS</span> <span class="variable">?tier</span>)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?tier</span> <span class="keyword">DESC</span>(<span class="variable">?sitelinks</span>)
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Nested IF for tier assignment</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Ranking Strategies</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Use Case</th>
+              <th>Approach</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sitelinks</td>
+              <td>General notability</td>
+              <td>Higher = more Wikipedia coverage</td>
+            </tr>
+            <tr>
+              <td>Statements</td>
+              <td>Data quality</td>
+              <td>More data = better documented</td>
+            </tr>
+            <tr>
+              <td>Relationships</td>
+              <td>Network importance</td>
+              <td>Count incoming/outgoing links</td>
+            </tr>
+            <tr>
+              <td>Recency</td>
+              <td>Freshness</td>
+              <td>Sort by date properties</td>
+            </tr>
+            <tr>
+              <td>Domain metrics</td>
+              <td>Specific relevance</td>
+              <td>Population, citations, etc.</td>
+            </tr>
+            <tr>
+              <td>Composite</td>
+              <td>Balanced ranking</td>
+              <td>Weighted combination</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="linking.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Entity Linking</span>
+        </a>
+        <a href="dedup.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Deduplication</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

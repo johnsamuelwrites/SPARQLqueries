@@ -1,53 +1,258 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="aggregate">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use GROUP BY in SPARQL to organize results into groups with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>GROUP BY - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="HAVING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="group.html">Group</a></li>
-       <li><a href="having.html">Having</a></li>
-       <li><a href="avg.html">Avg</a></li>
-       <li><a href="concat.html">Concat</a></li>
-       <li><a href="count.html">Count</a></li>
-       <li><a href="max.html">Max</a></li>
-       <li><a href="min.html">Min</a></li>
-       <li><a href="sample.html">Sample</a></li>
-       <li><a href="sum.html">Sum</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Aggregate</a></li>
+      <li aria-current="page">GROUP BY</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../basic/index.html">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="index.html" class="active">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Aggregate Topics</div>
+      <ul>
+        <li><a href="count.html">COUNT</a></li>
+        <li><a href="sum.html">SUM</a></li>
+        <li><a href="avg.html">AVG</a></li>
+        <li><a href="min.html">MIN</a></li>
+        <li><a href="max.html">MAX</a></li>
+        <li><a href="group.html" class="active">GROUP BY</a></li>
+        <li><a href="having.html">HAVING</a></li>
+        <li><a href="concat.html">GROUP_CONCAT</a></li>
+        <li><a href="sample.html">SAMPLE</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Aggregate</span>
+        <h1>GROUP BY</h1>
+        <p class="hero-subtitle">
+          Organize results into groups for aggregate calculations. GROUP BY partitions
+          results by one or more variables, enabling per-category statistics.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding GROUP BY</h2>
+      <p>
+        GROUP BY divides query results into groups based on the values of specified
+        variables. Each group becomes a single row in the output, with aggregate functions
+        computing values across the items in each group.
+      </p>
+      <p>
+        Any non-aggregated variable in SELECT must appear in GROUP BY. This ensures
+        each result row corresponds to exactly one group.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Basic GROUP BY Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Count Items by Type</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Ftype%20%3FtypeLabel%20%28COUNT%28%3Fitem%29%20AS%20%3Fcount%29%0AWHERE%20%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3Ftype%20.%0A%20%20VALUES%20%3Ftype%20%7B%20wd%3AQ5%20wd%3AQ6256%20wd%3AQ515%20wd%3AQ7889%20%7D%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AGROUP%20BY%20%3Ftype%20%3FtypeLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span> (<span class="function">COUNT</span>(<span class="variable">?item</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> .
+  <span class="keyword">VALUES</span> <span class="variable">?type</span> { <span class="entity">wd:Q5</span> <span class="entity">wd:Q6256</span> <span class="entity">wd:Q515</span> <span class="entity">wd:Q7889</span> }
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Count instances of specific types</span>
+        </div>
+      </div>
+      <p>
+        This query counts items of four different types: humans (Q5), countries (Q6256),
+        cities (Q515), and video games (Q7889). The VALUES clause limits which types we examine,
+        and GROUP BY ensures we get one count per type.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Countries per Continent</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcontinent%20%3FcontinentLabel%20%28COUNT%28%3Fcountry%29%20AS%20%3FcountryCount%29%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP30%20%3Fcontinent%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcontinent%20%3FcontinentLabel%0AORDER%20BY%20DESC%28%3FcountryCount%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span> (<span class="function">COUNT</span>(<span class="variable">?country</span>) <span class="keyword">AS</span> <span class="variable">?countryCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P30</span> <span class="variable">?continent</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?countryCount</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Number of countries on each continent</span>
+        </div>
+      </div>
+      <p>
+        Here we group countries by their continent (P30). The result shows how many countries
+        exist on each continent, sorted from most to least.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Grouping by Multiple Variables</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Works by Author and Type</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fauthor%20%3FauthorLabel%20%3FworkType%20%3FworkTypeLabel%20%28COUNT%28%3Fwork%29%20AS%20%3Fcount%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Fauthor%20%7B%20wd%3AQ5879%20wd%3AQ1067%20wd%3AQ7836%20%7D%0A%20%20%3Fwork%20wdt%3AP50%20%3Fauthor%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP31%20%3FworkType%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AGROUP%20BY%20%3Fauthor%20%3FauthorLabel%20%3FworkType%20%3FworkTypeLabel%0AORDER%20BY%20%3FauthorLabel%20DESC%28%3Fcount%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> <span class="variable">?workType</span> <span class="variable">?workTypeLabel</span> (<span class="function">COUNT</span>(<span class="variable">?work</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?author</span> { <span class="entity">wd:Q5879</span> <span class="entity">wd:Q1067</span> <span class="entity">wd:Q7836</span> }
+  <span class="variable">?work</span> <span class="entity">wdt:P50</span> <span class="variable">?author</span> ;
+        <span class="entity">wdt:P31</span> <span class="variable">?workType</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> <span class="variable">?workType</span> <span class="variable">?workTypeLabel</span>
+<span class="keyword">ORDER BY</span> <span class="variable">?authorLabel</span> <span class="keyword">DESC</span>(<span class="variable">?count</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Count works by author and work type</span>
+        </div>
+      </div>
+      <p>
+        This query examines works by three famous authors: Johann Wolfgang von Goethe (Q5879),
+        Gabriel García Márquez (Q1067), and Friedrich Nietzsche (Q7836). Grouping by both
+        author and work type reveals what kinds of works each author created.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>GROUP BY with Multiple Aggregates</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Continent Statistics</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcontinent%20%3FcontinentLabel%0A%20%20%28COUNT%28%3Fcountry%29%20AS%20%3FcountryCount%29%0A%20%20%28SUM%28%3Fpopulation%29%20AS%20%3FtotalPop%29%0A%20%20%28AVG%28%3Fpopulation%29%20AS%20%3FavgPop%29%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP30%20%3Fcontinent%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcontinent%20%3FcontinentLabel%0AORDER%20BY%20DESC%28%3FtotalPop%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span>
+  (<span class="function">COUNT</span>(<span class="variable">?country</span>) <span class="keyword">AS</span> <span class="variable">?countryCount</span>)
+  (<span class="function">SUM</span>(<span class="variable">?population</span>) <span class="keyword">AS</span> <span class="variable">?totalPop</span>)
+  (<span class="function">AVG</span>(<span class="variable">?population</span>) <span class="keyword">AS</span> <span class="variable">?avgPop</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> ;
+           <span class="entity">wdt:P30</span> <span class="variable">?continent</span> ;
+           <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?continent</span> <span class="variable">?continentLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?totalPop</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Multiple statistics per continent</span>
+        </div>
+      </div>
+      <p>
+        You can use multiple aggregate functions in a single query. This example calculates
+        country count, total population, and average population for each continent in one query.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q5</code></td><td>Human</td></tr>
+          <tr><td><code>wd:Q6256</code></td><td>Country</td></tr>
+          <tr><td><code>wd:Q515</code></td><td>City</td></tr>
+          <tr><td><code>wd:Q7889</code></td><td>Video game</td></tr>
+          <tr><td><code>wdt:P31</code></td><td>Instance of (type)</td></tr>
+          <tr><td><code>wdt:P30</code></td><td>Continent</td></tr>
+          <tr><td><code>wdt:P50</code></td><td>Author</td></tr>
+          <tr><td><code>wdt:P1082</code></td><td>Population</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="max.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">MAX</span>
+      </a>
+      <a href="having.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">HAVING</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

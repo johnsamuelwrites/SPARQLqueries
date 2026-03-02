@@ -1,53 +1,264 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="aggregate">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use GROUP_CONCAT in SPARQL to combine multiple values into a single string with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>GROUP_CONCAT - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="HAVING" />
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="group.html">Group</a></li>
-       <li><a href="having.html">Having</a></li>
-       <li><a href="avg.html">Avg</a></li>
-       <li><a href="concat.html">Concat</a></li>
-       <li><a href="count.html">Count</a></li>
-       <li><a href="max.html">Max</a></li>
-       <li><a href="min.html">Min</a></li>
-       <li><a href="sample.html">Sample</a></li>
-       <li><a href="sum.html">Sum</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Aggregate</a></li>
+      <li aria-current="page">GROUP_CONCAT</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../basic/index.html">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="index.html" class="active">Aggregate</a></li>
+        <li><a href="../advanced/index.html">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Aggregate Topics</div>
+      <ul>
+        <li><a href="count.html">COUNT</a></li>
+        <li><a href="sum.html">SUM</a></li>
+        <li><a href="avg.html">AVG</a></li>
+        <li><a href="min.html">MIN</a></li>
+        <li><a href="max.html">MAX</a></li>
+        <li><a href="group.html">GROUP BY</a></li>
+        <li><a href="having.html">HAVING</a></li>
+        <li><a href="concat.html" class="active">GROUP_CONCAT</a></li>
+        <li><a href="sample.html">SAMPLE</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Aggregate</span>
+        <h1>GROUP_CONCAT</h1>
+        <p class="hero-subtitle">
+          Combine multiple values into a single string. GROUP_CONCAT concatenates all values
+          in a group with a separator, perfect for collecting related items together.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding GROUP_CONCAT</h2>
+      <p>
+        GROUP_CONCAT is an aggregate function that joins multiple values into a single
+        delimited string. It's useful when you want to see all related items in one
+        row rather than multiple rows.
+      </p>
+      <table>
+        <thead>
+          <tr><th>Syntax</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>GROUP_CONCAT(?var)</code></td><td>Concatenate with space separator</td></tr>
+          <tr><td><code>GROUP_CONCAT(?var; SEPARATOR=", ")</code></td><td>Concatenate with custom separator</td></tr>
+          <tr><td><code>GROUP_CONCAT(DISTINCT ?var)</code></td><td>Concatenate unique values only</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Basic GROUP_CONCAT Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Country Official Languages</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%28GROUP_CONCAT%28DISTINCT%20%3FlangLabel%3B%20SEPARATOR%3D%22%2C%20%22%29%20AS%20%3Flanguages%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Fcountry%20%7B%20wd%3AQ39%20wd%3AQ31%20wd%3AQ183%20wd%3AQ16%20%7D%0A%20%20%3Fcountry%20wdt%3AP37%20%3Flang%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Flang%20rdfs%3Alabel%20%3FlangLabel.%20%3Fcountry%20rdfs%3Alabel%20%3FcountryLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?langLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?languages</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?country</span> { <span class="entity">wd:Q39</span> <span class="entity">wd:Q31</span> <span class="entity">wd:Q183</span> <span class="entity">wd:Q16</span> }
+  <span class="variable">?country</span> <span class="entity">wdt:P37</span> <span class="variable">?lang</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?lang</span> <span class="entity">rdfs:label</span> <span class="variable">?langLabel</span>. <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?countryLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>List all official languages per country</span>
+        </div>
+      </div>
+      <p>
+        This query lists the official languages of four multilingual countries: Switzerland (Q39),
+        Belgium (Q31), Germany (Q183), and Canada (Q16). GROUP_CONCAT combines all languages
+        into a comma-separated list for each country.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Author's Occupations</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fperson%20%3FpersonLabel%20%28GROUP_CONCAT%28DISTINCT%20%3FoccLabel%3B%20SEPARATOR%3D%22%2C%20%22%29%20AS%20%3Foccupations%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Fperson%20%7B%20wd%3AQ5879%20wd%3AQ692%20wd%3AQ7836%20wd%3AQ1394%20%7D%0A%20%20%3Fperson%20wdt%3AP106%20%3Focc%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Focc%20rdfs%3Alabel%20%3FoccLabel.%20%3Fperson%20rdfs%3Alabel%20%3FpersonLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fperson%20%3FpersonLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?person</span> <span class="variable">?personLabel</span> (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?occLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?occupations</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?person</span> { <span class="entity">wd:Q5879</span> <span class="entity">wd:Q692</span> <span class="entity">wd:Q7836</span> <span class="entity">wd:Q1394</span> }
+  <span class="variable">?person</span> <span class="entity">wdt:P106</span> <span class="variable">?occ</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?occ</span> <span class="entity">rdfs:label</span> <span class="variable">?occLabel</span>. <span class="variable">?person</span> <span class="entity">rdfs:label</span> <span class="variable">?personLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?person</span> <span class="variable">?personLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>All occupations for famous thinkers</span>
+        </div>
+      </div>
+      <p>
+        Historical figures often had multiple occupations. This query shows all occupations for
+        Goethe (Q5879), Shakespeare (Q692), Nietzsche (Q7836), and Voltaire (Q1394) in a single
+        comma-separated list per person.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Different Separators</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Borders with Semicolon Separator</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%28GROUP_CONCAT%28DISTINCT%20%3FborderLabel%3B%20SEPARATOR%3D%22%3B%20%22%29%20AS%20%3Fborders%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Fcountry%20%7B%20wd%3AQ183%20wd%3AQ142%20wd%3AQ38%20%7D%0A%20%20%3Fcountry%20wdt%3AP47%20%3Fborder%20.%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Fborder%20rdfs%3Alabel%20%3FborderLabel.%20%3Fcountry%20rdfs%3Alabel%20%3FcountryLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?borderLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">"; "</span>) <span class="keyword">AS</span> <span class="variable">?borders</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?country</span> { <span class="entity">wd:Q183</span> <span class="entity">wd:Q142</span> <span class="entity">wd:Q38</span> }
+  <span class="variable">?country</span> <span class="entity">wdt:P47</span> <span class="variable">?border</span> .
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?border</span> <span class="entity">rdfs:label</span> <span class="variable">?borderLabel</span>. <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?countryLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span></code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Countries sharing borders, semicolon-separated</span>
+        </div>
+      </div>
+      <p>
+        The SEPARATOR parameter allows any string delimiter. This example uses semicolons to
+        list all countries that share borders with Germany (Q183), France (Q142), and Italy (Q38).
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>GROUP_CONCAT with COUNT</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Countries with Their Cities</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%28COUNT%28%3Fcity%29%20AS%20%3FcityCount%29%0A%20%20%28GROUP_CONCAT%28DISTINCT%20%3FcityLabel%3B%20SEPARATOR%3D%22%2C%20%22%29%20AS%20%3Fcities%29%0AWHERE%20%7B%0A%20%20VALUES%20%3Fcountry%20%7B%20wd%3AQ347%20wd%3AQ574%20wd%3AQ414%20%7D%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP17%20%3Fcountry%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpop%20.%0A%20%20FILTER%28%3Fpop%20%3E%20100000%29%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22.%20%3Fcity%20rdfs%3Alabel%20%3FcityLabel.%20%3Fcountry%20rdfs%3Alabel%20%3FcountryLabel.%20%7D%0A%7D%0AGROUP%20BY%20%3Fcountry%20%3FcountryLabel%0AORDER%20BY%20DESC%28%3FcityCount%29" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> (<span class="function">COUNT</span>(<span class="variable">?city</span>) <span class="keyword">AS</span> <span class="variable">?cityCount</span>)
+  (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?cityLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?cities</span>)
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?country</span> { <span class="entity">wd:Q347</span> <span class="entity">wd:Q574</span> <span class="entity">wd:Q414</span> }
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="variable">?country</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?pop</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?pop</span> <span class="operator">&gt;</span> <span class="number">100000</span>)
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span>. <span class="variable">?city</span> <span class="entity">rdfs:label</span> <span class="variable">?cityLabel</span>. <span class="variable">?country</span> <span class="entity">rdfs:label</span> <span class="variable">?countryLabel</span>. }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?cityCount</span>)</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-aggregate">Aggregate</span>
+          <span>Count and list large cities per country</span>
+        </div>
+      </div>
+      <p>
+        Combining COUNT and GROUP_CONCAT lets you see both how many items exist and what they are.
+        This query shows cities with over 100,000 people in Liechtenstein (Q347), East Timor (Q574),
+        and Argentina (Q414).
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q39</code></td><td>Switzerland</td></tr>
+          <tr><td><code>wd:Q31</code></td><td>Belgium</td></tr>
+          <tr><td><code>wd:Q183</code></td><td>Germany</td></tr>
+          <tr><td><code>wd:Q16</code></td><td>Canada</td></tr>
+          <tr><td><code>wd:Q515</code></td><td>City</td></tr>
+          <tr><td><code>wdt:P37</code></td><td>Official language</td></tr>
+          <tr><td><code>wdt:P47</code></td><td>Shares border with</td></tr>
+          <tr><td><code>wdt:P106</code></td><td>Occupation</td></tr>
+          <tr><td><code>wdt:P17</code></td><td>Country</td></tr>
+          <tr><td><code>wdt:P1082</code></td><td>Population</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="having.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">HAVING</span>
+      </a>
+      <a href="sample.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">SAMPLE</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

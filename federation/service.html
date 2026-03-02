@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="federation">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Learn the SPARQL SERVICE keyword for federated queries. Query remote endpoints to combine data from Wikidata, DBpedia, and other SPARQL sources." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>SERVICE Keyword - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header id="header">
+      <div id="logo">
+        <a href="../index.html">SPARQLqueries</a>
+      </div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Federation</a></li>
+        <li aria-current="page">SERVICE Keyword</li>
+      </ol>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="index.html" class="active">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Federation Topics</div>
+        <ul>
+          <li><a href="service.html" class="active">SERVICE Keyword</a></li>
+          <li><a href="endpoints.html">SPARQL Endpoints</a></li>
+          <li><a href="patterns.html">Federation Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Resources</div>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="content">
+      <!-- Topic Hero -->
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Federation</span>
+          <h1>SERVICE Keyword</h1>
+          <p class="hero-subtitle">
+            Query remote SPARQL endpoints from within your query. The SERVICE keyword enables
+            federated queries that combine data from multiple sources.
+          </p>
+        </div>
+      </section>
+
+      <!-- Introduction -->
+      <section class="section">
+        <h2>What is SERVICE?</h2>
+        <p>
+          The <code>SERVICE</code> keyword allows you to send part of your SPARQL query to a remote
+          endpoint and integrate the results with your local query. This is the foundation of SPARQL
+          federation — treating the entire Linked Data web as a queryable database.
+        </p>
+      </section>
+
+      <!-- Basic Syntax -->
+      <section class="section">
+        <h2>Basic SERVICE Syntax</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">SERVICE Structure</span>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?item</span> <span class="variable">?remoteData</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Local query patterns</span>
+  <span class="variable">?item</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> .
+
+  <span class="comment"># Remote query patterns</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaItem</span> <span class="entity">owl:sameAs</span> <span class="variable">?item</span> .
+    <span class="variable">?dbpediaItem</span> <span class="entity">dbo:abstract</span> <span class="variable">?remoteData</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>SERVICE sends patterns to remote endpoint</span>
+          </div>
+        </div>
+
+        <p>
+          The query engine executes the SERVICE block on the remote endpoint, then joins the
+          results with the local patterns based on shared variables.
+        </p>
+      </section>
+
+      <!-- Wikidata Label Service -->
+      <section class="section">
+        <h2>The Wikidata Label Service</h2>
+        <p>
+          The most common SERVICE call in Wikidata queries is the label service, which retrieves
+          human-readable labels for entities.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Wikidata Label Service</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#SELECT%20%3Fcountry%20%3FcountryLabel%20%3Fcapital%20%3FcapitalLabel%0AWHERE%20%7B%0A%20%20%3Fcountry%20wdt%3AP31%20wd%3AQ6256%20.%0A%20%20%3Fcountry%20wdt%3AP36%20%3Fcapital%20.%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%2Cfr%2Cde%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?country</span> <span class="variable">?countryLabel</span> <span class="variable">?capital</span> <span class="variable">?capitalLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?country</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q6256</span> .
+  <span class="variable">?country</span> <span class="entity">wdt:P36</span> <span class="variable">?capital</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en,fr,de"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-basic">Basic</span>
+            <span>Automatic labels in multiple languages</span>
+          </div>
+        </div>
+
+        <p>
+          The label service automatically creates <code>?variableLabel</code> and <code>?variableDescription</code>
+          variables for each entity variable in your query.
+        </p>
+      </section>
+
+      <!-- SERVICE with DBpedia -->
+      <section class="section">
+        <h2>Federated Query with DBpedia</h2>
+        <p>
+          Query external endpoints like DBpedia to enrich Wikidata results with additional information.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Enrich with DBpedia Data</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20foaf%3A%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0A%0ASELECT%20%3Flang%20%3FlangLabel%20%3Fhomepage%0AWHERE%20%7B%0A%20%20%23%20Get%20programming%20languages%20from%20Wikidata%0A%20%20%3Flang%20wdt%3AP31%20wd%3AQ9143%20.%0A%20%20%0A%20%20%23%20Get%20homepage%20from%20DBpedia%0A%20%20SERVICE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbpediaLang%20owl%3AsameAs%20%3Flang%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20foaf%3Ahomepage%20%3Fhomepage%20.%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%2010" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">foaf:</span> <span class="uri">&lt;http://xmlns.com/foaf/0.1/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Get programming languages from Wikidata</span>
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Get homepage from DBpedia</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaLang</span> <span class="entity">owl:sameAs</span> <span class="variable">?lang</span> ;
+                  <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">10</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Combines Wikidata + DBpedia</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICE SILENT -->
+      <section class="section">
+        <h2>SERVICE SILENT</h2>
+        <p>
+          Use <code>SERVICE SILENT</code> to gracefully handle cases where the remote endpoint is
+          unavailable. Without SILENT, a failed remote query causes the entire query to fail.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Graceful Failure Handling</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20owl%3A%20%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0APREFIX%20foaf%3A%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0A%0ASELECT%20%3Flang%20%3FlangLabel%20%3Fhomepage%0AWHERE%20%7B%0A%20%20%3Flang%20wdt%3AP31%20wd%3AQ9143%20.%0A%20%20%0A%20%20%23%20SILENT%3A%20Don%27t%20fail%20if%20endpoint%20is%20unavailable%0A%20%20SERVICE%20SILENT%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbpediaLang%20owl%3AsameAs%20%3Flang%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20foaf%3Ahomepage%20%3Fhomepage%20.%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%0A%20%20%20%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%0A%20%20%7D%0A%7D%0ALIMIT%2020" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">owl:</span> <span class="uri">&lt;http://www.w3.org/2002/07/owl#&gt;</span>
+<span class="keyword">PREFIX</span> <span class="prefix">foaf:</span> <span class="uri">&lt;http://xmlns.com/foaf/0.1/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?homepage</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># SILENT: Don't fail if endpoint is unavailable</span>
+  <span class="keyword">SERVICE SILENT</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbpediaLang</span> <span class="entity">owl:sameAs</span> <span class="variable">?lang</span> ;
+                  <span class="entity">foaf:homepage</span> <span class="variable">?homepage</span> .
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> <span class="number">20</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>Returns results even if DBpedia is down</span>
+          </div>
+        </div>
+
+        <p>
+          With SILENT, if the remote endpoint fails, the query continues with unbound variables
+          for the remote data rather than throwing an error.
+        </p>
+      </section>
+
+      <!-- Variable Passing -->
+      <section class="section">
+        <h2>Variable Passing</h2>
+        <p>
+          Variables bound in the local query can be used in the SERVICE block to filter remote results.
+          This is essential for joining data across endpoints.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Passing Variables to Remote Query</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/#PREFIX%20dbo%3A%20%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2F%3E%0A%0ASELECT%20%3Fauthor%20%3FauthorLabel%20%3Fabstract%0AWHERE%20%7B%0A%20%20%23%20Get%20authors%20born%20in%20France%0A%20%20%3Fauthor%20wdt%3AP31%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP106%20wd%3AQ36180%20%3B%0A%20%20%20%20%20%20%20%20%20%20wdt%3AP19%2Fwdt%3AP17%20wd%3AQ142%20.%0A%20%20%0A%20%20%23%20Get%20their%20DBpedia%20abstract%0A%20%20SERVICE%20%3Chttp%3A%2F%2Fdbpedia.org%2Fsparql%3E%20%7B%0A%20%20%20%20%3FdbAuthor%20owl%3AsameAs%20%3Fauthor%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20dbo%3Aabstract%20%3Fabstract%20.%0A%20%20%20%20FILTER%28LANG%28%3Fabstract%29%20%3D%20%22en%22%29%0A%20%20%7D%0A%20%20%0A%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20%22en%22%20.%20%7D%0A%7D%0ALIMIT%205" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">PREFIX</span> <span class="prefix">dbo:</span> <span class="uri">&lt;http://dbpedia.org/ontology/&gt;</span>
+
+<span class="keyword">SELECT</span> <span class="variable">?author</span> <span class="variable">?authorLabel</span> <span class="variable">?abstract</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Get authors born in France</span>
+  <span class="variable">?author</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q5</span> ;
+          <span class="entity">wdt:P106</span> <span class="entity">wd:Q36180</span> ;
+          <span class="entity">wdt:P19</span>/<span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .
+
+  <span class="comment"># Get their DBpedia abstract</span>
+  <span class="keyword">SERVICE</span> <span class="uri">&lt;http://dbpedia.org/sparql&gt;</span> {
+    <span class="variable">?dbAuthor</span> <span class="entity">owl:sameAs</span> <span class="variable">?author</span> ;
+              <span class="entity">dbo:abstract</span> <span class="variable">?abstract</span> .
+    <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?abstract</span>) = <span class="string">"en"</span>)
+  }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> { <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> . }
+}
+<span class="keyword">LIMIT</span> <span class="number">5</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-federation">Federation</span>
+            <span>?author is passed to DBpedia</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Best Practices -->
+      <section class="section">
+        <h2>Best Practices</h2>
+        <ul>
+          <li><strong>Filter locally first</strong> — Reduce result set before federating</li>
+          <li><strong>Use SERVICE SILENT</strong> — Handle remote failures gracefully</li>
+          <li><strong>Limit results</strong> — Federated queries can be slow</li>
+          <li><strong>Use owl:sameAs links</strong> — Essential for joining across datasets</li>
+          <li><strong>Test remote queries separately</strong> — Debug each SERVICE block independently</li>
+          <li><strong>Check endpoint availability</strong> — Public endpoints may have downtime</li>
+        </ul>
+      </section>
+
+      <!-- Key Entities -->
+      <section class="section">
+        <h2>Key Entities</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wikibase:label</code></td>
+              <td>Wikidata's built-in label service</td>
+            </tr>
+            <tr>
+              <td><code>bd:serviceParam</code></td>
+              <td>Parameter configuration for Wikidata services</td>
+            </tr>
+            <tr>
+              <td><code>owl:sameAs</code></td>
+              <td>Links equivalent entities across datasets</td>
+            </tr>
+            <tr>
+              <td><code>SERVICE SILENT</code></td>
+              <td>Graceful failure handling for federated queries</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Topic Navigation -->
+      <nav class="topic-nav">
+        <a href="index.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Federation Overview</span>
+        </a>
+        <a href="endpoints.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">SPARQL Endpoints</span>
+        </a>
+      </nav>
+
+      <!-- Footer -->
+      <footer id="footertext">
+        <p>
+          <strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a>
+        </p>
+        <p>
+          Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

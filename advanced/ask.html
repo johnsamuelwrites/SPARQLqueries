@@ -1,47 +1,289 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en" data-chapter="advanced">
 <head>
-  <meta charset="utf-8"/>
-  <title>SPARQLqueries</title>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn to use ASK queries in SPARQL to test for existence with practical Wikidata examples." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <title>ASK - SPARQLqueries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../style.css" />
 </head>
 <body>
-  <div id="header">
+  <header id="header">
     <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
     <div id="headersearch">
-      <form action="./search.html" method="get">
-        <input id="headersearchtext" type="text" name="search" placeholder="FILTER"/>
-        <button id="headersearchbutton" type="submit" value="Search">Search</button>
+      <form action="../search.html" method="get">
+        <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+        <button id="headersearchbutton" type="submit">Search</button>
       </form>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+      </button>
     </div>
-  </div>
-  <div id="sidebar">
-   <div id="sidebarlinks">
-     <ul>
-       <li><a href="../index.html">Home</a></li>
-       <li><a href="ask.html">Ask</a></li>
-       <li><a href="construct.html">Construct</a></li>
-       <li><a href="describe.html">Describe</a></li>
-       <li><a href="../about.html">About</a></li>
-     </ul>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Advanced</a></li>
+      <li aria-current="page">ASK</li>
+    </ol>
+  </nav>
+
+  <nav id="sidebar">
+    <div id="sidebarlinks">
+      <div class="sidebar-section">Core Chapters</div>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../basic/index.html">Basic</a></li>
+        <li><a href="../expressions/index.html">Expressions</a></li>
+        <li><a href="../aggregate/index.html">Aggregate</a></li>
+        <li><a href="index.html" class="active">Advanced</a></li>
+        <li><a href="../federation/index.html">Federation</a></li>
+      </ul>
+      <div class="sidebar-section">Advanced Topics</div>
+      <ul>
+        <li><a href="ask.html" class="active">ASK</a></li>
+        <li><a href="construct.html">CONSTRUCT</a></li>
+        <li><a href="describe.html">DESCRIBE</a></li>
+      </ul>
     </div>
-  </div>
-  <div id="content">
-    <div class="section">
-     <h2>Examples</h2>
-    </div>
-    <div class="section">
-     <h2>Search</h2>
-    </div>
-    <div class="section">
-     <h2>Compare</h2>
-    </div>
-    <div class="section">
-    <h2>About</h2>
-    <ul>
-      <li><a href="../about.html">About</a></li>
-    </ul>
-    </div>
-  </div>
+  </nav>
+
+  <main id="content">
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Advanced</span>
+        <h1>ASK</h1>
+        <p class="hero-subtitle">
+          Test whether a pattern exists. ASK queries return a simple true/false answer,
+          perfect for checking conditions without retrieving actual data.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Understanding ASK</h2>
+      <p>
+        ASK is one of SPARQL's four query forms. Unlike SELECT which returns matching data,
+        ASK returns only a boolean: <code>true</code> if at least one solution exists,
+        <code>false</code> otherwise.
+      </p>
+      <table>
+        <thead>
+          <tr><th>Query Form</th><th>Returns</th><th>Use Case</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>SELECT</code></td><td>Table of results</td><td>Retrieve data</td></tr>
+          <tr><td><code>ASK</code></td><td>true/false</td><td>Test existence</td></tr>
+          <tr><td><code>CONSTRUCT</code></td><td>RDF graph</td><td>Transform data</td></tr>
+          <tr><td><code>DESCRIBE</code></td><td>RDF description</td><td>Explore entities</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Basic ASK Examples</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Is Paris a City?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20wd%3AQ90%20wdt%3AP31%20wd%3AQ515%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="entity">wd:Q90</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — Paris is indeed a city</span>
+        </div>
+      </div>
+      <p>
+        This query checks if Paris (Q90) is an instance of (P31) a city (Q515).
+        The result is simply <code>true</code> because this statement exists in Wikidata.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Is the Earth Larger than the Moon?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20wd%3AQ2%20wdt%3AP2046%20%3FearthArea%20.%0A%20%20wd%3AQ405%20wdt%3AP2046%20%3FmoonArea%20.%0A%20%20FILTER%28%3FearthArea%20%3E%20%3FmoonArea%29%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="entity">wd:Q2</span> <span class="entity">wdt:P2046</span> <span class="variable">?earthArea</span> .
+  <span class="entity">wd:Q405</span> <span class="entity">wdt:P2046</span> <span class="variable">?moonArea</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?earthArea</span> <span class="operator">&gt;</span> <span class="variable">?moonArea</span>)
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — Earth's area exceeds the Moon's</span>
+        </div>
+      </div>
+      <p>
+        ASK queries can include FILTER conditions. This query compares the surface area (P2046)
+        of Earth (Q2) and the Moon (Q405) to verify that Earth is larger.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Checking for Relationships</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Did Einstein Study at ETH Zurich?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20wd%3AQ937%20wdt%3AP69%20wd%3AQ11942%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="entity">wd:Q937</span> <span class="entity">wdt:P69</span> <span class="entity">wd:Q11942</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — Einstein was educated at ETH Zurich</span>
+        </div>
+      </div>
+      <p>
+        This query verifies whether Albert Einstein (Q937) has "educated at" (P69) relationship
+        with ETH Zurich (Q11942). It returns true, confirming the connection.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Are France and Germany Neighbors?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20wd%3AQ142%20wdt%3AP47%20wd%3AQ183%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="entity">wd:Q142</span> <span class="entity">wdt:P47</span> <span class="entity">wd:Q183</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — France shares a border with Germany</span>
+        </div>
+      </div>
+      <p>
+        Check geographic relationships. This confirms that France (Q142) shares a border with (P47)
+        Germany (Q183).
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Checking for Property Existence</h2>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Does Tokyo Have a Population Value?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20wd%3AQ1490%20wdt%3AP1082%20%3Fpopulation%20.%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="entity">wd:Q1490</span> <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — Tokyo has population data</span>
+        </div>
+      </div>
+      <p>
+        Use ASK to check whether an entity has a particular property defined. This verifies
+        that Tokyo (Q1490) has a population (P1082) value in Wikidata.
+      </p>
+
+      <div class="query-block">
+        <div class="query-block-header">
+          <span class="query-block-title">Are There Cities with 10M+ Population?</span>
+          <div class="query-block-actions">
+            <button class="query-action-btn">Copy</button>
+            <a href="https://query.wikidata.org/#ASK%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20%3B%0A%20%20%20%20%20%20%20%20wdt%3AP1082%20%3Fpopulation%20.%0A%20%20FILTER%28%3Fpopulation%20%3E%2010000000%29%0A%7D" target="_blank" rel="noopener" class="query-action-btn primary">Run ↗</a>
+          </div>
+        </div>
+        <div class="query-block-content">
+          <pre><code><span class="keyword">ASK</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P1082</span> <span class="variable">?population</span> .
+  <span class="keyword">FILTER</span>(<span class="variable">?population</span> <span class="operator">&gt;</span> <span class="number">10000000</span>)
+}</code></pre>
+        </div>
+        <div class="query-block-footer">
+          <span class="badge badge-advanced">Advanced</span>
+          <span>Returns true — cities with 10+ million people exist</span>
+        </div>
+      </div>
+      <p>
+        ASK can test whether any entities match complex criteria. This confirms that Wikidata
+        contains cities with populations exceeding 10 million.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Key Entities Used in Examples</h2>
+      <table>
+        <thead>
+          <tr><th>Entity</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>wd:Q2</code></td><td>Earth</td></tr>
+          <tr><td><code>wd:Q90</code></td><td>Paris</td></tr>
+          <tr><td><code>wd:Q142</code></td><td>France</td></tr>
+          <tr><td><code>wd:Q183</code></td><td>Germany</td></tr>
+          <tr><td><code>wd:Q405</code></td><td>Moon</td></tr>
+          <tr><td><code>wd:Q515</code></td><td>City</td></tr>
+          <tr><td><code>wd:Q937</code></td><td>Albert Einstein</td></tr>
+          <tr><td><code>wd:Q1490</code></td><td>Tokyo</td></tr>
+          <tr><td><code>wd:Q11942</code></td><td>ETH Zurich</td></tr>
+          <tr><td><code>wdt:P31</code></td><td>Instance of</td></tr>
+          <tr><td><code>wdt:P47</code></td><td>Shares border with</td></tr>
+          <tr><td><code>wdt:P69</code></td><td>Educated at</td></tr>
+          <tr><td><code>wdt:P1082</code></td><td>Population</td></tr>
+          <tr><td><code>wdt:P2046</code></td><td>Area</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <nav class="topic-nav">
+      <a href="index.html" class="topic-nav-link prev">
+        <span class="topic-nav-label">Previous</span>
+        <span class="topic-nav-title">Advanced Overview</span>
+      </a>
+      <a href="construct.html" class="topic-nav-link next">
+        <span class="topic-nav-label">Next</span>
+        <span class="topic-nav-title">CONSTRUCT</span>
+      </a>
+    </nav>
+
+    <footer id="footertext">
+      <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+      <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+    </footer>
+  </main>
+  <script src="../js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="temporal">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Handle dates with different precision levels in SPARQL: year-only, month-only, and exact dates." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Time Precision - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Temporal</a></li>
+        <li aria-current="page">Time Precision</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="index.html" class="active">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="../patterns/index.html">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Temporal Topics</div>
+        <ul>
+          <li><a href="dates.html">Working with Dates</a></li>
+          <li><a href="timelines.html">Timelines & Periods</a></li>
+          <li><a href="historical.html">Historical Queries</a></li>
+          <li><a href="precision.html" class="active">Time Precision</a></li>
+          <li><a href="calendars.html">Calendar Systems</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Temporal</span>
+          <h1>Time Precision</h1>
+          <p class="hero-subtitle">
+            Wikidata dates come with precision metadata. Learn to handle year-only,
+            month-only, decade, and exact dates in your queries.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Understanding Date Precision</h2>
+        <p>
+          Not all dates are known exactly. Wikidata stores dates with precision information
+          indicating whether only the year, month, or exact day is known. This is stored
+          using the <code>wikibase:timePrecision</code> property on the statement value node.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Precision Value</th>
+              <th>Meaning</th>
+              <th>Example Display</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>6</td>
+              <td>Millennium</td>
+              <td>"2nd millennium"</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Century</td>
+              <td>"19th century"</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Decade</td>
+              <td>"1990s"</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>Year</td>
+              <td>"1995"</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td>Month</td>
+              <td>"May 1995"</td>
+            </tr>
+            <tr>
+              <td>11</td>
+              <td>Day</td>
+              <td>"May 23, 1995"</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Accessing Precision Information</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Query Date with Precision</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span> <span class="variable">?precision</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">p:P571</span> <span class="variable">?inceptionStatement</span> .
+
+  <span class="comment"># Get the value and precision</span>
+  <span class="variable">?inceptionStatement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timeValue</span> <span class="variable">?inception</span> ;
+             <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?precision</span>
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Access precision via psv: (property statement value)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Filtering by Precision</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Only Exact Dates (Day Precision)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?inception</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">p:P571</span> <span class="variable">?inceptionStatement</span> .
+
+  <span class="variable">?inceptionStatement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timeValue</span> <span class="variable">?inception</span> ;
+             <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+
+  <span class="comment"># Only day-precise dates (precision = 11)</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?precision</span> = 11)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?inception</span>
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Filter: precision = 11 for exact day</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Only Year-Level Precision</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> (<span class="function">YEAR</span>(<span class="variable">?inception</span>) <span class="keyword">AS</span> <span class="variable">?year</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">p:P571</span> <span class="variable">?inceptionStatement</span> .
+
+  <span class="variable">?inceptionStatement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timeValue</span> <span class="variable">?inception</span> ;
+             <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+
+  <span class="comment"># Only year precision (=9), not month or day</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?precision</span> = 9)
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Filter: precision = 9 for year only</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Precision in Cultural Heritage</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Artworks with Uncertain Dates</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?artwork</span> <span class="variable">?artworkLabel</span> <span class="variable">?inception</span> <span class="variable">?precision</span>
+       (<span class="keyword">IF</span>(<span class="variable">?precision</span> = 7, <span class="string">"Century"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 8, <span class="string">"Decade"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 9, <span class="string">"Year"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 10, <span class="string">"Month"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 11, <span class="string">"Day"</span>, <span class="string">"Other"</span>))))) <span class="keyword">AS</span> <span class="variable">?precisionLabel</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?artwork</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q3305213</span> ;  <span class="comment"># painting</span>
+           <span class="entity">p:P571</span> <span class="variable">?statement</span> .
+
+  <span class="variable">?statement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timeValue</span> <span class="variable">?inception</span> ;
+             <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+
+  <span class="comment"># Imprecise dates: century (7) or decade (8)</span>
+  <span class="keyword">FILTER</span>(<span class="variable">?precision</span> IN (7, 8))
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Cultural Heritage | Imprecise dating</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Precision Distribution for Archaeological Sites</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?precision</span>
+       (<span class="keyword">IF</span>(<span class="variable">?precision</span> = 6, <span class="string">"Millennium"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 7, <span class="string">"Century"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 8, <span class="string">"Decade"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 9, <span class="string">"Year"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 10, <span class="string">"Month"</span>,
+        <span class="keyword">IF</span>(<span class="variable">?precision</span> = 11, <span class="string">"Day"</span>, <span class="string">"Other"</span>)))))) <span class="keyword">AS</span> <span class="variable">?level</span>)
+       (<span class="function">COUNT</span>(<span class="variable">?site</span>) <span class="keyword">AS</span> <span class="variable">?count</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?site</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q839954</span> ;  <span class="comment"># archaeological site</span>
+        <span class="entity">p:P571</span> <span class="variable">?statement</span> .
+
+  <span class="variable">?statement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?precision</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?count</span>)</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Analyze date precision distribution</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Urban: Building Dates by Precision</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Buildings with Precise vs Approximate Dates</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span>
+  (<span class="function">SUM</span>(<span class="keyword">IF</span>(<span class="variable">?precision</span> >= 10, 1, 0)) <span class="keyword">AS</span> <span class="variable">?precise</span>)
+  (<span class="function">SUM</span>(<span class="keyword">IF</span>(<span class="variable">?precision</span> = 9, 1, 0)) <span class="keyword">AS</span> <span class="variable">?yearOnly</span>)
+  (<span class="function">SUM</span>(<span class="keyword">IF</span>(<span class="variable">?precision</span> < 9, 1, 0)) <span class="keyword">AS</span> <span class="variable">?approximate</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?building</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q41176</span> ;  <span class="comment"># building</span>
+            <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> ;              <span class="comment"># in France</span>
+            <span class="entity">p:P571</span> <span class="variable">?statement</span> .
+
+  <span class="variable">?statement</span> <span class="entity">psv:P571</span> <span class="variable">?timeValue</span> .
+  <span class="variable">?timeValue</span> <span class="entity">wikibase:timePrecision</span> <span class="variable">?precision</span> .
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-temporal">Temporal</span>
+            <span>Domain: Urban | Precision statistics</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Best Practices</h2>
+        <ul>
+          <li><strong>Check precision before comparing</strong> — A "1990" year-precision date shouldn't be compared
+            against a specific day</li>
+          <li><strong>Use appropriate granularity</strong> — If grouping by decade, precision level 9 (year) is
+            sufficient</li>
+          <li><strong>Document precision requirements</strong> — Make clear if your analysis requires exact dates</li>
+          <li><strong>Consider cultural context</strong> — Historical artifacts often have imprecise dates</li>
+        </ul>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="historical.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Historical Queries</span>
+        </a>
+        <a href="calendars.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Calendar Systems</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

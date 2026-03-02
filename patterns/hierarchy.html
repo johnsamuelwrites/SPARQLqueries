@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Navigate class and property hierarchies using SPARQL property paths. Master P279* and P31 patterns." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Hierarchy Traversal - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Hierarchy Traversal</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html" class="active">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Hierarchy Traversal</h1>
+          <p class="hero-subtitle">
+            Navigate class hierarchies and transitive relationships using property paths.
+            Master the P31/P279 pattern for flexible instance matching.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Understanding Wikidata's Class System</h2>
+        <p>
+          Wikidata organizes knowledge using two key properties:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Meaning</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>wdt:P31</code></td>
+              <td>instance of</td>
+              <td>Python (P31) programming language</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P279</code></td>
+              <td>subclass of</td>
+              <td>art museum (P279) museum</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          The combination <code>wdt:P31/wdt:P279*</code> means "is an instance of something
+          that is (directly or through subclasses) a specific type."
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Property Path Syntax</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Syntax</th>
+              <th>Meaning</th>
+              <th>Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>p*</code></td>
+              <td>Zero or more</td>
+              <td>Any depth (including self)</td>
+            </tr>
+            <tr>
+              <td><code>p+</code></td>
+              <td>One or more</td>
+              <td>At least one step</td>
+            </tr>
+            <tr>
+              <td><code>p?</code></td>
+              <td>Zero or one</td>
+              <td>Optional single step</td>
+            </tr>
+            <tr>
+              <td><code>p{n}</code></td>
+              <td>Exactly n</td>
+              <td>Fixed depth</td>
+            </tr>
+            <tr>
+              <td><code>p{n,m}</code></td>
+              <td>Between n and m</td>
+              <td>Limited depth range</td>
+            </tr>
+            <tr>
+              <td><code>p/q</code></td>
+              <td>Sequence</td>
+              <td>p then q</td>
+            </tr>
+            <tr>
+              <td><code>p|q</code></td>
+              <td>Alternative</td>
+              <td>p or q</td>
+            </tr>
+            <tr>
+              <td><code>^p</code></td>
+              <td>Inverse</td>
+              <td>Reverse direction</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>The Classic Instance-Subclass Pattern</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find All Programming Languages (Including Subtypes)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?type</span> <span class="variable">?typeLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Instance of programming language OR any subclass</span>
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Get the specific type for display</span>
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="variable">?type</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>wdt:P31/wdt:P279* — The foundational hierarchy pattern</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find All Museums (Art, History, Science, etc.)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span> <span class="variable">?typeLabel</span> <span class="variable">?countryLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> ;  <span class="comment"># museum</span>
+          <span class="entity">wdt:P31</span> <span class="variable">?type</span> ;
+          <span class="entity">wdt:P17</span> <span class="variable">?country</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 50</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Exploring Class Hierarchies</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Show Subclasses of Programming Language</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?class</span> <span class="variable">?classLabel</span> <span class="variable">?parentLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Find all subclasses of programming language</span>
+  <span class="variable">?class</span> <span class="entity">wdt:P279</span>+ <span class="entity">wd:Q9143</span> .
+
+  <span class="comment"># Get direct parent for tree visualization</span>
+  <span class="variable">?class</span> <span class="entity">wdt:P279</span> <span class="variable">?parent</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">ORDER BY</span> <span class="variable">?parentLabel</span> <span class="variable">?classLabel</span></code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Visualize: #defaultView:Tree</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Administrative Hierarchy (City to Country)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?place</span> <span class="variable">?placeLabel</span> <span class="variable">?parentLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="keyword">VALUES</span> <span class="variable">?city</span> { <span class="entity">wd:Q90</span> }  <span class="comment"># Paris</span>
+
+  <span class="comment"># Traverse P131 (located in administrative unit)</span>
+  <span class="variable">?city</span> <span class="entity">wdt:P131</span>* <span class="variable">?place</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?place</span> <span class="entity">wdt:P131</span> <span class="variable">?parent</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Urban | P131 hierarchy</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Limited Depth Traversal</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Subclasses Within 3 Levels</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?class</span> <span class="variable">?classLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Limit to 1-3 steps (not unlimited)</span>
+  <span class="variable">?class</span> <span class="entity">wdt:P279</span>{1,3} <span class="entity">wd:Q33506</span> .  <span class="comment"># museum</span>
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Bounded depth prevents runaway queries</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Inverse Traversal</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Find Parent Classes (Going Up the Hierarchy)</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?parent</span> <span class="variable">?parentLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Start from "scripting language" and go UP</span>
+  <span class="entity">wd:Q187432</span> <span class="entity">wdt:P279</span>+ <span class="variable">?parent</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Finds: scripting language → programming language → formal language → ...</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Alternative Paths</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Match Multiple Relationship Types</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?entity</span> <span class="variable">?entityLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="comment"># Match P31 OR P279 (instance or subclass)</span>
+  <span class="variable">?entity</span> (<span class="entity">wdt:P31</span>|<span class="entity">wdt:P279</span>) <span class="entity">wd:Q9143</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>p|q — Alternative paths</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Common Pitfalls</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Mistake</th>
+              <th>Problem</th>
+              <th>Solution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>?x wdt:P279* ?y</code></td>
+              <td>Unbounded on both ends</td>
+              <td>Always fix one end</td>
+            </tr>
+            <tr>
+              <td><code>wdt:P279*</code> without <code>wdt:P31</code></td>
+              <td>Matches classes, not instances</td>
+              <td>Use <code>wdt:P31/wdt:P279*</code></td>
+            </tr>
+            <tr>
+              <td>Deep hierarchies</td>
+              <td>Timeout on large trees</td>
+              <td>Use depth limits <code>{1,5}</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="index.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Patterns Overview</span>
+        </a>
+        <a href="linking.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Entity Linking</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>

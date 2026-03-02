@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" data-chapter="patterns">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+      content="Handle multi-valued properties cleanly. Remove duplicates with SAMPLE, GROUP_CONCAT, and DISTINCT." />
+    <meta name="theme-color" content="#0a0a0f" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Deduplication - SPARQLqueries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <div id="logo"><a href="../index.html">SPARQLqueries</a></div>
+      <div id="headersearch">
+        <form action="../search.html" method="get">
+          <input id="headersearchtext" type="text" name="search" placeholder="Search queries..." aria-label="Search" />
+          <button id="headersearchbutton" type="submit">Search</button>
+        </form>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="index.html">Patterns</a></li>
+        <li aria-current="page">Deduplication</li>
+      </ol>
+    </nav>
+
+    <nav id="sidebar">
+      <div id="sidebarlinks">
+        <div class="sidebar-section">Core Chapters</div>
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../basic/index.html">Basic</a></li>
+          <li><a href="../expressions/index.html">Expressions</a></li>
+          <li><a href="../aggregate/index.html">Aggregate</a></li>
+          <li><a href="../advanced/index.html">Advanced</a></li>
+          <li><a href="../federation/index.html">Federation</a></li>
+        </ul>
+        <div class="sidebar-section">Domain Chapters</div>
+        <ul>
+          <li><a href="../temporal/index.html">Temporal</a></li>
+          <li><a href="../geospatial/index.html">Geospatial</a></li>
+          <li><a href="../multilingual/index.html">Multilingual</a></li>
+          <li><a href="index.html" class="active">Patterns</a></li>
+        </ul>
+        <div class="sidebar-section">Pattern Topics</div>
+        <ul>
+          <li><a href="hierarchy.html">Hierarchy Traversal</a></li>
+          <li><a href="linking.html">Entity Linking</a></li>
+          <li><a href="ranking.html">Ranking & Scoring</a></li>
+          <li><a href="dedup.html" class="active">Deduplication</a></li>
+          <li><a href="optimization.html">Optimization</a></li>
+          <li><a href="debugging.html">Debugging</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">Patterns</span>
+          <h1>Deduplication</h1>
+          <p class="hero-subtitle">
+            Handle multi-valued properties cleanly. Use SAMPLE for single values,
+            GROUP_CONCAT for lists, and DISTINCT to remove duplicates.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>The Duplicate Problem</h2>
+        <p>
+          Wikidata often has multiple values for the same property (multiple occupations,
+          multiple citizenships, etc.). This causes row multiplication in query results.
+        </p>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Problem: Duplicated Rows</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="comment"># This produces duplicate rows for multi-paradigm languages</span>
+<span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span> <span class="variable">?paradigmLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Anti-Pattern</span>
+            <span>Python appears 5+ times (one per paradigm)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Solution 1: SAMPLE (Pick One)</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Get One Paradigm Per Language</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">SAMPLE</span>(<span class="variable">?paradigmLabel</span>) <span class="keyword">AS</span> <span class="variable">?oneParadigm</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>SAMPLE() — Pick one arbitrary value</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Museums with One Country</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span>
+       (<span class="function">SAMPLE</span>(<span class="variable">?countryLabel</span>) <span class="keyword">AS</span> <span class="variable">?country</span>)
+       (<span class="function">SAMPLE</span>(<span class="variable">?cityLabel</span>) <span class="keyword">AS</span> <span class="variable">?city</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?museum</span> <span class="entity">wdt:P31</span>/<span class="entity">wdt:P279</span>* <span class="entity">wd:Q33506</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?museum</span> <span class="entity">wdt:P17</span> <span class="variable">?country</span> . }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?museum</span> <span class="entity">wdt:P131</span> <span class="variable">?city</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?museum</span> <span class="variable">?museumLabel</span>
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Cultural Heritage</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Solution 2: GROUP_CONCAT (Combine All)</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">List All Paradigms in One Cell</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?paradigmLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?paradigms</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Result: "object-oriented, functional, procedural"</span>
+          </div>
+        </div>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Cities with All Alternative Names</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span>
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?altName</span>; <span class="keyword">SEPARATOR</span>=<span class="string">" | "</span>) <span class="keyword">AS</span> <span class="variable">?aliases</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?city</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q515</span> ;
+        <span class="entity">wdt:P17</span> <span class="entity">wd:Q142</span> .  <span class="comment"># France</span>
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?city</span> <span class="entity">skos:altLabel</span> <span class="variable">?altName</span> .
+             <span class="keyword">FILTER</span>(<span class="function">LANG</span>(<span class="variable">?altName</span>) = <span class="string">"en"</span>) }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?city</span> <span class="variable">?cityLabel</span>
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>Domain: Urban | skos:altLabel for aliases</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Solution 3: COUNT (How Many?)</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Languages by Paradigm Count</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?paradigm</span>) <span class="keyword">AS</span> <span class="variable">?paradigmCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?paradigmCount</span>)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>COUNT(DISTINCT ?x) — Count unique values</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Solution 4: DISTINCT</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Remove Duplicate Rows</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT DISTINCT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> ;
+        <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> .
+
+  <span class="comment"># Even with multiple paradigms, each language appears once</span>
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">LIMIT</span> 30</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>SELECT DISTINCT — Remove duplicate rows</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Combining Techniques</h2>
+
+        <div class="query-block">
+          <div class="query-block-header">
+            <span class="query-block-title">Full Deduplication Pattern</span>
+            <div class="query-block-actions">
+              <button class="query-action-btn">Copy</button>
+              <a href="https://query.wikidata.org/" target="_blank" rel="noopener" class="query-action-btn primary">Run
+                ↗</a>
+            </div>
+          </div>
+          <div class="query-block-content">
+            <pre><code><span class="keyword">SELECT</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+       (<span class="function">SAMPLE</span>(<span class="variable">?designerLabel</span>) <span class="keyword">AS</span> <span class="variable">?designer</span>)
+       (<span class="function">GROUP_CONCAT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?paradigmLabel</span>; <span class="keyword">SEPARATOR</span>=<span class="string">", "</span>) <span class="keyword">AS</span> <span class="variable">?paradigms</span>)
+       (<span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> <span class="variable">?paradigm</span>) <span class="keyword">AS</span> <span class="variable">?paradigmCount</span>)
+<span class="keyword">WHERE</span> {
+  <span class="variable">?lang</span> <span class="entity">wdt:P31</span> <span class="entity">wd:Q9143</span> .
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P287</span> <span class="variable">?designer</span> . }
+  <span class="keyword">OPTIONAL</span> { <span class="variable">?lang</span> <span class="entity">wdt:P3966</span> <span class="variable">?paradigm</span> . }
+
+  <span class="keyword">SERVICE</span> <span class="entity">wikibase:label</span> {
+    <span class="entity">bd:serviceParam</span> <span class="entity">wikibase:language</span> <span class="string">"en"</span> .
+  }
+}
+<span class="keyword">GROUP BY</span> <span class="variable">?lang</span> <span class="variable">?langLabel</span>
+<span class="keyword">ORDER BY</span> <span class="keyword">DESC</span>(<span class="variable">?paradigmCount</span>)
+<span class="keyword">LIMIT</span> 20</code></pre>
+          </div>
+          <div class="query-block-footer">
+            <span class="badge badge-patterns">Pattern</span>
+            <span>SAMPLE + GROUP_CONCAT + COUNT in one query</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Deduplication Summary</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Technique</th>
+              <th>Use When</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SAMPLE(?x)</code></td>
+              <td>Need one value, don't care which</td>
+              <td>Single arbitrary value</td>
+            </tr>
+            <tr>
+              <td><code>GROUP_CONCAT</code></td>
+              <td>Want all values in one cell</td>
+              <td>"a, b, c"</td>
+            </tr>
+            <tr>
+              <td><code>COUNT(DISTINCT)</code></td>
+              <td>Need the number of values</td>
+              <td>Integer count</td>
+            </tr>
+            <tr>
+              <td><code>SELECT DISTINCT</code></td>
+              <td>Remove entire duplicate rows</td>
+              <td>Unique rows only</td>
+            </tr>
+            <tr>
+              <td><code>MIN/MAX</code></td>
+              <td>Need smallest/largest value</td>
+              <td>Boundary value</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <nav class="topic-nav">
+        <a href="ranking.html" class="topic-nav-link prev">
+          <span class="topic-nav-label">Previous</span>
+          <span class="topic-nav-title">Ranking & Scoring</span>
+        </a>
+        <a href="optimization.html" class="topic-nav-link next">
+          <span class="topic-nav-label">Next</span>
+          <span class="topic-nav-title">Query Optimization</span>
+        </a>
+      </nav>
+
+      <footer id="footertext">
+        <p><strong>SPARQLqueries</strong> — An open-source learning resource by <a
+            href="https://github.com/johnsamuelwrites">John Samuel</a></p>
+        <p>Code: <a href="https://github.com/johnsamuelwrites/SPARQLqueries">GPLv3+</a> | Documentation: <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a></p>
+      </footer>
+    </main>
+
+    <script src="../js/main.js"></script>
+  </body>
+
+</html>
